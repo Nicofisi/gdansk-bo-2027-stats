@@ -1,0 +1,64 @@
+name: Scrape & Deploy
+
+on:
+  schedule:
+    # Every 6 hours
+    - cron: '15 0,6,12,18 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  scrape-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Restore cached project data
+        uses: actions/cache/restore@v4
+        with:
+          path: data/projects.json
+          key: projects-data
+
+      - name: Scrape budgets
+        run: python scrape_budgets.py
+
+      - name: Scrape projects
+        run: python scrape_projects.py
+
+      - name: Save project data cache
+        uses: actions/cache/save@v4
+        with:
+          path: data/projects.json
+          key: projects-data-${{ hashFiles('data/projects.json') }}
+
+      - name: Prepare site
+        run: |
+          mkdir -p _site/data
+          cp index.html _site/
+          cp data/budgets.json data/projects.json data/meta.json _site/data/
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

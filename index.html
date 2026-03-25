@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gdańsk BO 2027 - Wykorzystanie budżetu</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --red: #f85149;
+    --blue: #58a6ff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    padding: 2rem 1rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 1.6rem; margin-bottom: 0.3rem; }
+  .subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.8rem; }
+  h2 {
+    font-size: 1.15rem;
+    margin: 2.5rem 0 0.8rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .badge-bo { color: var(--blue); }
+  .badge-zbo { color: var(--green); }
+
+  .refresh-info {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .refresh-info .dot {
+    width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 0.4rem;
+  }
+  .dot-fresh { background: var(--green); }
+  .dot-stale { background: var(--yellow); }
+  .dot-old { background: var(--red); }
+
+  .summary {
+    display: flex; gap: 1.5rem; flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+  .summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    min-width: 200px;
+    flex: 1;
+  }
+  .summary-card .label { color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; }
+  .summary-card .value { font-size: 1.5rem; font-weight: 700; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+  }
+  th, td { padding: 0.5rem 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
+  th {
+    background: var(--surface);
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    user-select: none;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  th:hover { color: var(--text); }
+  th.sorted-asc::after { content: ' \25B2'; }
+  th.sorted-desc::after { content: ' \25BC'; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  th.num { text-align: right; }
+  tr.district-row { cursor: pointer; }
+  tr.district-row:hover { background: rgba(136,198,255,0.06); }
+
+  .bar-cell { width: 160px; }
+  .bar-bg {
+    background: var(--surface);
+    border-radius: 4px;
+    height: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s;
+  }
+  .bar-label {
+    position: absolute;
+    right: 6px;
+    top: 0;
+    line-height: 18px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text);
+    text-shadow: 0 0 3px rgba(0,0,0,0.8);
+  }
+
+  .pct-low { background-color: #238636; }
+  .pct-med { background-color: #9e6a03; }
+  .pct-high { background-color: #da3633; }
+  .pct-over { background-color: #8957e5; }
+
+  .row-opportunity { background: rgba(35,134,54,0.06); }
+
+  .legend {
+    display: flex; gap: 1.2rem; flex-wrap: wrap;
+    font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1rem;
+  }
+  .legend span { display: flex; align-items: center; gap: 0.3rem; }
+  .legend-dot {
+    width: 10px; height: 10px; border-radius: 2px; display: inline-block;
+  }
+
+  .zero-tag {
+    display: inline-block;
+    background: #238636;
+    color: #fff;
+    font-size: 0.65rem;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-weight: 700;
+    margin-left: 0.5rem;
+  }
+
+  .expand-icon {
+    display: inline-block;
+    width: 1.2em;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    margin-right: 0.3rem;
+    transition: transform 0.2s;
+  }
+  .expand-icon.open { transform: rotate(90deg); }
+
+  tr.projects-row td {
+    padding: 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .projects-list {
+    padding: 0.5rem 1rem 0.5rem 2rem;
+    background: rgba(22,27,34,0.7);
+  }
+  .projects-list ul { list-style: none; }
+  .projects-list li {
+    padding: 0.3rem 0;
+    font-size: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .projects-list li:last-child { border-bottom: none; }
+  .projects-list a {
+    color: var(--blue);
+    text-decoration: none;
+    flex: 1;
+  }
+  .projects-list a:hover { text-decoration: underline; }
+  .projects-list .proj-cost {
+    color: var(--text-muted);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .projects-list .proj-type {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    white-space: nowrap;
+    margin-left: 0.5rem;
+  }
+
+  footer {
+    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+  }
+  footer a { color: var(--blue); }
+
+  @media (max-width: 700px) {
+    body { padding: 1rem 0.5rem; }
+    table { font-size: 0.75rem; }
+    th, td { padding: 0.4rem; }
+    .bar-cell { width: 100px; }
+    .summary-card { min-width: 140px; }
+    .refresh-info { font-size: 0.7rem; gap: 0.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Gdańsk - Budżet Obywatelski 2027</h1>
+<p class="subtitle">Wykorzystanie budżetu per dzielnica na podstawie zgłoszonych projektów. Dane z <a href="https://bo.gdansk.pl/lista-zgloszonych-projektow" style="color:var(--blue)">bo.gdansk.pl</a></p>
+
+<div class="refresh-info" id="refresh-info">Wczytywanie...</div>
+
+<div class="summary" id="summary"></div>
+
+<h2><span class="badge-bo">&#9679;</span> Budżet Obywatelski (zwykły)</h2>
+<p style="color:var(--text-muted);font-size:0.8rem;margin-bottom:0.8rem;">Kliknij dzielnicę, żeby rozwinąć listę projektów</p>
+<div class="legend">
+  <span><span class="legend-dot pct-low"></span> &lt; 50%</span>
+  <span><span class="legend-dot pct-med"></span> 50–100%</span>
+  <span><span class="legend-dot pct-high"></span> 100–200%</span>
+  <span><span class="legend-dot pct-over"></span> &gt; 200%</span>
+</div>
+<table id="table-bo">
+  <thead><tr>
+    <th data-key="district">Dzielnica</th>
+    <th data-key="pct" class="num">Wykorz.</th>
+    <th data-key="pct" class="bar-cell"></th>
+    <th data-key="spent" class="num">Suma proj.</th>
+    <th data-key="budget" class="num">Budżet</th>
+    <th data-key="remaining" class="num">Pozostało</th>
+    <th data-key="count" class="num">Proj.</th>
+  </tr></thead>
+  <tbody></tbody>
+</table>
+
+<h2><span class="badge-zbo">&#9679;</span> Zielony Budżet Obywatelski</h2>
+<p style="color:var(--text-muted);font-size:0.8rem;margin-bottom:0.8rem;">Kliknij dzielnicę, żeby rozwinąć listę projektów</p>
+<div class="legend">
+  <span><span class="legend-dot pct-low"></span> &lt; 50%</span>
+  <span><span class="legend-dot pct-med"></span> 50–100%</span>
+  <span><span class="legend-dot pct-high"></span> 100–200%</span>
+  <span><span class="legend-dot pct-over"></span> &gt; 200%</span>
+</div>
+<table id="table-zbo">
+  <thead><tr>
+    <th data-key="district">Dzielnica</th>
+    <th data-key="pct" class="num">Wykorz.</th>
+    <th data-key="pct" class="bar-cell"></th>
+    <th data-key="spent" class="num">Suma proj.</th>
+    <th data-key="budget" class="num">Budżet</th>
+    <th data-key="remaining" class="num">Pozostało</th>
+    <th data-key="count" class="num">Proj.</th>
+  </tr></thead>
+  <tbody></tbody>
+</table>
+
+<footer>
+  Źródło danych: <a href="https://bo.gdansk.pl/lista-zgloszonych-projektow">bo.gdansk.pl</a> |
+  Budżety: <a href="https://www.gdansk.pl/budzet-obywatelski/Kwoty-BO-2027-r,a,305711">gdansk.pl</a>
+</footer>
+
+<script>
+const DISTRICT_MAP = {
+  "Orunia Górna-Gdańsk Południe": "Orunia Górna - Gdańsk Południe",
+  "Śródmieście": "Środmieście",
+};
+
+const REFRESH_HOURS = 6;
+
+function norm(d) { return DISTRICT_MAP[d] || d; }
+function fmt(n) { return n.toLocaleString('pl-PL', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' zł'; }
+
+function pctClass(pct) {
+  if (pct < 50) return 'pct-low';
+  if (pct < 100) return 'pct-med';
+  if (pct < 200) return 'pct-high';
+  return 'pct-over';
+}
+
+function timeAgo(date) {
+  const now = new Date();
+  const diffMs = now - date;
+  const mins = Math.floor(diffMs / 60000);
+  if (mins < 1) return 'przed chwilą';
+  if (mins < 60) return `${mins} min temu`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours} godz. temu`;
+  const days = Math.floor(hours / 24);
+  return `${days} dn. temu`;
+}
+
+function renderRefreshInfo(meta) {
+  const el = document.getElementById('refresh-info');
+  if (!meta || !meta.last_updated) {
+    el.innerHTML = 'Brak informacji o czasie aktualizacji';
+    return;
+  }
+
+  const lastUpdate = new Date(meta.last_updated);
+  const now = new Date();
+  const diffHours = (now - lastUpdate) / 3600000;
+  const intervalH = meta.refresh_interval_hours || REFRESH_HOURS;
+
+  // Next update
+  const nextUpdate = new Date(lastUpdate.getTime() + intervalH * 3600000);
+  const nextDiffMs = nextUpdate - now;
+
+  let dotClass = 'dot-fresh';
+  if (diffHours > intervalH * 2) dotClass = 'dot-old';
+  else if (diffHours > intervalH) dotClass = 'dot-stale';
+
+  let nextText;
+  if (nextDiffMs <= 0) {
+    nextText = 'w trakcie lub lada moment';
+  } else {
+    const nextMins = Math.floor(nextDiffMs / 60000);
+    if (nextMins < 60) nextText = `za ~${nextMins} min`;
+    else nextText = `za ~${Math.floor(nextMins / 60)} godz.`;
+  }
+
+  const opts = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+  const formatted = lastUpdate.toLocaleDateString('pl-PL', opts);
+
+  el.innerHTML = `
+    <span><span class="dot ${dotClass}"></span> Ostatnia aktualizacja: <strong>${formatted}</strong> (${timeAgo(lastUpdate)})</span>
+    <span>Następna: ${nextText}</span>
+    <span>${meta.project_count || '?'} projektów w bazie</span>
+  `;
+}
+
+function buildRows(budgets, projects, budgetKey) {
+  const costs = {}, counts = {}, districtProjects = {};
+  for (const p of projects) {
+    const d = norm(p.district || '???');
+    const cost = p.total_cost || 0;
+    const isGreen = p.is_green || false;
+    if ((budgetKey === 'budget_zbo') !== isGreen) continue;
+    costs[d] = (costs[d] || 0) + cost;
+    counts[d] = (counts[d] || 0) + 1;
+    if (!districtProjects[d]) districtProjects[d] = [];
+    districtProjects[d].push(p);
+  }
+
+  const rows = [];
+  for (const [district, data] of Object.entries(budgets)) {
+    const budget = data[budgetKey] || 0;
+    if (budget <= 0) continue;
+    const spent = costs[district] || 0;
+    const count = counts[district] || 0;
+    const pct = budget > 0 ? (spent / budget) * 100 : 0;
+    const remaining = budget - spent;
+    const projs = (districtProjects[district] || []).sort((a, b) => (b.total_cost || 0) - (a.total_cost || 0));
+    rows.push({ district, pct, spent, budget, remaining, count, projects: projs });
+  }
+  return rows;
+}
+
+function renderTable(tableId, rows) {
+  const table = document.getElementById(tableId);
+  const tbody = table.querySelector('tbody');
+  const headers = table.querySelectorAll('th');
+  const expanded = new Set();
+
+  let sortKey = 'pct', sortDir = 'asc';
+
+  function projectListHTML(projs, district) {
+    if (projs.length === 0) return '<div class="projects-list" style="color:var(--text-muted);font-style:italic;padding:0.8rem 2rem;">Brak zgłoszonych projektów</div>';
+    const items = projs.map(p => {
+      const cost = p.total_cost ? fmt(p.total_cost) : '?';
+      const title = p.title || 'Bez tytułu';
+      const url = p.url || '#';
+      return `<li><a href="${url}" target="_blank">${title}</a><span class="proj-cost">${cost}</span></li>`;
+    }).join('');
+    return `<div class="projects-list"><ul>${items}</ul></div>`;
+  }
+
+  function render() {
+    const sorted = [...rows].sort((a, b) => {
+      let va = a[sortKey], vb = b[sortKey];
+      if (typeof va === 'string') { va = va.toLowerCase(); vb = vb.toLowerCase(); }
+      if (va < vb) return sortDir === 'asc' ? -1 : 1;
+      if (va > vb) return sortDir === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    headers.forEach(h => h.classList.remove('sorted-asc', 'sorted-desc'));
+    const activeHeaders = table.querySelectorAll(`th[data-key="${sortKey}"]`);
+    activeHeaders.forEach(h => h.classList.add(sortDir === 'asc' ? 'sorted-asc' : 'sorted-desc'));
+
+    const maxPct = Math.max(...rows.map(r => r.pct), 100);
+
+    let html = '';
+    for (const r of sorted) {
+      const barWidth = Math.min((r.pct / maxPct) * 100, 100);
+      const cls = r.pct < 100 ? 'row-opportunity' : '';
+      const zeroTag = r.count === 0 ? '<span class="zero-tag">WOLNE</span>' : '';
+      const isOpen = expanded.has(r.district);
+      const expandCls = isOpen ? 'open' : '';
+
+      html += `<tr class="district-row ${cls}" data-district="${r.district}">
+        <td><span class="expand-icon ${expandCls}">\u25B6</span>${r.district}${zeroTag}</td>
+        <td class="num">${r.pct.toFixed(1)}%</td>
+        <td class="bar-cell"><div class="bar-bg"><div class="bar-fill ${pctClass(r.pct)}" style="width:${barWidth}%"></div><span class="bar-label">${r.pct.toFixed(0)}%</span></div></td>
+        <td class="num">${fmt(r.spent)}</td>
+        <td class="num">${fmt(r.budget)}</td>
+        <td class="num" style="color:${r.remaining > 0 ? 'var(--green)' : 'var(--red)'}">${fmt(r.remaining)}</td>
+        <td class="num">${r.count}</td>
+      </tr>`;
+
+      if (isOpen) {
+        html += `<tr class="projects-row"><td colspan="7">${projectListHTML(r.projects, r.district)}</td></tr>`;
+      }
+    }
+    tbody.innerHTML = html;
+
+    // Attach click handlers
+    tbody.querySelectorAll('tr.district-row').forEach(tr => {
+      tr.addEventListener('click', () => {
+        const d = tr.dataset.district;
+        if (expanded.has(d)) expanded.delete(d);
+        else expanded.add(d);
+        render();
+      });
+    });
+  }
+
+  headers.forEach(h => {
+    if (!h.dataset.key) return;
+    h.addEventListener('click', () => {
+      const key = h.dataset.key;
+      if (sortKey === key) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+      else { sortKey = key; sortDir = key === 'district' ? 'asc' : 'asc'; }
+      render();
+    });
+  });
+
+  render();
+}
+
+async function main() {
+  const [budgets, projects, meta] = await Promise.all([
+    fetch('data/budgets.json').then(r => r.json()),
+    fetch('data/projects.json').then(r => r.json()),
+    fetch('data/meta.json').then(r => r.json()).catch(() => null),
+  ]);
+
+  renderRefreshInfo(meta);
+
+  const boRows = buildRows(budgets, projects, 'budget_bo');
+  const zboRows = buildRows(budgets, projects, 'budget_zbo');
+
+  renderTable('table-bo', boRows);
+  renderTable('table-zbo', zboRows);
+
+  // Summary cards
+  const totalProjects = projects.length;
+  const boUnder100 = boRows.filter(r => r.pct < 100).length;
+  const zboZero = zboRows.filter(r => r.count === 0).length;
+  const zboFreeTotal = zboRows.filter(r => r.count === 0).reduce((s, r) => s + r.budget, 0);
+
+  document.getElementById('summary').innerHTML = `
+    <div class="summary-card">
+      <div class="label">Zgłoszonych projektów</div>
+      <div class="value">${totalProjects}</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Dzielnice BO &lt;100%</div>
+      <div class="value" style="color:var(--green)">${boUnder100} / ${boRows.length}</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Dzielnice ZBO bez projektów</div>
+      <div class="value" style="color:var(--green)">${zboZero}</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">Wolny budżet ZBO (0 proj.)</div>
+      <div class="value" style="color:var(--green)">${fmt(zboFreeTotal)}</div>
+    </div>
+  `;
+}
+
+main();
+</script>
+</body>
+</html>

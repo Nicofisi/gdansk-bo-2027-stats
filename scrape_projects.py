@@ -300,6 +300,15 @@ def main():
         if i < len(urls):
             time.sleep(0.3)
 
+    # Assign sequential number based on URL ID order (lower ID = earlier submission)
+    def url_sort_key(p):
+        m = re.search(r'szczegoly-projektu-\d+-(\d+)', p.get("url", ""))
+        return int(m.group(1)) if m else 0
+
+    projects.sort(key=url_sort_key)
+    for i, p in enumerate(projects, 1):
+        p["seq"] = i
+
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(projects, f, ensure_ascii=False, indent=2)
 
@@ -312,7 +321,7 @@ def main():
             meta = json.load(f)
     meta["last_updated"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
     meta["project_count"] = len(projects)
-    meta["refresh_interval_hours"] = 6
+    meta["refresh_interval_hours"] = 2
     with open(meta_path, "w", encoding="utf-8") as f:
         json.dump(meta, f, ensure_ascii=False, indent=2)
 

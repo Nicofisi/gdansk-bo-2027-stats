@@ -2,8 +2,8 @@ name: Scrape & Deploy
 
 on:
   schedule:
-    # Every 6 hours
-    - cron: '15 0,6,12,18 * * *'
+    # Every 2 hours
+    - cron: '15 */2 * * *'
   workflow_dispatch:
 
 permissions:

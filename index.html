@@ -99,13 +99,14 @@
   tr.district-row { cursor: pointer; }
   tr.district-row:hover { background: rgba(136,198,255,0.06); }
 
-  .bar-cell { width: 160px; }
+  .bar-cell { width: 160px; min-width: 60px; }
   .bar-bg {
     background: var(--surface);
     border-radius: 4px;
     height: 18px;
     position: relative;
     overflow: hidden;
+    min-width: 50px;
   }
   .bar-fill {
     height: 100%;
@@ -173,22 +174,42 @@
   .projects-list li {
     padding: 0.3rem 0;
     font-size: 0.8rem;
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: baseline;
+    gap: 0 0.6rem;
     border-bottom: 1px solid var(--border);
   }
   .projects-list li:last-child { border-bottom: none; }
   .projects-list a {
     color: var(--blue);
     text-decoration: none;
-    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .projects-list a:hover { text-decoration: underline; }
   .projects-list .proj-cost {
     color: var(--text-muted);
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
+    min-width: 10em;
+    text-align: right;
+    grid-column: 4;
+  }
+  .projects-list .proj-seq {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    white-space: nowrap;
+    margin-right: 0.5rem;
+    min-width: 2.5em;
+    font-variant-numeric: tabular-nums;
+  }
+  .projects-list .proj-district {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    white-space: nowrap;
+    margin-left: 0.5rem;
   }
   .projects-list .proj-type {
     color: var(--text-muted);
@@ -206,13 +227,31 @@
   }
   footer a { color: var(--blue); }
 
+  .toggle-header {
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .toggle-header:hover { opacity: 0.8; }
+
   @media (max-width: 700px) {
     body { padding: 1rem 0.5rem; }
     table { font-size: 0.75rem; }
     th, td { padding: 0.4rem; }
-    .bar-cell { width: 100px; }
+    .bar-cell { width: 100px; min-width: 50px; }
     .summary-card { min-width: 140px; }
     .refresh-info { font-size: 0.7rem; gap: 0.8rem; }
+    .projects-list { padding: 0.5rem 0.5rem 0.5rem 1rem; }
+    .projects-list li {
+      grid-template-columns: auto 1fr auto;
+    }
+    .projects-list .proj-cost { grid-column: 3; min-width: auto; }
+    .projects-list--latest .proj-seq { grid-column: 1; grid-row: 1; }
+    .projects-list--latest a { grid-column: 2 / -1; grid-row: 1; }
+    .projects-list--latest .proj-district { grid-column: 2; grid-row: 2; }
+    .projects-list--latest .proj-cost { grid-column: 3; grid-row: 2; }
   }
 </style>
 </head>
@@ -267,6 +306,10 @@
   <tbody></tbody>
 </table>
 
+<h2 class="toggle-header" id="latest-toggle"><span class="expand-icon" id="latest-icon">&#9654;</span> Najnowsze projekty</h2>
+<p style="color:var(--text-muted);font-size:0.8rem;margin-bottom:0.8rem;">Wszystkie projekty chronologicznie, od najnowszego. Kliknij nagłówek, żeby rozwinąć/zwinąć.</p>
+<div id="latest-projects" style="display:none;"></div>
+
 <footer>
   Źródło danych: <a href="https://bo.gdansk.pl/lista-zgloszonych-projektow">bo.gdansk.pl</a> |
   Budżety: <a href="https://www.gdansk.pl/budzet-obywatelski/Kwoty-BO-2027-r,a,305711">gdansk.pl</a>
@@ -278,7 +321,7 @@ const DISTRICT_MAP = {
   "Śródmieście": "Środmieście",
 };
 
-const REFRESH_HOURS = 6;
+const REFRESH_HOURS = 2;
 
 function norm(d) { return DISTRICT_MAP[d] || d; }
 function fmt(n) { return n.toLocaleString('pl-PL', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' zł'; }
@@ -382,7 +425,8 @@ function renderTable(tableId, rows) {
       const cost = p.total_cost ? fmt(p.total_cost) : '?';
       const title = p.title || 'Bez tytułu';
       const url = p.url || '#';
-      return `<li><a href="${url}" target="_blank">${title}</a><span class="proj-cost">${cost}</span></li>`;
+      const seq = p.seq ? `<span class="proj-seq">#${p.seq}</span>` : '';
+      return `<li>${seq}<a href="${url}" target="_blank">${title}</a><span class="proj-cost">${cost}</span></li>`;
     }).join('');
     return `<div class="projects-list"><ul>${items}</ul></div>`;
   }
@@ -464,6 +508,34 @@ async function main() {
 
   renderTable('table-bo', boRows);
   renderTable('table-zbo', zboRows);
+
+  // Latest projects section (collapsed by default)
+  const latestSorted = [...projects].sort((a, b) => (b.seq || 0) - (a.seq || 0));
+  const latestContainer = document.getElementById('latest-projects');
+  const latestToggle = document.getElementById('latest-toggle');
+  const latestIcon = document.getElementById('latest-icon');
+
+  function renderLatest() {
+    const items = latestSorted.map(p => {
+      const cost = p.total_cost ? fmt(p.total_cost) : '?';
+      const title = p.title || 'Bez tytułu';
+      const url = p.url || '#';
+      const seq = p.seq ? `<span class="proj-seq">#${p.seq}</span>` : '';
+      const district = p.district ? `<span class="proj-district">${norm(p.district)}</span>` : '';
+      const typeTag = p.is_green ? ' <span class="proj-type" style="color:var(--green)">[ZBO]</span>' : '';
+      return `<li>${seq}<a href="${url}" target="_blank">${title}${typeTag}</a>${district}<span class="proj-cost">${cost}</span></li>`;
+    }).join('');
+    latestContainer.innerHTML = `<div class="projects-list projects-list--latest"><ul>${items}</ul></div>`;
+  }
+
+  let latestOpen = false;
+  latestToggle.addEventListener('click', () => {
+    latestOpen = !latestOpen;
+    latestContainer.style.display = latestOpen ? 'block' : 'none';
+    latestIcon.classList.toggle('open', latestOpen);
+    if (latestOpen && !latestContainer.innerHTML) renderLatest();
+  });
+  renderLatest();
 
   // Summary cards
   const totalProjects = projects.length;

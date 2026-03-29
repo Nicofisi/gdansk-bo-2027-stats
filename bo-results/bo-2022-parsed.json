@@ -1,0 +1,2704 @@
+{
+  "year": 2022,
+  "stats": {
+    "voting_period": "od 4 do 18 października 2021",
+    "total_voters": 43190,
+    "women_voters": 24199,
+    "men_voters": 18991,
+    "turnout_percent": 9.89,
+    "total_projects_voted_on": 387,
+    "top_turnout_districts": [
+      {
+        "district": "Letnica",
+        "turnout_percent": 17.23
+      },
+      {
+        "district": "Południe",
+        "turnout_percent": 16.82
+      },
+      {
+        "district": "Olszynka",
+        "turnout_percent": 14.77
+      }
+    ],
+    "total_budget": 20830669.0,
+    "year": 2022
+  },
+  "districts": {
+    "Aniołki": {
+      "budget_bo": 247248.0,
+      "budget_zbo": 61043.0,
+      "carryover_bo": 0.0,
+      "carryover_zbo": 1043.0,
+      "projects_bo": [
+        {
+          "title": "Wronia Górka bez barier – uporządkowanie i zagospodarowanie dojścia na Wronią Górkę od ul. Wroniej",
+          "cost": 247248.0,
+          "votes": 1060,
+          "won": true
+        },
+        {
+          "title": "Budki lęgowe dla ptaków Aniołki",
+          "cost": 18500.0,
+          "votes": 435,
+          "won": false
+        },
+        {
+          "title": "Pole do discgolfa pod Wronią Górką",
+          "cost": 54500.0,
+          "votes": 189,
+          "won": false
+        },
+        {
+          "title": "Przystanek Płowce przyjazny pasażerom i pieszym",
+          "cost": 30000.0,
+          "votes": 178,
+          "won": false
+        },
+        {
+          "title": "Usunięcie barierek z ulicy Focha",
+          "cost": 2500.0,
+          "votes": 122,
+          "won": false
+        },
+        {
+          "title": "Rodzinna Gra Terenowa Aniołki – zabawa z mapą",
+          "cost": 6200.0,
+          "votes": 51,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Zielona Wronia",
+          "cost": 60000.0,
+          "votes": 405,
+          "won": true
+        }
+      ]
+    },
+    "Brętowo": {
+      "budget_bo": 289597.0,
+      "budget_zbo": 72399.0,
+      "carryover_bo": 0.0,
+      "carryover_zbo": 0.0,
+      "projects_bo": [
+        {
+          "title": "SKATEPARK dla młodzieży. Wreszcie na Niedźwiedniku!",
+          "cost": 289597.0,
+          "votes": 2365,
+          "won": true
+        },
+        {
+          "title": "Leśny plac zabaw w Matemblewie",
+          "cost": 288035.0,
+          "votes": 1060,
+          "won": false
+        },
+        {
+          "title": "ZBIORNIK RETENCYJNY JASIEŃ – oświetlenie parkowe od strony Brętowa",
+          "cost": 172500.0,
+          "votes": 677,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Mieszkańcy już w ten skwer Niedźwiednika inwestują. DOCEŃMY TO I POMÓŻMY!",
+          "cost": 72399.0,
+          "votes": 394,
+          "won": true
+        },
+        {
+          "title": "Zielone pętle autobusowe Brętowa",
+          "cost": 72399.0,
+          "votes": 364,
+          "won": false
+        }
+      ]
+    },
+    "Brzeźno": {
+      "budget_bo": 357365.0,
+      "budget_zbo": 90709.0,
+      "carryover_bo": 0.0,
+      "carryover_zbo": 0.0,
+      "projects_bo": [
+        {
+          "title": "Bezpieczna droga rowerem ul.Gdańską od ul.Łozy do wjazdu Biedronka",
+          "cost": 357365.0,
+          "votes": 2000,
+          "won": true
+        },
+        {
+          "title": "Plac zabaw w Brzeźnieńskim Parku im. Haffnera – rewitalizacja",
+          "cost": 150000.0,
+          "votes": 1096,
+          "won": false
+        },
+        {
+          "title": "Bezpieczeństwo i monitoring dzielnicy Brzeźno cd.",
+          "cost": 270000.0,
+          "votes": 965,
+          "won": false
+        },
+        {
+          "title": "Multipark Brzeźno",
+          "cost": 357365.0,
+          "votes": 626,
+          "won": false
+        },
+        {
+          "title": "Budki lęgowe dla ptaków Brzeźno",
+          "cost": 18500.0,
+          "votes": 505,
+          "won": false
+        },
+        {
+          "title": "Modernizacja Placu Zabaw przy al. Hallera, Brzeźno",
+          "cost": 85000.0,
+          "votes": 415,
+          "won": false
+        },
+        {
+          "title": "Rodzinna Gra Terenowa Brzeźno – zabawa z mapą",
+          "cost": 6200.0,
+          "votes": 36,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Zielone torowisko tramwajowe – trawiasty dywan na ul. Mazurskiej",
+          "cost": 90709.0,
+          "votes": 814,
+          "won": true
+        }
+      ]
+    },
+    "Chełm": {
+      "budget_bo": 645091.0,
+      "budget_zbo": 167728.0,
+      "carryover_bo": 0.0,
+      "carryover_zbo": 53728.0,
+      "projects_bo": [
+        {
+          "title": "Remont / wymiana nawierzchni jezdni i chodników, stworzenie miejsc parkingowych",
+          "cost": 645091.0,
+          "votes": 1399,
+          "won": true
+        },
+        {
+          "title": "Pole do disc golfa w Jarze Wilanowskim",
+          "cost": 54500.0,
+          "votes": 1374,
+          "won": false
+        },
+        {
+          "title": "Budowa dodatkowego ośw. LED na ul. Witosa / ul. Cieszyńskiego – poprawa bezpieczeństwa na przejściach dla pieszych",
+          "cost": 90000.0,
+          "votes": 1308,
+          "won": false
+        },
+        {
+          "title": "Letnie plenerowe spektakle teatralne dla dzieci",
+          "cost": 12600.0,
+          "votes": 1251,
+          "won": false
+        },
+        {
+          "title": "Zagospodarowanie zielenią dzikiego wysypiska śmieci na skrzyżowaniu ul. Worcella i Bitwy pod Lenino",
+          "cost": 15000.0,
+          "votes": 1156,
+          "won": false
+        },
+        {
+          "title": "Oświetlenie ścieżki pieszej – bocznej od ul. Lipowicza – pomiędzy budynkami ul. Lipowicza 80 i 82",
+          "cost": 30000.0,
+          "votes": 805,
+          "won": false
+        },
+        {
+          "title": "Ławki i kosze wzdłuż ulicy Worcella",
+          "cost": 15000.0,
+          "votes": 804,
+          "won": false
+        },
+        {
+          "title": "Rodzinna Gra Terenowa Chełm – zabawa z mapą",
+          "cost": 6200.0,
+          "votes": 387,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Zagospodarowanie pasów zieleni przyulicznej – Wilanowska, Rogalińska, Nieborowska",
+          "cost": 100000.0,
+          "votes": 613,
+          "won": true
+        },
+        {
+          "title": "Park kieszonkowy przy Zamiejskiej",
+          "cost": 79400.0,
+          "votes": 441,
+          "won": false
+        },
+        {
+          "title": "Pętla Witosa – zielona wiata przystankowa",
+          "cost": 140000.0,
+          "votes": 390,
+          "won": false
+        },
+        {
+          "title": "Rewaloryzacja zieleni przyulicznej Starego Chełmu – rondo Anny Piaseckiej (stare rondo) i ul. Łużycka",
+          "cost": 129000.0,
+          "votes": 317,
+          "won": false
+        },
+        {
+          "title": "Łąka kwietna przy ulicy Lubuskiej",
+          "cost": 14000.0,
+          "votes": 107,
+          "won": true
+        }
+      ]
+    },
+    "Jasień": {
+      "budget_bo": 484188.0,
+      "budget_zbo": 146648.0,
+      "carryover_bo": 6841.0,
+      "carryover_zbo": 23.0,
+      "projects_bo": [
+        {
+          "title": "ZIELONE STREFY SPORTU I REKREACJI – Street Workout nad zbiornikiem retencyjnym Jasień oraz park kieszonkowy na osiedlu Wiszące Ogrody",
+          "cost": 458850.0,
+          "votes": 4190,
+          "won": true
+        },
+        {
+          "title": "Łączymy osiedla. Bezpieczne chodniki dla osiedli: Lawendowe Wzgórze, Astra Park, Orle Gniazdo, Voda, Nowa Jabłoniowa, Leszczynowe, Zielone",
+          "cost": 284900.0,
+          "votes": 2793,
+          "won": false
+        },
+        {
+          "title": "Sterylizacja bezpańskich kotów – Jasień",
+          "cost": 30000.0,
+          "votes": 1376,
+          "won": false
+        },
+        {
+          "title": "Park kieszonkowy Lawendowe Wzgórze oraz ścieżka w otoczeniu drzew",
+          "cost": 188300.0,
+          "votes": 1297,
+          "won": false
+        },
+        {
+          "title": "Psi Park",
+          "cost": 283800.0,
+          "votes": 1130,
+          "won": false
+        },
+        {
+          "title": "Zielony Park",
+          "cost": 460000.0,
+          "votes": 1035,
+          "won": false
+        },
+        {
+          "title": "Jaśniejsze zejście do Zbiornika Jabłoniowa",
+          "cost": 132000.0,
+          "votes": 1023,
+          "won": false
+        },
+        {
+          "title": "Leśny zakątek dla psów przy Jasieńskiej",
+          "cost": 45000.0,
+          "votes": 618,
+          "won": false
+        },
+        {
+          "title": "Budki lęgowe dla ptaków Jasień",
+          "cost": 18497.0,
+          "votes": 553,
+          "won": true
+        },
+        {
+          "title": "Rodzinna Gra Terenowa Jasień – zabawa z mapą",
+          "cost": 6200.0,
+          "votes": 194,
+          "won": true
+        },
+        {
+          "title": "Przystań Lawendowy Zakątek",
+          "cost": 160000.0,
+          "votes": 180,
+          "won": false
+        },
+        {
+          "title": "LAWENDOWY ZAKĄTEK FIT",
+          "cost": 166700.0,
+          "votes": 165,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "OGRODY DESZCZOWE ORAZ NASADZENIA DRZEW przy rondzie łączącym ul. Myśliwską, ul. Jasieńską i ul. Andersa oraz przy ul. Przytulnej",
+          "cost": 146625.0,
+          "votes": 1155,
+          "won": true
+        },
+        {
+          "title": "Zielone Lawendowe Wzgórza – sadzimy drzewa między ZSP 6 a Przedszkolem 68 przy ul. Lawendowe Wzgórze",
+          "cost": 45000.0,
+          "votes": 823,
+          "won": false
+        },
+        {
+          "title": "Wykonanie ogrodu deszczowego przy Zielonym Stawie",
+          "cost": 101000.0,
+          "votes": 499,
+          "won": false
+        },
+        {
+          "title": "Kwiaty i krzewy w Parku im. ks. Kabata na Jasieniu",
+          "cost": 15000.0,
+          "votes": 413,
+          "won": false
+        }
+      ]
+    },
+    "Kokoszki": {
+      "budget_bo": 323481.0,
+      "budget_zbo": 84006.0,
+      "carryover_bo": 0.0,
+      "carryover_zbo": 0.0,
+      "projects_bo": [
+        {
+          "title": "„3 tereny rekreacyjne na 3 osiedlach dzielnicy Kokoszki” – kontynuacja projektów",
+          "cost": 313731.0,
+          "votes": 3047,
+          "won": true
+        },
+        {
+          "title": "Ścieżka przy źródłach Strzyży",
+          "cost": 320590.0,
+          "votes": 1874,
+          "won": false
+        },
+        {
+          "title": "Wiata rekreacyjna przy zbiorniku retencyjnym Kiełpinek, drewniane leżaki i ping-pong",
+          "cost": 150000.0,
+          "votes": 691,
+          "won": false
+        },
+        {
+          "title": "Czystsze Karczemki – będzie gdzie wyrzucać papierki!",
+          "cost": 9750.0,
+          "votes": 484,
+          "won": true
+        },
+        {
+          "title": "Rodzinna Gra Terenowa Kokoszki – zabawa z mapą",
+          "cost": 6200.0,
+          "votes": 129,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "3 choinki w 3 parkach na osiedlach dzielnicy Kokoszki (Karczemki, Kiełpino Górne, Kokoszki)",
+          "cost": 84006.0,
+          "votes": 779,
+          "won": true
+        },
+        {
+          "title": "ZIELONY ZBIORNIK RETENCYJNY KIEŁPINEK",
+          "cost": 60000.0,
+          "votes": 451,
+          "won": false
+        }
+      ]
+    },
+    "Krakowiec-Górki Zachodnie": {
+      "budget_bo": 224727.0,
+      "budget_zbo": 51463.0,
+      "carryover_bo": 0.0,
+      "carryover_zbo": 0.0,
+      "projects_bo": [
+        {
+          "title": "Remont drogi przy ul. Łowickiej",
+          "cost": 224727.0,
+          "votes": 442,
+          "won": true
+        },
+        {
+          "title": "Naprawa ulicy Łęczyckiej",
+          "cost": 224727.0,
+          "votes": 360,
+          "won": false
+        },
+        {
+          "title": "Pole do disc golfa przy ul. Łowickiej",
+          "cost": 109000.0,
+          "votes": 345,
+          "won": false
+        },
+        {
+          "title": "Oświetlenie ul. Góreckiej",
+          "cost": 100000.0,
+          "votes": 237,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Nasadzenia roślinności w przestrzeni przyulicznej ul. Łowickiej",
+          "cost": 51463.0,
+          "votes": 126,
+          "won": true
+        },
+        {
+          "title": "Posadzenie pachnących drzew wzdłuż ulicy Kutnowskiej",
+          "cost": 51463.0,
+          "votes": 67,
+          "won": false
+        }
+      ]
+    },
+    "Letnica": {
+      "budget_bo": 203052.0,
+      "budget_zbo": 51190.0,
+      "carryover_bo": 0.0,
+      "carryover_zbo": 28190.0,
+      "projects_bo": [
+        {
+          "title": "Teren sportowy dla nowej Letnicy",
+          "cost": 203052.0,
+          "votes": 854,
+          "won": true
+        },
+        {
+          "title": "Nowe chodniki na Letnicy. Remont chodników na ul. Rybitwy oraz Szklana Huta cz. II",
+          "cost": 153000.0,
+          "votes": 581,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Przywrócenie terenów zielonych Letnicy – usunięcie nielegalnych wysypisk śmieci i odpadów",
+          "cost": 23000.0,
+          "votes": 428,
+          "won": true
+        }
+      ]
+    },
+    "Matarnia": {
+      "budget_bo": 267050.0,
+      "budget_zbo": 66763.0,
+      "carryover_bo": 0.0,
+      "carryover_zbo": 0.0,
+      "projects_bo": [
+        {
+          "title": "AKTYWNA MATARNIA „Chodniki w Klukowie, Park Łąka Maternusa w Matarni, Park Leśny Zakątek na os.Muz. w Zł. Karczmie, Remont chodników ul.Złota Karczma”",
+          "cost": 267050.0,
+          "votes": 2247,
+          "won": true
+        },
+        {
+          "title": "uregulowanie wejścia do lasu przy ul. Słabego",
+          "cost": 105000.0,
+          "votes": 752,
+          "won": false
+        },
+        {
+          "title": "Domki dla pożytecznych owadów",
+          "cost": 3000.0,
+          "votes": 347,
+          "won": false
+        },
+        {
+          "title": "STREFA REKREACJI CZYNNEJ przy zbiorniku retencyjnym Kiełpinek: Street Workout, linarium – piramida, tor sprawnościowy dla dzieci",
+          "cost": 233500.0,
+          "votes": 304,
+          "won": false
+        },
+        {
+          "title": "Rodzinna Gra Terenowa Matarnia – zabawa z mapą",
+          "cost": 6200.0,
+          "votes": 122,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "ZIELONA AKTYWNA MATARNIA „Nowa zieleń w Klukowie, w Parku Łąka Maternusa w Matarni, w Parku Leśny Zakątek na Osiedlu Muzycznym w Złotej Karczmie”",
+          "cost": 66763.0,
+          "votes": 484,
+          "won": true
+        },
+        {
+          "title": "Łąka kwietna Mjr. Słabego",
+          "cost": 20000.0,
+          "votes": 211,
+          "won": false
+        },
+        {
+          "title": "ZIELONY ZBIORNIK RETENCYJNY KIEŁPINEK – Kwitnące drzewa, krzewy i byliny otaczające teren rekreacyjny",
+          "cost": 56763.0,
+          "votes": 44,
+          "won": false
+        }
+      ]
+    },
+    "Młyniska": {
+      "budget_bo": 216666.0,
+      "budget_zbo": 54167.0,
+      "carryover_bo": 25666.0,
+      "carryover_zbo": 30000.0,
+      "projects_bo": [
+        {
+          "title": "Aktywny Park na Zielonym Trójkącie",
+          "cost": 191000.0,
+          "votes": 390,
+          "won": true
+        },
+        {
+          "title": "Wymiana nawierzchni – ul. Marynarki Polskiej (przed garażami murowanymi)",
+          "cost": 147166.0,
+          "votes": 372,
+          "won": false
+        },
+        {
+          "title": "Remont chodnika – kontynuacja tzw. szachownicy przy osiedlowych sklepach i punktach usługowych",
+          "cost": 216666.0,
+          "votes": 229,
+          "won": false
+        },
+        {
+          "title": "Budki lęgowe dla ptaków Młyniska",
+          "cost": 18500.0,
+          "votes": 103,
+          "won": true
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Zielony Trójkąt zielony",
+          "cost": 24167.0,
+          "votes": 106,
+          "won": true
+        },
+        {
+          "title": "Nasadzenia roślinności przy przystanku tramwajowych przy Pętli Kliniczna oraz przy przystanku Twarda",
+          "cost": 54167.0,
+          "votes": 70,
+          "won": false
+        }
+      ]
+    },
+    "Nowy Port": {
+      "budget_bo": 449327.0,
+      "budget_zbo": 150732.0,
+      "carryover_bo": 443127.0,
+      "carryover_zbo": 0.0,
+      "projects_bo": [
+        {
+          "title": "Rodzinna Gra Terenowa Nowy Port – zabawa z mapą",
+          "cost": 6200.0,
+          "votes": 733,
+          "won": true
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "ZIELONA WYZWOLENIA",
+          "cost": 150732.0,
+          "votes": 275,
+          "won": true
+        },
+        {
+          "title": "Eko ogródek",
+          "cost": 124900.0,
+          "votes": 112,
+          "won": false
+        },
+        {
+          "title": "Zielone torowisko tramwajowe – roślinny dywan na ul. Marynarki Polskiej",
+          "cost": 150732.0,
+          "votes": 96,
+          "won": false
+        }
+      ]
+    },
+    "Oliwa": {
+      "budget_bo": 410914.0,
+      "budget_zbo": 99291.0,
+      "carryover_bo": 882.0,
+      "carryover_zbo": 0.0,
+      "projects_bo": [
+        {
+          "title": "Odbudowa historycznego pomostu nad Stawem Łabędzim w Parku Oliwskim",
+          "cost": 185000.0,
+          "votes": 1695,
+          "won": true
+        },
+        {
+          "title": "Modernizacja skweru Ireny Jarockiej poprzez doposażenie w nowe elementy rekreacyjne i modyfikację dotychczasowej aranżacji placu zabaw",
+          "cost": 410914.0,
+          "votes": 1177,
+          "won": false
+        },
+        {
+          "title": "KSIĄŻKOMAT zewnętrzny z 42 skrytkami, zlokalizowany przy Bibliotece Oliwskiej – Filii nr 2 Wojewódzkiej i Miejskiej Biblioteki Publicznej w Gdańsku",
+          "cost": 154532.0,
+          "votes": 805,
+          "won": true
+        },
+        {
+          "title": "Budki lęgowe dla ptaków Oliwa",
+          "cost": 18500.0,
+          "votes": 690,
+          "won": true
+        },
+        {
+          "title": "Oliwski wybieg dla psów wraz z zagospodarowaniem terenu",
+          "cost": 140000.0,
+          "votes": 554,
+          "won": false
+        },
+        {
+          "title": "Wymiana chodnika w ciągu ul. Tatrzańskiej",
+          "cost": 154000.0,
+          "votes": 520,
+          "won": false
+        },
+        {
+          "title": "Osiedle dla pożytecznych owadów",
+          "cost": 7000.0,
+          "votes": 499,
+          "won": true
+        },
+        {
+          "title": "Remont chodnika wzdłuż ulicy Karpackiej",
+          "cost": 217600.0,
+          "votes": 471,
+          "won": false
+        },
+        {
+          "title": "Tetmajera – uczyńmy przyjaznym najpopularniejszy przystanek tramwajowy okolicy",
+          "cost": 15000.0,
+          "votes": 449,
+          "won": true
+        },
+        {
+          "title": "Zielony ekoprzystanek przy kampusie Uniwersytetu Gdańskiego",
+          "cost": 60000.0,
+          "votes": 385,
+          "won": false
+        },
+        {
+          "title": "Wygodne dojście na skwer (Bezruczki / Przy Mandu / Sidły)",
+          "cost": 30000.0,
+          "votes": 241,
+          "won": true
+        },
+        {
+          "title": "Rodzinna Gra Terenowa Oliwa – zabawa z mapą",
+          "cost": 6200.0,
+          "votes": 179,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Zielona Oliwa – Kompleksowy projekt przywrócenia zadrzewień przydrożnych w dzielnicy – Etap II",
+          "cost": 99291.0,
+          "votes": 649,
+          "won": true
+        },
+        {
+          "title": "Domki dla wiewiórek z oliwskiego parku",
+          "cost": 2500.0,
+          "votes": 507,
+          "won": false
+        },
+        {
+          "title": "Zielona Oliwa 2.00 – Oliwskie Łąki Kwietne i Zielony Zaułek",
+          "cost": 99271.0,
+          "votes": 369,
+          "won": false
+        },
+        {
+          "title": "ZIMOZIELONY WYKONANY Z ROŚLIN NAPIS OLIWA",
+          "cost": 99291.0,
+          "votes": 154,
+          "won": false
+        }
+      ]
+    },
+    "Olszynka": {
+      "budget_bo": 222960.0,
+      "budget_zbo": 55740.0,
+      "carryover_bo": 0.0,
+      "carryover_zbo": 0.0,
+      "projects_bo": [
+        {
+          "title": "Świetliki Opływu Motławy – instalacja latarni",
+          "cost": 222960.0,
+          "votes": 1712,
+          "won": true
+        },
+        {
+          "title": "Sterylizacja bezpańskich kotów – Olszynka",
+          "cost": 30000.0,
+          "votes": 787,
+          "won": false
+        },
+        {
+          "title": "Rekreacyjny plac zabaw",
+          "cost": 222960.0,
+          "votes": 629,
+          "won": false
+        },
+        {
+          "title": "Pole do disc golfa nad Motławą",
+          "cost": 45000.0,
+          "votes": 105,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "PARK KIESZONKOWY – BLUSZCZOWA / LETNIA",
+          "cost": 55740.0,
+          "votes": 268,
+          "won": true
+        },
+        {
+          "title": "Zielony zakątek NIWKI",
+          "cost": 55740.0,
+          "votes": 227,
+          "won": false
+        }
+      ]
+    },
+    "Orunia Górna-Gdańsk Południe": {
+      "budget_bo": 492665.0,
+      "budget_zbo": 122992.0,
+      "carryover_bo": 25954.0,
+      "carryover_zbo": 92.0,
+      "projects_bo": [
+        {
+          "title": "GDAŃSK POŁUDNIE Przestrzeń Sportowo-Rekreacyjna PODLECKIEGO / ŁUCZNICZA ETAP II (PUMPTRACK, Sprawnościowy plac zabaw, nasadzenia, ścieżki, łąka kwietna)",
+          "cost": 460511.0,
+          "votes": 6505,
+          "won": true
+        },
+        {
+          "title": "ZEJŚCIE Z ORUNI GÓRNEJ DO PARKU ORUŃSKIEGO REMONT SCHODÓW TERENOWYCH I ZEJŚCIA ZA PRZEDSZKOLEM (ul. 3 Brygady Szczerbca / ul. Dywizji Wołyńskiej)",
+          "cost": 180000.0,
+          "votes": 3207,
+          "won": false
+        },
+        {
+          "title": "Aktywny zbiornik Augustowski – II etap placu zabaw dla dzieci i młodzieży",
+          "cost": 436500.0,
+          "votes": 2676,
+          "won": false
+        },
+        {
+          "title": "Poprawa bezpieczeństwa na przejściach dla pieszych przy ul. Świętokrzyskiej – dodatkowe ośw. LED i przystosowanie chodników dla osób niepełnosprawnych",
+          "cost": 85000.0,
+          "votes": 1318,
+          "won": false
+        },
+        {
+          "title": "MONITORING PRZY ZBIORNIKU AUGUSTOWSKA CZĘŚĆ 2",
+          "cost": 40000.0,
+          "votes": 969,
+          "won": false
+        },
+        {
+          "title": "Budowa schodów terenowych na skarpie od ul. Dywizji Wołyńskiej i ścieżki pieszej do pętli tramwajowo-autobusowej",
+          "cost": 214000.0,
+          "votes": 763,
+          "won": false
+        },
+        {
+          "title": "ŚWIĄTECZNA CHOINKA Z ILUMINACJĄ ŚWIETLNĄ PRZY NOWYM BOISKU I PLACU ZABAW W OKOLICY ZBIORNIKA AUGUSTOWSKA",
+          "cost": 37000.0,
+          "votes": 613,
+          "won": false
+        },
+        {
+          "title": "BUDOWA SCHODÓW NA SKARPIE – PRZEDEPCIE PRZY KOŃCOWYM ODCINKU ŚCIEŻKI PIESZO-ROWEROWEJ OBOK ZBIORNIKA AUGUSTOWSKA",
+          "cost": 47500.0,
+          "votes": 594,
+          "won": false
+        },
+        {
+          "title": "KWIETNIKI Z ROŚLINAMI OZDOBNYMI W DWÓCH LOKALIZACJACH PRZY ZBIORNIKU AUGUSTOWSKA",
+          "cost": 45000.0,
+          "votes": 390,
+          "won": false
+        },
+        {
+          "title": "Rodzinna Gra Terenowa Gdańsk Południe – zabawa z mapą",
+          "cost": 6200.0,
+          "votes": 219,
+          "won": true
+        },
+        {
+          "title": "Aktywny spacer z wózkami",
+          "cost": 5562.0,
+          "votes": 188,
+          "won": true
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Park Przemian etap II",
+          "cost": 122900.0,
+          "votes": 1428,
+          "won": true
+        },
+        {
+          "title": "Zadrzewiona ścieżka do Parku Oruńskiego – nasadzenie szpaleru drzew i krzewów oraz wykonanie małej architektury wzdłuż nowo wybudowanej ścieżki",
+          "cost": 122992.0,
+          "votes": 1193,
+          "won": false
+        },
+        {
+          "title": "Budki dla ptaków i owadów",
+          "cost": 4500.0,
+          "votes": 553,
+          "won": false
+        },
+        {
+          "title": "Kwietna łąka na Oruni Górnej ul. Hoene / Platynowa – kontynuacja",
+          "cost": 15300.0,
+          "votes": 426,
+          "won": false
+        }
+      ]
+    },
+    "Orunia-Św. Wojciech-Lipce": {
+      "budget_bo": 394641.0,
+      "budget_zbo": 93847.0,
+      "carryover_bo": 0.0,
+      "carryover_zbo": 61847.0,
+      "projects_bo": [
+        {
+          "title": "ORUŃSKIE CENTRUM SPORTU I REKREACJI",
+          "cost": 394641.0,
+          "votes": 1702,
+          "won": true
+        },
+        {
+          "title": "Inteligentne przejścia dla pieszych Lipce, Św. Wojciech",
+          "cost": 394641.0,
+          "votes": 1689,
+          "won": false
+        },
+        {
+          "title": "Kuta ławka ku czci Profesora Jerzego Sampa",
+          "cost": 55000.0,
+          "votes": 577,
+          "won": false
+        },
+        {
+          "title": "Remont chodnika przy ul. Żuławskiej",
+          "cost": 70000.0,
+          "votes": 518,
+          "won": false
+        },
+        {
+          "title": "REWOLUCJE PODWÓRKOWE + CHODNIK Z OŚWIETLENIEM",
+          "cost": 84641.0,
+          "votes": 463,
+          "won": false
+        },
+        {
+          "title": "Rodzinna Gra Terenowa Park Oruński – zabawa z mapą",
+          "cost": 6200.0,
+          "votes": 259,
+          "won": false
+        },
+        {
+          "title": "Nowy chodnik",
+          "cost": 15000.0,
+          "votes": 174,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Domki dla wiewiórek z oruńskiego parku",
+          "cost": 2000.0,
+          "votes": 653,
+          "won": true
+        },
+        {
+          "title": "Ekologiczny zielony parking przy ul. Małomiejskiej",
+          "cost": 93847.0,
+          "votes": 441,
+          "won": false
+        },
+        {
+          "title": "Innowacyjne „zielone” wyspy spowalniające ruch i poprawiające bezpieczeństwo na ulicy Żuławskiej",
+          "cost": 30000.0,
+          "votes": 226,
+          "won": true
+        },
+        {
+          "title": "PARK KIESZONKOWY przy Małomiejskiej",
+          "cost": 93847.0,
+          "votes": 211,
+          "won": false
+        }
+      ]
+    },
+    "Osowa": {
+      "budget_bo": 416432.0,
+      "budget_zbo": 103463.0,
+      "carryover_bo": 12432.0,
+      "carryover_zbo": 0.0,
+      "projects_bo": [
+        {
+          "title": "Mobilne boisko Osowa dla Sportu",
+          "cost": 175500.0,
+          "votes": 2667,
+          "won": true
+        },
+        {
+          "title": "Rekreacja pod chmurka przy SP 81",
+          "cost": 286000.0,
+          "votes": 2044,
+          "won": false
+        },
+        {
+          "title": "Pobocze / Droga rowerowa na ul. Galaktycznej",
+          "cost": 400000.0,
+          "votes": 1517,
+          "won": false
+        },
+        {
+          "title": "Jesteśmy po - tężni – budowa tężni solnej",
+          "cost": 370000.0,
+          "votes": 1468,
+          "won": false
+        },
+        {
+          "title": "Zieleniec przy ulicy Parterowej – ostatni etap (plac zabaw, siłownia zewnętrzna, mała architektura, oświetlenie parkowe, ogrodzenie)",
+          "cost": 400000.0,
+          "votes": 790,
+          "won": false
+        },
+        {
+          "title": "Remont chodnika przy ul. Biwakowej",
+          "cost": 323000.0,
+          "votes": 715,
+          "won": false
+        },
+        {
+          "title": "Bezpieczny i wygodny dostęp do parku przy Bliźniąt",
+          "cost": 141000.0,
+          "votes": 657,
+          "won": true
+        },
+        {
+          "title": "Budki lęgowe dla ptaków Osowa",
+          "cost": 18500.0,
+          "votes": 651,
+          "won": true
+        },
+        {
+          "title": "UsiądźMY WYgodnie",
+          "cost": 16000.0,
+          "votes": 421,
+          "won": true
+        },
+        {
+          "title": "Altanki na Osowej",
+          "cost": 40000.0,
+          "votes": 383,
+          "won": true
+        },
+        {
+          "title": "Bulodrom",
+          "cost": 40000.0,
+          "votes": 286,
+          "won": false
+        },
+        {
+          "title": "„Stacje naprawy i czyszczenia rowerów, deskorolek i wózków przy Parkach Diany i Chirona”",
+          "cost": 13000.0,
+          "votes": 272,
+          "won": true
+        },
+        {
+          "title": "Rodzinna Gra Terenowa Osowa – zabawa z mapą",
+          "cost": 6200.0,
+          "votes": 96,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Jednorożca – zielona odNOWA!",
+          "cost": 52463.0,
+          "votes": 1440,
+          "won": true
+        },
+        {
+          "title": "Zielona Parterowa!",
+          "cost": 51000.0,
+          "votes": 399,
+          "won": true
+        },
+        {
+          "title": "Zielona Komandorska",
+          "cost": 51000.0,
+          "votes": 378,
+          "won": false
+        }
+      ]
+    },
+    "Piecki-Migowo": {
+      "budget_bo": 579229.0,
+      "budget_zbo": 144807.0,
+      "carryover_bo": 0.0,
+      "carryover_zbo": 0.0,
+      "projects_bo": [
+        {
+          "title": "Zielone serce dzielnicy Piecki-Migowo – Park Morena- Rakoczego. Ogólnodostępny Park pomiędzy Galerią Morena, Lidlem oraz Kościołem Bożego Ciała",
+          "cost": 579229.0,
+          "votes": 7136,
+          "won": true
+        },
+        {
+          "title": "Park Uphagenów – nowa przestrzeń dla mieszkańców w centrum dzielnicy",
+          "cost": 579229.0,
+          "votes": 2885,
+          "won": false
+        },
+        {
+          "title": "EKO-ścieżka pieszo-rowerowa do SP 85 i Przedszkola 82, czyli dogodne przejście miedzy dzielnicami Piecki-Migowo i Jasień. Etap I",
+          "cost": 472000.0,
+          "votes": 2882,
+          "won": false
+        },
+        {
+          "title": "Domki dla pożytecznych owadów",
+          "cost": 3000.0,
+          "votes": 1053,
+          "won": false
+        },
+        {
+          "title": "Wspólna Myśliwska – porozmawiajmy o przyszłości",
+          "cost": 9000.0,
+          "votes": 586,
+          "won": false
+        },
+        {
+          "title": "Modernizacja placu zabaw przy ulicy Wileńskiej",
+          "cost": 300000.0,
+          "votes": 527,
+          "won": false
+        },
+        {
+          "title": "Naprawa chodnika i budowa parkingu przy Przedszkolu nr 74 przy ulicy Ferdynanda Magellana 3",
+          "cost": 150000.0,
+          "votes": 527,
+          "won": false
+        },
+        {
+          "title": "Bezpieczne schody na Hausbrandta",
+          "cost": 45000.0,
+          "votes": 473,
+          "won": false
+        },
+        {
+          "title": "Oświetlenie ul. prof. S. Hausbrandta – odcinek od ul. Myśliwskiej",
+          "cost": 115000.0,
+          "votes": 402,
+          "won": false
+        },
+        {
+          "title": "Rodzinna Gra Terenowa Piecki-Migowo – zabawa z mapą",
+          "cost": 6200.0,
+          "votes": 311,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "PARK UPHAGENÓW – ZIELONE CENTRUM DZIELNICY – miejsce wypoczynku i aktywizacji seniorów w rejonie ul. Piecewskiej przy stacji BP i Przychodni",
+          "cost": 144807.0,
+          "votes": 943,
+          "won": true
+        },
+        {
+          "title": "Zielona Myśliwska",
+          "cost": 80000.0,
+          "votes": 939,
+          "won": false
+        },
+        {
+          "title": "Ogólnodostępny teren rekreacyjny przy Stawie Piekarnicza – etap III",
+          "cost": 144807.0,
+          "votes": 922,
+          "won": false
+        },
+        {
+          "title": "Ulica Piekarnicza – zieloną, pachnącą aleją (etap I)",
+          "cost": 100000.0,
+          "votes": 547,
+          "won": false
+        },
+        {
+          "title": "Strefa izolacyjna od ruchu samochodowego i poprawiająca estetykę terenu",
+          "cost": 20000.0,
+          "votes": 291,
+          "won": false
+        }
+      ]
+    },
+    "Przeróbka": {
+      "budget_bo": 235921.0,
+      "budget_zbo": 58980.0,
+      "carryover_bo": 0.0,
+      "carryover_zbo": 0.0,
+      "projects_bo": [
+        {
+          "title": "Skatepark miejsce do spędzania aktywnie wolnego czasu młodzieży",
+          "cost": 235921.0,
+          "votes": 572,
+          "won": true
+        },
+        {
+          "title": "Budowa dwutorowej bieżni lekkoatletycznej do biegu na 60 m zakończonej skocznią w dal oraz placu do gier podwórkowych",
+          "cost": 200000.0,
+          "votes": 511,
+          "won": false
+        },
+        {
+          "title": "Remont ul. Karola Dickensa",
+          "cost": 235921.0,
+          "votes": 330,
+          "won": false
+        },
+        {
+          "title": "Rodzinna Gra Terenowa Przeróbka – zabawa z mapą",
+          "cost": 6200.0,
+          "votes": 46,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Naturalny plac zabaw i rozbudowa Bajkowych sąsiedzkich ogrodów",
+          "cost": 58980.0,
+          "votes": 221,
+          "won": true
+        },
+        {
+          "title": "Zielona Przetoczna",
+          "cost": 58000.0,
+          "votes": 67,
+          "won": false
+        }
+      ]
+    },
+    "Przymorze Małe": {
+      "budget_bo": 399383.0,
+      "budget_zbo": 99846.0,
+      "carryover_bo": 0.0,
+      "carryover_zbo": 0.0,
+      "projects_bo": [
+        {
+          "title": "Park na Przymorzu Małym! Dokończenie budowy Parku przy Potoku Oliwskim – zielone miejsce dla wszystkich (rodzin, seniorów, dzieci i właścicieli psów)!",
+          "cost": 399383.0,
+          "votes": 1397,
+          "won": true
+        },
+        {
+          "title": "OGRODY DOŚWIADCZEŃ – NAUKA, ZABAWA, AKTYWNOŚĆ WIELOZMYSŁOWA NA PRZYMORZY MAŁYM W GDAŃSKU",
+          "cost": 340000.0,
+          "votes": 1319,
+          "won": false
+        },
+        {
+          "title": "Remont chodników wzdłuż ulicy Śląskiej na odcinku od ul. Krynickiej do ul. Chłopskiej",
+          "cost": 386400.0,
+          "votes": 1226,
+          "won": false
+        },
+        {
+          "title": "Remont chodników na Przymorzu Małym",
+          "cost": 399383.0,
+          "votes": 1114,
+          "won": false
+        },
+        {
+          "title": "Wymiana chodnika w ciągu ul. Bora Komorowskiego po północnej stronie – etap I",
+          "cost": 399383.0,
+          "votes": 808,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Kolorowe Przymorze Małe – Łąki Kwietne",
+          "cost": 99846.0,
+          "votes": 776,
+          "won": true
+        },
+        {
+          "title": "Nasadzenia na zaniedbanej wyspie przy skrzyżowaniu Bora Komorowskiego i Chłopskiej",
+          "cost": 75000.0,
+          "votes": 442,
+          "won": false
+        },
+        {
+          "title": "Rewitalizacja zieleńca przy ul. Bora-Komorowskiego",
+          "cost": 49750.0,
+          "votes": 264,
+          "won": false
+        }
+      ]
+    },
+    "Przymorze Wielkie": {
+      "budget_bo": 596510.0,
+      "budget_zbo": 171531.0,
+      "carryover_bo": 10510.0,
+      "carryover_zbo": 67531.0,
+      "projects_bo": [
+        {
+          "title": "Stoły piknikowe w Parku Reagana",
+          "cost": 125000.0,
+          "votes": 973,
+          "won": true
+        },
+        {
+          "title": "Drugi odcinek oświetlenia spacerowej Alei Brzozowej w Parku Nadmorskim im.Ronalda Reagana, plus nowe ławki Etap 2",
+          "cost": 172000.0,
+          "votes": 963,
+          "won": true
+        },
+        {
+          "title": "Ninja Warrior & Multiring – konstrukcja",
+          "cost": 64000.0,
+          "votes": 944,
+          "won": true
+        },
+        {
+          "title": "Zmiana organizacji ruchu na skrzyżowaniu Obrońców Wybrzeża / Chłopska",
+          "cost": 25000.0,
+          "votes": 839,
+          "won": true
+        },
+        {
+          "title": "Bezpieczna ul. L.Kaczyńskiego_remont i doświetlenie czterech przejść dla pieszych",
+          "cost": 224000.0,
+          "votes": 692,
+          "won": false
+        },
+        {
+          "title": "Bezpieczna ulica – bezpieczna dzielnica. Doświetlenie przejść dla pieszych na Przymorzu Wielkim etap I",
+          "cost": 265000.0,
+          "votes": 690,
+          "won": false
+        },
+        {
+          "title": "Wybieg na górce",
+          "cost": 90000.0,
+          "votes": 677,
+          "won": true
+        },
+        {
+          "title": "Osiedle dla pożytecznych owadów",
+          "cost": 7000.0,
+          "votes": 562,
+          "won": true
+        },
+        {
+          "title": "Ptasie Osiedle",
+          "cost": 33000.0,
+          "votes": 537,
+          "won": true
+        },
+        {
+          "title": "Bezpieczna Olsztyńska – instalacja wyniesionych przejść i wyraźnego oznakowania poziomego",
+          "cost": 150000.0,
+          "votes": 458,
+          "won": false
+        },
+        {
+          "title": "PLAC ĆWICZEŃ STREET WORKOUT",
+          "cost": 70000.0,
+          "votes": 393,
+          "won": true
+        },
+        {
+          "title": "METAMORFOZA STOŁÓW PING-PONGOWYCH I NAWIERZCHNI W PARKU REGANA",
+          "cost": 38000.0,
+          "votes": 362,
+          "won": false
+        },
+        {
+          "title": "Pole do discgolfa w Parku Reagana",
+          "cost": 107000.0,
+          "votes": 202,
+          "won": false
+        },
+        {
+          "title": "Rodzinna Gra Terenowa Przymorze Wielkie – zabawa z mapą",
+          "cost": 6200.0,
+          "votes": 70,
+          "won": false
+        },
+        {
+          "title": "Oflagowana ulica Obrońców Wybrzeża",
+          "cost": 19300.0,
+          "votes": 66,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Kwitnąca ulica Kołobrzeska na Przymorzu Wielkim",
+          "cost": 104000.0,
+          "votes": 1166,
+          "won": true
+        }
+      ]
+    },
+    "Rudniki": {
+      "budget_bo": 374641.0,
+      "budget_zbo": 49660.0,
+      "carryover_bo": 0.0,
+      "carryover_zbo": 0.0,
+      "projects_bo": [
+        {
+          "title": "„Sportowo w zielonej dzielnicy Gdańska” cz.V",
+          "cost": 374641.0,
+          "votes": 789,
+          "won": true
+        },
+        {
+          "title": "Sterylizacja bezpańskich kotów – Rudniki",
+          "cost": 30000.0,
+          "votes": 733,
+          "won": false
+        },
+        {
+          "title": "Budowa placu zabaw",
+          "cost": 374641.0,
+          "votes": 383,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Rewitalizacja placu na Gdańskiego Kolejarza – etap II",
+          "cost": 49660.0,
+          "votes": 126,
+          "won": true
+        }
+      ]
+    },
+    "Siedlce": {
+      "budget_bo": 361457.0,
+      "budget_zbo": 168864.0,
+      "carryover_bo": 12957.0,
+      "carryover_zbo": 1534.0,
+      "projects_bo": [
+        {
+          "title": "Rozbudowa Centrum Rekreacyjno-Krajobrazowego „Winna Góra” w ramach Projektu GDAŃSKIE SZLAKI KRAJOBRAZOWE",
+          "cost": 120000.0,
+          "votes": 1576,
+          "won": true
+        },
+        {
+          "title": "„Psi relaks” – wybieg dla psów na ul. Wieniawskiego",
+          "cost": 149000.0,
+          "votes": 975,
+          "won": true
+        },
+        {
+          "title": "Rewitalizacja Zieleńca przy ul. Wyczółkowskiego",
+          "cost": 130000.0,
+          "votes": 764,
+          "won": false
+        },
+        {
+          "title": "Budki lęgowe dla ptaków Siedlce",
+          "cost": 18500.0,
+          "votes": 682,
+          "won": true
+        },
+        {
+          "title": "Pole do disc golfa w Parku Na Zboczu",
+          "cost": 61000.0,
+          "votes": 291,
+          "won": true
+        },
+        {
+          "title": "Rodzinna Gra Terenowa Siedlce – zabawa z mapą",
+          "cost": 6200.0,
+          "votes": 184,
+          "won": true
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Ogród Deszczowy w parku przy ulicach Ciasnej, Kartuskiej i Malczewskiego",
+          "cost": 157830.0,
+          "votes": 235,
+          "won": true
+        },
+        {
+          "title": "Park Siedlce Pięknieje",
+          "cost": 15000.0,
+          "votes": 228,
+          "won": false
+        },
+        {
+          "title": "Zielone torowisko tramwajowe – roślinny dywan na ul. Kartuskiej",
+          "cost": 168864.0,
+          "votes": 202,
+          "won": false
+        },
+        {
+          "title": "Winna Góra, tradycja zielonego miejsca rekreacyjno-krajobrazowego dla mieszkańców",
+          "cost": 70000.0,
+          "votes": 198,
+          "won": false
+        },
+        {
+          "title": "Zagospodarowanie Parku Emaus przy ul. Starodworskiej i Paderewskiego",
+          "cost": 70000.0,
+          "votes": 173,
+          "won": false
+        },
+        {
+          "title": "Ukwiecamy zieleniec przy schodach łączących Siedlce z Suchaninem",
+          "cost": 9500.0,
+          "votes": 120,
+          "won": true
+        },
+        {
+          "title": "Przystanek autobusowy HEVELIANUM – niech wokół będzie pięknie!",
+          "cost": 20000.0,
+          "votes": 47,
+          "won": false
+        }
+      ]
+    },
+    "Stogi": {
+      "budget_bo": 327047.0,
+      "budget_zbo": 157717.0,
+      "carryover_bo": 3262.0,
+      "carryover_zbo": 0.0,
+      "projects_bo": [
+        {
+          "title": "Naturalny plac zabaw, przestrzeń do wypoczynku na Stogach",
+          "cost": 323785.0,
+          "votes": 2880,
+          "won": true
+        },
+        {
+          "title": "Boisko szkolne dzielnicowym centrum sportu i rekreacji",
+          "cost": 180000.0,
+          "votes": 1874,
+          "won": false
+        },
+        {
+          "title": "Stworzenie i wyznaczenie miejsc postojowych z pasem dojazdowym placu przy ul.W. Stryjewskiego 9 i 11",
+          "cost": 150000.0,
+          "votes": 578,
+          "won": false
+        },
+        {
+          "title": "Poprawa bezpieczeństwa na drodze",
+          "cost": 10000.0,
+          "votes": 345,
+          "won": false
+        },
+        {
+          "title": "Rodzinna Gra Terenowa Stogi – zabawa z mapą",
+          "cost": 6200.0,
+          "votes": 158,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Pusty Staw Stogi – sport, rekreacja, wypoczynek",
+          "cost": 157717.0,
+          "votes": 517,
+          "won": true
+        },
+        {
+          "title": "Zielone Stogi",
+          "cost": 157717.0,
+          "votes": 355,
+          "won": false
+        },
+        {
+          "title": "Egzotyczny, zdrowy zakątek",
+          "cost": 157717.0,
+          "votes": 228,
+          "won": false
+        },
+        {
+          "title": "Park kieszonkowy „ZIMNA”",
+          "cost": 157717.0,
+          "votes": 205,
+          "won": false
+        }
+      ]
+    },
+    "Strzyża": {
+      "budget_bo": 256945.0,
+      "budget_zbo": 64236.0,
+      "carryover_bo": 0.0,
+      "carryover_zbo": 0.0,
+      "projects_bo": [
+        {
+          "title": "Przyjazna i Aktywna STRZYŻA",
+          "cost": 256945.0,
+          "votes": 1068,
+          "won": true
+        },
+        {
+          "title": "Remont ulicy Chopina – etap I",
+          "cost": 256945.0,
+          "votes": 988,
+          "won": false
+        },
+        {
+          "title": "Przystanek Relaks 3",
+          "cost": 256945.0,
+          "votes": 506,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "ZIELONA Strzyża",
+          "cost": 64236.0,
+          "votes": 257,
+          "won": true
+        },
+        {
+          "title": "Szpalery drzew i nasadzenia wysokich krzewów wzdłuż al. Grunwaldzkiej",
+          "cost": 64000.0,
+          "votes": 227,
+          "won": false
+        },
+        {
+          "title": "Zielony Przystanek Relaks, Tajemniczy Ogród cz. 2",
+          "cost": 64236.0,
+          "votes": 132,
+          "won": false
+        }
+      ]
+    },
+    "Suchanino": {
+      "budget_bo": 334819.0,
+      "budget_zbo": 81805.0,
+      "carryover_bo": 31819.0,
+      "carryover_zbo": 31805.0,
+      "projects_bo": [
+        {
+          "title": "Oświetlenie przejścia dla pieszych przy ul. Bethoveena 21",
+          "cost": 28000.0,
+          "votes": 730,
+          "won": true
+        },
+        {
+          "title": "Zbiornik Wileńska – brakujące oświetlenie",
+          "cost": 115000.0,
+          "votes": 722,
+          "won": true
+        },
+        {
+          "title": "Wybieg dla psów – wymiana nawierzchni i nowe przeszkody",
+          "cost": 54000.0,
+          "votes": 689,
+          "won": true
+        },
+        {
+          "title": "Statek nad Stawem, doposażenie placu zabaw przy Stawie Wileńska",
+          "cost": 60000.0,
+          "votes": 644,
+          "won": true
+        },
+        {
+          "title": "Ogólnodostępna i całoroczna strefa Teqball na Suchaninie",
+          "cost": 283000.0,
+          "votes": 504,
+          "won": false
+        },
+        {
+          "title": "Oświetlenie ul. Taborowej (odcinek pomiędzy ul. Taborową 4, a ul. Wyczółkowskiego",
+          "cost": 46000.0,
+          "votes": 503,
+          "won": true
+        },
+        {
+          "title": "Szpaler drzew w górnej części ulicy Z. Noskowskiego",
+          "cost": 34900.0,
+          "votes": 379,
+          "won": false
+        },
+        {
+          "title": "Aleja Spacerowa Staw Wileńska",
+          "cost": 327221.0,
+          "votes": 357,
+          "won": false
+        },
+        {
+          "title": "Miejsca do parkowania rowerów na Suchaninie",
+          "cost": 50000.0,
+          "votes": 194,
+          "won": false
+        },
+        {
+          "title": "Rodzinna Gra Terenowa Suchanino – zabawa z mapą",
+          "cost": 6200.0,
+          "votes": 168,
+          "won": true
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Zagospodarowanie działki miejskiej w siedlisku na Cygańskiej Górze 3D",
+          "cost": 50000.0,
+          "votes": 615,
+          "won": true
+        }
+      ]
+    },
+    "Śródmieście": {
+      "budget_bo": 536207.0,
+      "budget_zbo": 133966.0,
+      "carryover_bo": 27207.0,
+      "carryover_zbo": 0.0,
+      "projects_bo": [
+        {
+          "title": "Plac kalisteniczny (street workout) – rozbudowa infratruktury sportowo-rekreacyjnej przy Zespole Szkół Ogólnokształcących nr 6 w Gdańsku. Etap 2",
+          "cost": 124000.0,
+          "votes": 1191,
+          "won": true
+        },
+        {
+          "title": "ETAP II – Zielona Aleja na Wyspie Spichrzów",
+          "cost": 150000.0,
+          "votes": 1116,
+          "won": true
+        },
+        {
+          "title": "Oświetlenie parku na Biskupiej Górce",
+          "cost": 165000.0,
+          "votes": 982,
+          "won": true
+        },
+        {
+          "title": "Plac zabaw dla dzieci przy ul Reduta Dzik opływ Motławy",
+          "cost": 60000.0,
+          "votes": 915,
+          "won": true
+        },
+        {
+          "title": "Zagospodarowanie skweru ul. Chmielna – Toruńska",
+          "cost": 150000.0,
+          "votes": 877,
+          "won": false
+        },
+        {
+          "title": "Uzupełnienie brakującego fragmentu bulwaru wzdłuż Motławy przy ul. Wiosny Ludów",
+          "cost": 50000.0,
+          "votes": 866,
+          "won": false
+        },
+        {
+          "title": "Fontanna upiększeniem. Wybieg dla psów niezbędny w Parku Siennickim",
+          "cost": 300000.0,
+          "votes": 602,
+          "won": false
+        },
+        {
+          "title": "Źródełko z wodą do picia w Parku Świętej Barbary",
+          "cost": 45000.0,
+          "votes": 544,
+          "won": false
+        },
+        {
+          "title": "Miejska Galeria Kosycarzy – cz. 1",
+          "cost": 10000.0,
+          "votes": 426,
+          "won": true
+        },
+        {
+          "title": "Renowacja muru za pomnikiem Poległych Stoczniowców",
+          "cost": 34000.0,
+          "votes": 98,
+          "won": false
+        },
+        {
+          "title": "Rodzinna Gra Terenowa Śródmieście – zabawa z mapą",
+          "cost": 6200.0,
+          "votes": 64,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Pielęgnacja starodrzewów i nowe nasadzenia przy ulicach Toruńska, Kamienna Grobla",
+          "cost": 133966.0,
+          "votes": 648,
+          "won": true
+        },
+        {
+          "title": "Przyjazny Park Poforteczny",
+          "cost": 125730.0,
+          "votes": 288,
+          "won": false
+        },
+        {
+          "title": "Zielny Kącik",
+          "cost": 25160.0,
+          "votes": 250,
+          "won": false
+        },
+        {
+          "title": "OGRÓD KWIATOWY PRZY SP 57",
+          "cost": 100000.0,
+          "votes": 222,
+          "won": false
+        }
+      ]
+    },
+    "Ujeścisko-Łostowice": {
+      "budget_bo": 589770.0,
+      "budget_zbo": 147973.0,
+      "carryover_bo": 0.0,
+      "carryover_zbo": 7973.0,
+      "projects_bo": [
+        {
+          "title": "ROWEROWY RAJ dla mieszkańców: os. Pięć Wzgórz / os. Miłe",
+          "cost": 589770.0,
+          "votes": 3962,
+          "won": true
+        },
+        {
+          "title": "Rozbudowa placu zabaw na Kozaczej Górze",
+          "cost": 130000.0,
+          "votes": 3205,
+          "won": false
+        },
+        {
+          "title": "Park Niepołomicka X Przebiśniegowa – Nasz Starodrzew",
+          "cost": 60000.0,
+          "votes": 1495,
+          "won": false
+        },
+        {
+          "title": "ZABORNIA SPORT ARENA",
+          "cost": 582000.0,
+          "votes": 1397,
+          "won": false
+        },
+        {
+          "title": "Parkour – przestrzeń rekreacyjna przy SP nr 12 Człuchowska",
+          "cost": 94000.0,
+          "votes": 1187,
+          "won": false
+        },
+        {
+          "title": "Chodnik – bezpieczne dojście do przychodni, terenów rekreacji, sklepów i komunikacji",
+          "cost": 202500.0,
+          "votes": 1097,
+          "won": false
+        },
+        {
+          "title": "Poprawa bezpieczeństwa na przejściach dla pieszych (ul. PIOTRKOWSKA)",
+          "cost": 75000.0,
+          "votes": 900,
+          "won": false
+        },
+        {
+          "title": "Ratujmy zabytek sztuki cmentarnej – nagrobek nr 55",
+          "cost": 35202.0,
+          "votes": 894,
+          "won": false
+        },
+        {
+          "title": "HYDROFUN, czyli ścieżka zdrowej wody. Miejsce spotkań dla każdego mieszkańca!",
+          "cost": 589770.0,
+          "votes": 665,
+          "won": false
+        },
+        {
+          "title": "Miejsca postojowe ul. Przemyska cz. II",
+          "cost": 35000.0,
+          "votes": 638,
+          "won": false
+        },
+        {
+          "title": "Morena Park",
+          "cost": 280000.0,
+          "votes": 552,
+          "won": false
+        },
+        {
+          "title": "Magnoliowa aleja nad Zbiornikiem Retencyjnym „Łabędzia”",
+          "cost": 8500.0,
+          "votes": 551,
+          "won": false
+        },
+        {
+          "title": "Budowa dodatkowego ośw. LED na ul. Wielkopolskiej / ul. Przebiśniegowej – poprawa bezpieczeństwa dzieci na przejściu dla pieszych",
+          "cost": 40000.0,
+          "votes": 501,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "ZIELONY PARK os. Pięć Wzgórz i os. Miłe",
+          "cost": 138000.0,
+          "votes": 1443,
+          "won": true
+        },
+        {
+          "title": "OGRODZENIE cmentarza – bukszpanowy ŻYWOPŁOT",
+          "cost": 2000.0,
+          "votes": 576,
+          "won": true
+        },
+        {
+          "title": "Skwer Przebiśniegowa / Niepołomicka ETAP II wraz z zagospodarowaniem zbiornika retencyjnego",
+          "cost": 79000.0,
+          "votes": 550,
+          "won": false
+        },
+        {
+          "title": "Ekologiczna wiata przystankowa na przystanku Jeleniogórska",
+          "cost": 100000.0,
+          "votes": 457,
+          "won": false
+        }
+      ]
+    },
+    "VII Dwór": {
+      "budget_bo": 229570.0,
+      "budget_zbo": 83063.0,
+      "carryover_bo": 0.0,
+      "carryover_zbo": 43063.0,
+      "projects_bo": [
+        {
+          "title": "Plac Rekreacyjny za mieszkańców w ramach zagospodarowania Strefy Buforowej – Zadanie 1",
+          "cost": 229570.0,
+          "votes": 494,
+          "won": true
+        },
+        {
+          "title": "Budki lęgowe dla ptaków VII Dwór",
+          "cost": 18500.0,
+          "votes": 409,
+          "won": false
+        },
+        {
+          "title": "Tymczasowe schody do lasu przy PKM",
+          "cost": 20000.0,
+          "votes": 316,
+          "won": false
+        },
+        {
+          "title": "Pole do disc golfa w Dolinie Zielonej",
+          "cost": 107000.0,
+          "votes": 87,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Nasadzenia drzew",
+          "cost": 40000.0,
+          "votes": 250,
+          "won": true
+        }
+      ]
+    },
+    "Wrzeszcz Dolny": {
+      "budget_bo": 508762.0,
+      "budget_zbo": 126042.0,
+      "carryover_bo": 145262.0,
+      "carryover_zbo": 42.0,
+      "projects_bo": [
+        {
+          "title": "Monitoring – Bezpieczeństwo Mieszkańców Wrzeszcza Dolnego",
+          "cost": 345000.0,
+          "votes": 1527,
+          "won": true
+        },
+        {
+          "title": "Street workout",
+          "cost": 508726.0,
+          "votes": 1387,
+          "won": false
+        },
+        {
+          "title": "Skatepark dla Wrzeszcza z koszem do gry w streetball w Parku nad Strzyżą",
+          "cost": 508762.0,
+          "votes": 1354,
+          "won": false
+        },
+        {
+          "title": "ZIELENIEC SĄĄSIEDZKI PRZY UL. HALLERA, POMIĘDZY UL. OKRZEI I REJA etap I",
+          "cost": 508680.0,
+          "votes": 1131,
+          "won": false
+        },
+        {
+          "title": "Modernizacja placu zabaw w Parku nad Strzyżą",
+          "cost": 170000.0,
+          "votes": 1114,
+          "won": false
+        },
+        {
+          "title": "Budki lęgowe dla ptaków Wrzeszcz Dolny",
+          "cost": 18500.0,
+          "votes": 1057,
+          "won": true
+        },
+        {
+          "title": "Remont ul. Manifestu Połanieckiego",
+          "cost": 500000.0,
+          "votes": 760,
+          "won": false
+        },
+        {
+          "title": "Rodzinna Gra Terenowa Wrzeszcz Dolny – zabawa z mapą",
+          "cost": 6200.0,
+          "votes": 89,
+          "won": false
+        },
+        {
+          "title": "Seria spotkań, debat i wykładów „Cywilizacja Łacińska – nasz fundament”",
+          "cost": 10500.0,
+          "votes": 31,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Parkowy zakątek",
+          "cost": 126000.0,
+          "votes": 536,
+          "won": true
+        },
+        {
+          "title": "Zielone Podwórze – park osiedlowy na tyłach ul. Mickiewicza, Chrobrego i Zbyszka z Bogdańca cz. 1",
+          "cost": 126000.0,
+          "votes": 463,
+          "won": false
+        },
+        {
+          "title": "ZIELENIEC SĄSIEDZKI – NASADZENIA",
+          "cost": 101000.0,
+          "votes": 456,
+          "won": false
+        }
+      ]
+    },
+    "Wrzeszcz Górny": {
+      "budget_bo": 5886.0,
+      "budget_zbo": 123355.0,
+      "carryover_bo": 5886.0,
+      "carryover_zbo": 355.0,
+      "projects_bo": [
+        {
+          "title": "WIELKI FINAŁ – Sobótkowa Polana – Leśny plac zabaw, strefa relaksu i tańca na wolnym powietrzu. Miejsce spotkań. Etap III (ostatni)",
+          "cost": 490000.0,
+          "votes": 1934,
+          "won": false
+        },
+        {
+          "title": "EkoGraMy – nowa przestrzeń rekreacyjno-ekologiczna dla Górnego Wrzeszcza, jako miejsce do regeneracji sił po pandemii",
+          "cost": 160000.0,
+          "votes": 1718,
+          "won": false
+        },
+        {
+          "title": "Renowacja zabytkowego tarasu przy dawnej kawiarni Morskiej",
+          "cost": 320000.0,
+          "votes": 982,
+          "won": false
+        },
+        {
+          "title": "Budki lęgowe dla ptaków Wrzeszcz Górny",
+          "cost": 18500.0,
+          "votes": 851,
+          "won": false
+        },
+        {
+          "title": "Jaśkowy Zakatek II – grota i leśny ogród Oskara Kona",
+          "cost": 100000.0,
+          "votes": 698,
+          "won": false
+        },
+        {
+          "title": "Muzyczna altana w Parku de Gaulle’a",
+          "cost": 125000.0,
+          "votes": 696,
+          "won": false
+        },
+        {
+          "title": "Rekreacja i sport w Conradinum",
+          "cost": 150000.0,
+          "votes": 586,
+          "won": false
+        },
+        {
+          "title": "Ekologiczne wiaty na przystanku autobusowym „Jaśkowa Dolina”",
+          "cost": 200000.0,
+          "votes": 573,
+          "won": false
+        },
+        {
+          "title": "Ławki wzdłuż Grunwaldzkiej",
+          "cost": 32000.0,
+          "votes": 429,
+          "won": false
+        },
+        {
+          "title": "Wykonanie dojścia do punktu widokowego w rejonie ul Słowackiego i Arciszewskiego – schody terenowe",
+          "cost": 150000.0,
+          "votes": 424,
+          "won": false
+        },
+        {
+          "title": "Ławki na skwerku przy skrzyżowaniu ul. Do Studzienki i Alei Grunwaldzkiej",
+          "cost": 8000.0,
+          "votes": 202,
+          "won": false
+        },
+        {
+          "title": "Rodzinna Gra Terenowa Wrzeszcz Górny – zabawa z mapą",
+          "cost": 5800.0,
+          "votes": 158,
+          "won": true
+        },
+        {
+          "title": "Wiedza o Okcydencie w Bibliotece Manhattan",
+          "cost": 5000.0,
+          "votes": 48,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Piękne zieleńce we Wrzeszczu",
+          "cost": 123000.0,
+          "votes": 653,
+          "won": true
+        },
+        {
+          "title": "Ogród deszczowy w okolicach Sobótkowej Polany zatrzyma wodę i będzie atrakcją",
+          "cost": 80000.0,
+          "votes": 365,
+          "won": false
+        },
+        {
+          "title": "Łąka kwietna przy dworcu we Wrzeszczu",
+          "cost": 15000.0,
+          "votes": 307,
+          "won": false
+        },
+        {
+          "title": "Nasadzenie drzew na Placu Czerwonych Gitar",
+          "cost": 10000.0,
+          "votes": 230,
+          "won": false
+        },
+        {
+          "title": "RENOWACJA TERENU ZIELONEGO PRZY UL. WSPÓŁCZESNEJ – POLANY PRZY WEJŚCIU DO LASU",
+          "cost": 80000.0,
+          "votes": 177,
+          "won": false
+        },
+        {
+          "title": "Conradinowskie kwiatowe łąąki i mikro-park",
+          "cost": 123355.0,
+          "votes": 129,
+          "won": false
+        }
+      ]
+    },
+    "Wyspa Sobieszewska": {
+      "budget_bo": 228092.0,
+      "budget_zbo": 57023.0,
+      "carryover_bo": 0.0,
+      "carryover_zbo": 57023.0,
+      "projects_bo": [
+        {
+          "title": "Zagospodarowanie terenu i rekreacji i sportu z placem zabaw – część III",
+          "cost": 228092.0,
+          "votes": 1787,
+          "won": true
+        },
+        {
+          "title": "Sterylizacja bezpańskich kotów – ratunek dla mruczków i „Ptasiego Raju”",
+          "cost": 25000.0,
+          "votes": 887,
+          "won": false
+        }
+      ],
+      "projects_zbo": []
+    },
+    "Wzgórze Mickiewicza": {
+      "budget_bo": 215463.0,
+      "budget_zbo": 53866.0,
+      "carryover_bo": 0.0,
+      "carryover_zbo": 0.0,
+      "projects_bo": [
+        {
+          "title": "Park Na Zboczu – oświetlenie lampami LED ciągu pieszego",
+          "cost": 215463.0,
+          "votes": 1449,
+          "won": true
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Nowogródzka – renowacja i modernizacja terenu zielonego",
+          "cost": 53866.0,
+          "votes": 251,
+          "won": true
+        }
+      ]
+    },
+    "Zaspa Młyniec": {
+      "budget_bo": 367369.0,
+      "budget_zbo": 91842.0,
+      "carryover_bo": 7369.0,
+      "carryover_zbo": 0.0,
+      "projects_bo": [
+        {
+          "title": "REKREACYJNA ZASPA – Parkour i plac zabaw na kompleksie sportowym przy SP 92",
+          "cost": 350000.0,
+          "votes": 1886,
+          "won": true
+        },
+        {
+          "title": "Ogród deszczowo-sensoryczny",
+          "cost": 360000.0,
+          "votes": 1285,
+          "won": false
+        },
+        {
+          "title": "Łagodne i bezpieczne przejścia przez ulicę dla rowerów i niepełnosprawnych",
+          "cost": 10000.0,
+          "votes": 699,
+          "won": true
+        },
+        {
+          "title": "Budki lęgowe dla ptaków Zaspa Młyniec",
+          "cost": 18500.0,
+          "votes": 686,
+          "won": false
+        },
+        {
+          "title": "Rodzinna Gra Terenowa Zaspa Młyniec – zabawa z mapą",
+          "cost": 6200.0,
+          "votes": 150,
+          "won": true
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Zielony teren wypoczynku i rekreacji na kompleksie sportowym przy ZSP nr 5 (SP 92)",
+          "cost": 91842.0,
+          "votes": 877,
+          "won": true
+        }
+      ]
+    },
+    "Zaspa Rozstaje": {
+      "budget_bo": 367050.0,
+      "budget_zbo": 91763.0,
+      "carryover_bo": 0.0,
+      "carryover_zbo": 0.0,
+      "projects_bo": [
+        {
+          "title": "III etap – boisko do piłki nożnej ze sztuczną nawierzchnią trawiastą. Budowa nowoczesnego placu zabaw na terenie przedszkola (II etap)",
+          "cost": 367050.0,
+          "votes": 2974,
+          "won": true
+        },
+        {
+          "title": "Deptak wzdłuż ul. Olsztyńskiej / ul. Meissnera – dokończenie projektów z lat ubiegłych",
+          "cost": 367050.0,
+          "votes": 2381,
+          "won": false
+        },
+        {
+          "title": "VELODROM Gdańsk – etap I; Koła, kółka, jedna spółka!",
+          "cost": 360000.0,
+          "votes": 972,
+          "won": false
+        },
+        {
+          "title": "Tyrolka na Zaspie – TWARDY ŻELEK",
+          "cost": 85000.0,
+          "votes": 530,
+          "won": false
+        },
+        {
+          "title": "Budki lęgowe dla ptaków Zaspa Rozstaje",
+          "cost": 18500.0,
+          "votes": 519,
+          "won": false
+        },
+        {
+          "title": "Budowa lewoskrętu z Al. Rzeczypospolitej w ul. Hynka",
+          "cost": 367050.0,
+          "votes": 409,
+          "won": false
+        },
+        {
+          "title": "Pole do discgolfa w Parku Jana Pawła II",
+          "cost": 85000.0,
+          "votes": 333,
+          "won": false
+        },
+        {
+          "title": "Ping-Pong w Parku im. Jana Pawła II",
+          "cost": 50000.0,
+          "votes": 263,
+          "won": false
+        },
+        {
+          "title": "Ruch dla zdrowia – ćwiczenia aktywizujące ciało i umysł w podejściu fizjoterapii biopsychospołecznej wraz z edukacją zdrowotną",
+          "cost": 7140.0,
+          "votes": 235,
+          "won": false
+        },
+        {
+          "title": "Aktywna Dzielnica",
+          "cost": 12500.0,
+          "votes": 83,
+          "won": false
+        },
+        {
+          "title": "Rodzinna Gra Terenowa Zaspa Rozstaje – zabawa z mapą",
+          "cost": 6200.0,
+          "votes": 61,
+          "won": false
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Dokończenie projektu z BO 2017 – wysoka zieleń na placu przy Al. Jana Pawła II / ul. Meissnera",
+          "cost": 91763.0,
+          "votes": 953,
+          "won": true
+        },
+        {
+          "title": "Infrastruktura dla zwierząt w parku im. Jana Pawła II",
+          "cost": 4850.0,
+          "votes": 631,
+          "won": false
+        }
+      ]
+    },
+    "Żabianka-Wejhera-Jelitkowo-Tysiąclecia": {
+      "budget_bo": 407140.0,
+      "budget_zbo": 101785.0,
+      "carryover_bo": 0.0,
+      "carryover_zbo": 995.0,
+      "projects_bo": [
+        {
+          "title": "Plenerowa strefa relaksu i zabawy dla dzieci, dorosłych i seniorów",
+          "cost": 382440.0,
+          "votes": 1225,
+          "won": true
+        },
+        {
+          "title": "Budki lęgowe dla ptaków Żabianka",
+          "cost": 18500.0,
+          "votes": 910,
+          "won": true
+        },
+        {
+          "title": "Rodzinna Gra Terenowa Żabianka-Wejhera-Jelitkowo- Tysiąclecia – zabawa z mapą",
+          "cost": 6200.0,
+          "votes": 200,
+          "won": true
+        }
+      ],
+      "projects_zbo": [
+        {
+          "title": "Aleja drzew wzdłuż ścieżki rowerowej na ulicy Pomorskiej",
+          "cost": 93790.0,
+          "votes": 250,
+          "won": true
+        },
+        {
+          "title": "NOWY ZIELENIEC NA ŻABIANCE Z KWITNĄCYMI ROŚLINAMI, ŁAWKAMI , PSIM PISUAREM, BUDKAMI LĘGOWYMI DLA PTAKÓW I GRAMI CHODNIKOWYMI",
+          "cost": 101785.0,
+          "votes": 248,
+          "won": false
+        },
+        {
+          "title": "Osiedle dla pożytecznych owadów",
+          "cost": 7000.0,
+          "votes": 166,
+          "won": true
+        },
+        {
+          "title": "Brzozy nad Zbiornikiem Orłowska",
+          "cost": 17500.0,
+          "votes": 69,
+          "won": false
+        },
+        {
+          "title": "Zielona Dzielnica",
+          "cost": 50000.0,
+          "votes": 61,
+          "won": false
+        }
+      ]
+    }
+  },
+  "citywide": {
+    "budget_bo": 2781700.0,
+    "budget_zbo": 1512000.0,
+    "carryover_bo": 74700.0,
+    "carryover_zbo": 9000.0,
+    "projects_bo": [
+      {
+        "title": "Pogotowie Dla Zwierząt",
+        "cost": 277000.0,
+        "votes": 4509,
+        "won": true
+      },
+      {
+        "title": "ROWEROWY GÓRNY TARAS GDAŃSKA (Jasień, Kokoszki, Matarnia, Osowa)",
+        "cost": 2000000.0,
+        "votes": 4238,
+        "won": true
+      },
+      {
+        "title": "PARK ORUŃSKI – TĘŻNIA DBAMY O ZDROWIE GDAŃSZCZAN PO PANDEMII",
+        "cost": 850000.0,
+        "votes": 3224,
+        "won": false
+      },
+      {
+        "title": "PSIA STAROŚĆ NIE MUSI BYĆ SMUTNA – BUDOWA DOMU SENIORA W SCHRONISKU DLA BEZDOMNYCH ZWIERZĄT PROMYK",
+        "cost": 1900000.0,
+        "votes": 2917,
+        "won": false
+      },
+      {
+        "title": "Likwidacja pasu zieleni przed skrzyżowaniem Łostowice – Armii Krajowej",
+        "cost": 1600000.0,
+        "votes": 2884,
+        "won": false
+      },
+      {
+        "title": "Doposażenie placów zabaw w Parku im. Reagana",
+        "cost": 350000.0,
+        "votes": 2752,
+        "won": true
+      },
+      {
+        "title": "SPORTOWE BULWARY NAD OPŁYWEM MOTŁAWY – ETAP I",
+        "cost": 1700000.0,
+        "votes": 2093,
+        "won": false
+      },
+      {
+        "title": "ORANGUTANY I SZYMPANSY, czyli nowe, większe wybiegi dla małp człekokształtnych w gdańskim zoo",
+        "cost": 1600000.0,
+        "votes": 1639,
+        "won": false
+      },
+      {
+        "title": "Gdańskie Strefy Malucha",
+        "cost": 1350000.0,
+        "votes": 1634,
+        "won": false
+      },
+      {
+        "title": "Największy skatepark w Gdańsku!",
+        "cost": 2000000.0,
+        "votes": 1433,
+        "won": false
+      },
+      {
+        "title": "ROVELOVE GDAŃSK – DROGA RATUJĄCA ŻYCIE – alternatywny most dla karetek – szeroka ścieżka pieszo-rowerowa IKEA-Wrzeszcz na leśnym odcinku Słowackiego",
+        "cost": 780000.0,
+        "votes": 1235,
+        "won": false
+      },
+      {
+        "title": "Chrońmy Gdańsk przed dzikami i dziki przed Gdańskiem",
+        "cost": 80000.0,
+        "votes": 1091,
+        "won": true
+      },
+      {
+        "title": "Bezpieczni piesi i rowerzyści przy Operze Bałtyckiej",
+        "cost": 640000.0,
+        "votes": 1053,
+        "won": false
+      },
+      {
+        "title": "PARK ORUŃSKI – ŚCIEŻKA PIESZO ROWEROWA WZDŁUŻ POTOKU ORUŃSKIEGO IV ETAP + KŁADKA NAD WAŁEM KANAŁU RADUNI ŁĄCZĄCA Z PRZYSTANKIEM AUTOBUSOWYM",
+        "cost": 1200000.0,
+        "votes": 1008,
+        "won": false
+      },
+      {
+        "title": "Dobre Miejsce",
+        "cost": 177000.0,
+        "votes": 828,
+        "won": false
+      },
+      {
+        "title": "Zwiększenie ilości miejsc postojowych przy stacji Jasień PKM",
+        "cost": 272000.0,
+        "votes": 815,
+        "won": false
+      },
+      {
+        "title": "Poprawa warunków ruchu na skrzyżowaniu al. Armii Krajowej, ul. Łostowickiej i al. Havla – przedłużenie lewoskrętu z AK w stronę Łostowickiej",
+        "cost": 1000000.0,
+        "votes": 814,
+        "won": false
+      },
+      {
+        "title": "JASIEŃ, UJEŚCISKO-ŁOSTOWICE Poprawa komunikacji pieszej – chodnik pod Al. Armii Krajowej (WZ), chodniki do Al. Adamowicza i zbiornika Świętokrzyska II",
+        "cost": 397220.0,
+        "votes": 794,
+        "won": false
+      },
+      {
+        "title": "Park rekreacyjny",
+        "cost": 2000000.0,
+        "votes": 791,
+        "won": false
+      },
+      {
+        "title": "Park Volty przy Stawie Wileńska",
+        "cost": 250000.0,
+        "votes": 726,
+        "won": false
+      },
+      {
+        "title": "REMONT NAWIERZCHNI PŁYTOWEGO ODCINKA ULICY KAMPINOSKIEJ",
+        "cost": 1400000.0,
+        "votes": 717,
+        "won": false
+      },
+      {
+        "title": "GDAŃSK-POŁUDNIE Bezpieczny pieszy – LEDowe przejścia Piotrkowska, Wilanowska, Wawelska, Leszczynowa, Jabłoniowa, Guderskiego, Porębskiego",
+        "cost": 386000.0,
+        "votes": 625,
+        "won": false
+      },
+      {
+        "title": "GRA O PROMYK!",
+        "cost": 288900.0,
+        "votes": 602,
+        "won": false
+      },
+      {
+        "title": "Oświetlenie przy Zbiornikach: Augustowska, Kolorowy, Wielkopolska, Przestrzeni Sportowo-Rekreacyjnej przy Podleckiego ETAP I",
+        "cost": 528000.0,
+        "votes": 580,
+        "won": false
+      },
+      {
+        "title": "Ścieżka Profesora Sampa",
+        "cost": 700000.0,
+        "votes": 514,
+        "won": false
+      },
+      {
+        "title": "Buldering sztuczna skałka wspinaczkowa (1 lub 2) – ogólnodostępna oraz kilkupoziomowy, kompletny zestaw zabawowy „Fregata”",
+        "cost": 603900.0,
+        "votes": 445,
+        "won": false
+      },
+      {
+        "title": "Oddech dla Gdańska – kampania informacyjna o obowiązku likwidacji trujących nas kopciuchów",
+        "cost": 88000.0,
+        "votes": 360,
+        "won": false
+      },
+      {
+        "title": "Upowszechnienie i promocja aplikacji Animal Helper",
+        "cost": 80000.0,
+        "votes": 304,
+        "won": false
+      },
+      {
+        "title": "Laboratorium ruchu – łagodne ćwiczenia dla ciała i umysłu",
+        "cost": 6360.0,
+        "votes": 197,
+        "won": true
+      },
+      {
+        "title": "Cmentarz Komunalny św. Ignacy wejście od Zamiejskiej – chodnik i oświetlenie",
+        "cost": 161500.0,
+        "votes": 178,
+        "won": false
+      },
+      {
+        "title": "Warsztaty jazdy na rolkach dla dzieci, młodzieży i dorosłych",
+        "cost": 23720.0,
+        "votes": 169,
+        "won": true
+      },
+      {
+        "title": "Bezpiecznie do Tęczowej Jedyneczki – remont jezdni oraz chodnika przy Przedszkolu nr 1",
+        "cost": 480000.0,
+        "votes": 143,
+        "won": false
+      },
+      {
+        "title": "Małomiejska wjazd w Nakielską – modernizacja",
+        "cost": 135000.0,
+        "votes": 137,
+        "won": false
+      }
+    ],
+    "projects_zbo": [
+      {
+        "title": "PARK ORUŃSKI – PŁYWAJĄCE ZIELONE WYSPY_OGRODY + FONTANA NA STAWIE",
+        "cost": 210000.0,
+        "votes": 4873,
+        "won": true
+      },
+      {
+        "title": "ZIELONY GÓRNY TARAS GDAŃSKA (Jasień, Kokoszki, Matarnia, Osowa) – 6 zieleńców w 4 dzielnicach – po raz drugi!",
+        "cost": 504000.0,
+        "votes": 4800,
+        "won": true
+      },
+      {
+        "title": "ZIELONY PROMYK",
+        "cost": 100000.0,
+        "votes": 4017,
+        "won": true
+      },
+      {
+        "title": "METALOWE SERCE NA NAKRĘTKI W KAŻDEJ DZIELNICY GDAŃSKA",
+        "cost": 105000.0,
+        "votes": 3535,
+        "won": true
+      },
+      {
+        "title": "Zielona Oliwa – Kompleksowy projekt przywrócenia zadrzewień przy Al. Grunwaldzkiej",
+        "cost": 504000.0,
+        "votes": 3417,
+        "won": true
+      },
+      {
+        "title": "GDAŃSZCZANIE SADZĄ DRZEWA ETAP II",
+        "cost": 70000.0,
+        "votes": 3252,
+        "won": true
+      },
+      {
+        "title": "Uratujmy Wielką Aleję Lipową przed solą - cz. 2",
+        "cost": 250000.0,
+        "votes": 3222,
+        "won": false
+      },
+      {
+        "title": "ZieleniMY Południe",
+        "cost": 140000.0,
+        "votes": 1926,
+        "won": false
+      },
+      {
+        "title": "ZIELONY PRZYSTANEK PRZY OPŁYWIE MOTŁAWY",
+        "cost": 165000.0,
+        "votes": 1794,
+        "won": false
+      },
+      {
+        "title": "Rajskie ogrody na Długich Ogrodach",
+        "cost": 280000.0,
+        "votes": 1642,
+        "won": false
+      },
+      {
+        "title": "OGRODY DESZCZOWE GDAŃSKA – PIĘKNE I POŻYTECZNE",
+        "cost": 299000.0,
+        "votes": 1582,
+        "won": false
+      },
+      {
+        "title": "Park kieszonkowy – Brętowo ul. Słowackiego",
+        "cost": 350000.0,
+        "votes": 1525,
+        "won": false
+      },
+      {
+        "title": "Ogrody deszczowe Podleśna Polana",
+        "cost": 80000.0,
+        "votes": 1233,
+        "won": false
+      },
+      {
+        "title": "Zielone torowisko tramwajowe – kwiecisty dywan na al. Zwycięstwa",
+        "cost": 504000.0,
+        "votes": 1150,
+        "won": false
+      },
+      {
+        "title": "PARK FERBERÓW REWITALIZACJA – REWALORYZACJA",
+        "cost": 500000.0,
+        "votes": 963,
+        "won": false
+      },
+      {
+        "title": "Dzika Fosa Miejska",
+        "cost": 84300.0,
+        "votes": 764,
+        "won": false
+      },
+      {
+        "title": "Zadbajmy o to co już mamy – pielęgnacja młodych drzew",
+        "cost": 129600.0,
+        "votes": 719,
+        "won": false
+      },
+      {
+        "title": "Sad miejski i głogowe zagajniki nad Opływem Motławy",
+        "cost": 275000.0,
+        "votes": 586,
+        "won": false
+      },
+      {
+        "title": "Zostań EKOprojektantem – dbaj z nami o środowisko",
+        "cost": 10000.0,
+        "votes": 112,
+        "won": true
+      }
+    ]
+  }
+}

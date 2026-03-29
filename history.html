@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gdansk BO - Wyniki glosowania 2022-2026</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --red: #f85149;
+    --blue: #58a6ff;
+    --purple: #8957e5;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    padding: 2rem 1rem;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  h1 { font-size: 1.5rem; margin-bottom: 0.3rem; }
+  .subtitle { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem; }
+  h2 {
+    font-size: 1.1rem;
+    margin: 2rem 0 0.6rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-link {
+    display: inline-block;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+  }
+
+  /* Tabs for BO/ZBO */
+  .type-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--border);
+  }
+  .type-tab {
+    padding: 0.5rem 1.2rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.15s, border-color 0.15s;
+    user-select: none;
+  }
+  .type-tab:hover { color: var(--text); }
+  .type-tab.active-bo { color: var(--blue); border-bottom-color: var(--blue); }
+  .type-tab.active-zbo { color: var(--green); border-bottom-color: var(--green); }
+
+  /* Filter */
+  .filter-bar {
+    display: flex; gap: 0.8rem; flex-wrap: wrap; align-items: center;
+    margin-bottom: 0.8rem;
+  }
+  .filter-bar input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.35rem 0.7rem;
+    color: var(--text);
+    font-size: 0.82rem;
+    width: 240px;
+  }
+  .filter-bar input::placeholder { color: var(--text-muted); }
+  .filter-bar input:focus { outline: none; border-color: var(--blue); }
+
+  .help-text {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    margin-bottom: 0.8rem;
+  }
+
+  /* Main ranking table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+  th, td { padding: 0.4rem 0.6rem; text-align: left; border-bottom: 1px solid var(--border); }
+  th {
+    background: var(--surface);
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    user-select: none;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    white-space: nowrap;
+  }
+  th:hover { color: var(--text); }
+  th.sorted-asc::after { content: ' \25B2'; }
+  th.sorted-desc::after { content: ' \25BC'; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  th.num { text-align: right; }
+
+  tr.district-row { cursor: pointer; }
+  tr.district-row:hover { background: rgba(136,198,255,0.06); }
+
+  /* Bar */
+  .bar-cell { width: 90px; min-width: 50px; }
+  .bar-bg {
+    background: var(--surface);
+    border-radius: 3px;
+    height: 15px;
+    position: relative;
+    overflow: hidden;
+    min-width: 40px;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 3px;
+  }
+  .bar-label {
+    position: absolute;
+    right: 4px;
+    top: 0;
+    line-height: 15px;
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: var(--text);
+    text-shadow: 0 0 3px rgba(0,0,0,0.9);
+  }
+
+  /* Expand */
+  .expand-icon {
+    display: inline-block;
+    width: 1em;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.6rem;
+    margin-right: 0.2rem;
+    transition: transform 0.15s;
+  }
+  .expand-icon.open { transform: rotate(90deg); }
+
+  /* Detail panel */
+  tr.detail-row td {
+    padding: 0;
+    border-bottom: 2px solid var(--border);
+  }
+  .detail-panel {
+    padding: 0.8rem 1.2rem 1rem 1.5rem;
+    background: rgba(22,27,34,0.85);
+  }
+  .detail-panel h3 {
+    font-size: 0.85rem;
+    margin: 1rem 0 0.4rem;
+    color: var(--text-muted);
+  }
+  .detail-panel h3:first-child { margin-top: 0; }
+
+  /* Year table in detail */
+  .year-table {
+    width: 100%;
+    font-size: 0.78rem;
+    margin-bottom: 0.3rem;
+  }
+  .year-table th {
+    position: static;
+    cursor: default;
+    font-size: 0.68rem;
+    padding: 0.3rem 0.5rem;
+  }
+  .year-table td { padding: 0.3rem 0.5rem; }
+  .year-table tr:hover { background: rgba(136,198,255,0.04); }
+
+  /* Projects in year detail */
+  .year-projects {
+    margin-top: 0;
+    margin-bottom: 0.6rem;
+  }
+  .projects-section {
+    margin-top: 1rem;
+  }
+  .projects-section-title {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .year-heading {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text);
+    display: block;
+    margin-top: 0.6rem;
+    margin-bottom: 0.15rem;
+    padding: 0.2rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .all-projects-container { }
+  .proj-list { list-style: none; margin: 0.2rem 0 0.5rem 0; }
+  .proj-list li {
+    padding: 0.2rem 0;
+    font-size: 0.75rem;
+    display: grid;
+    grid-template-columns: 1.5rem 1fr auto auto;
+    align-items: baseline;
+    gap: 0 0.4rem;
+    border-bottom: 1px solid rgba(48,54,61,0.4);
+  }
+  .proj-list li:last-child { border-bottom: none; }
+  .proj-rank { color: var(--text-muted); font-size: 0.65rem; text-align: right; font-variant-numeric: tabular-nums; }
+  .proj-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .proj-title.won { color: var(--green); }
+  .proj-title.lost { color: var(--text-muted); }
+  .proj-votes { color: var(--text-muted); white-space: nowrap; font-variant-numeric: tabular-nums; font-size: 0.72rem; min-width: 5em; text-align: right; }
+  .proj-cost { white-space: nowrap; font-variant-numeric: tabular-nums; font-size: 0.72rem; min-width: 8em; text-align: right; }
+  .proj-cost.won { color: var(--green); }
+  .proj-cost.lost { color: var(--text-muted); }
+  .won-badge {
+    display: inline-block;
+    background: #238636;
+    color: #fff;
+    font-size: 0.55rem;
+    padding: 0px 4px;
+    border-radius: 3px;
+    font-weight: 700;
+    margin-left: 0.3rem;
+    vertical-align: middle;
+  }
+  .sim-badge {
+    display: inline-block;
+    background: var(--purple);
+    color: #fff;
+    font-size: 0.55rem;
+    padding: 0px 4px;
+    border-radius: 3px;
+    font-weight: 700;
+    margin-left: 0.3rem;
+    vertical-align: middle;
+  }
+
+  /* Simulator */
+  .sim-box {
+    margin: 1rem 0 0.5rem;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+  }
+  .sim-box.sim-on {
+    border-color: var(--purple);
+    background: rgba(137,87,229,0.06);
+  }
+  .sim-box .sim-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+  .sim-box.sim-on .sim-label {
+    color: var(--purple);
+  }
+  .sim-inputs {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .sim-inputs label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  .sim-inputs input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 0.3rem 0.6rem;
+    color: var(--text);
+    font-size: 0.8rem;
+    width: 110px;
+    font-variant-numeric: tabular-nums;
+  }
+  .sim-inputs input:focus { outline: none; border-color: var(--purple); }
+  .sim-inputs input::placeholder { color: var(--text-muted); }
+  .sim-reset {
+    background: transparent;
+    border: 1px solid var(--purple);
+    border-radius: 5px;
+    padding: 0.3rem 0.7rem;
+    color: var(--purple);
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .sim-reset:hover { background: rgba(137,87,229,0.12); }
+
+  /* Purple frame around project lists when sim is active */
+  .all-projects-container.sim-active {
+    border: 1.5px solid var(--purple);
+    border-radius: 8px;
+    padding: 0.5rem 0.8rem;
+    background: rgba(137,87,229,0.04);
+  }
+  .sim-active-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--purple);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.3rem;
+  }
+  .sim-result-tag {
+    font-size: 0.68rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+  }
+  .sim-result-tag.sim-won { color: var(--green); }
+  .sim-result-tag.sim-lost { color: var(--red); }
+
+  /* Simulated project row */
+  .proj-list li.sim-project {
+    background: rgba(137,87,229,0.10);
+    border-bottom-color: rgba(137,87,229,0.3);
+    border-radius: 3px;
+    padding: 0.25rem 0.2rem;
+  }
+  .proj-title.sim { color: var(--purple); }
+
+  /* Color coding for difficulty */
+  .easy { color: var(--green); }
+  .medium { color: var(--yellow); }
+  .hard { color: var(--red); }
+
+  footer {
+    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+  }
+  footer a { color: var(--blue); }
+
+  @media (max-width: 900px) {
+    body { padding: 1rem 0.4rem; }
+    table { font-size: 0.72rem; }
+    th, td { padding: 0.3rem 0.35rem; }
+    .bar-cell { width: 60px; min-width: 40px; }
+    .filter-bar input { width: 100%; }
+    .detail-panel { padding: 0.5rem 0.5rem 0.8rem 0.8rem; }
+    .proj-list li { grid-template-columns: 1.3rem 1fr auto; }
+    .proj-votes { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="nav-link"><a href="index.html">&larr; BO 2027 - zgloszone projekty</a></div>
+
+<h1>Wyniki glosowania BO 2022-2026</h1>
+<p class="subtitle">Ranking dzielnic na podstawie 5 lat wynikow Budzetu Obywatelskiego Gdanska. Kliknij dzielnice, zeby zobaczyc szczegoly.</p>
+
+<div class="type-tabs" id="type-tabs">
+  <div class="type-tab active-bo" data-type="bo">Budzet Obywatelski</div>
+  <div class="type-tab" data-type="zbo">Zielony Budzet Obywatelski</div>
+</div>
+
+<div class="filter-bar">
+  <input type="text" id="filter-input" placeholder="Szukaj dzielnicy...">
+</div>
+<p class="help-text">Kliknij naglowek kolumny zeby posortowac. Kliknij dzielnice zeby rozwinac historie 5 lat.</p>
+
+<table id="ranking-table">
+  <thead><tr>
+    <th data-key="district">Dzielnica</th>
+    <th data-key="total_votes" class="num">Głosy łącznie</th>
+    <th data-key="total_won" class="num">Wygrane</th>
+    <th data-key="total_projects" class="num">Zgłoszone</th>
+    <th data-key="win_rate" class="bar-cell">Win rate</th>
+    <th data-key="avg_budget" class="num">Śr. budżet</th>
+  </tr></thead>
+  <tbody></tbody>
+</table>
+
+<footer>
+  Dane: oficjalne wyniki glosowania BO Gdansk (PDF 2022-2026) |
+  <a href="index.html">BO 2027 &rarr;</a>
+</footer>
+
+<script>
+const YEARS = ['2022','2023','2024','2025','2026'];
+let allData = {};
+let currentType = 'bo';
+let filterText = '';
+
+function fmt(n) {
+  if (n == null) return '\u2014';
+  return Math.round(n).toLocaleString('pl-PL') + ' zl';
+}
+function fmtFull(n) {
+  if (n == null) return '\u2014';
+  return n.toLocaleString('pl-PL', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' zl';
+}
+function fmtPct(n) {
+  if (n == null) return '\u2014';
+  return n.toFixed(1) + '%';
+}
+function fmtNum(n) {
+  if (n == null) return '\u2014';
+  return Math.round(n).toLocaleString('pl-PL');
+}
+
+// ── Compute aggregated stats per district ──
+function computeRanking(type) {
+  const districts = {};
+
+  for (const year of YEARS) {
+    const ydata = allData[year];
+    if (!ydata) continue;
+    for (const [name, d] of Object.entries(ydata.districts)) {
+      if (!districts[name]) districts[name] = { name, years: {} };
+
+      const projects = d[`projects_${type}`] || [];
+      const budget = d[`budget_${type}`] || 0;
+      const carryover = d[`carryover_${type}`] || 0;
+      const won = projects.filter(p => p.won);
+      const lost = projects.filter(p => !p.won);
+      const wonCost = won.reduce((s, p) => s + p.cost, 0);
+      const totalVotes = projects.reduce((s, p) => s + p.votes, 0);
+      const minVotes = won.length > 0 ? Math.min(...won.map(p => p.votes)) : null;
+      const maxLosingVotes = lost.length > 0 ? Math.max(...lost.map(p => p.votes)) : null;
+      const medianVotes = won.length > 0 ? median(won.map(p => p.votes)) : null;
+
+      districts[name].years[year] = {
+        year,
+        budget,
+        total: projects.length,
+        won: won.length,
+        lost: lost.length,
+        win_rate: projects.length > 0 ? won.length / projects.length * 100 : 0,
+        won_cost: wonCost,
+        total_votes: totalVotes,
+        carryover,
+        carryover_pct: budget > 0 ? carryover / budget * 100 : 0,
+        min_votes: minVotes,
+        max_losing_votes: maxLosingVotes,
+        median_votes: medianVotes,
+        projects,
+      };
+    }
+  }
+
+  // Aggregate
+  const rows = [];
+  for (const [name, d] of Object.entries(districts)) {
+    const yrs = Object.values(d.years);
+    if (yrs.length === 0) continue;
+
+    const totalProj = yrs.reduce((s, y) => s + y.total, 0);
+    const totalWon = yrs.reduce((s, y) => s + y.won, 0);
+    const totalVotes = yrs.reduce((s, y) => s + y.total_votes, 0);
+    const winRate = totalProj > 0 ? totalWon / totalProj * 100 : 0;
+
+    const avgBudget = avg(yrs.map(y => y.budget));
+
+    rows.push({
+      district: name,
+      win_rate: winRate,
+      avg_budget: avgBudget,
+      total_projects: totalProj,
+      total_won: totalWon,
+      total_votes: totalVotes,
+      yearData: d.years,
+    });
+  }
+  return rows;
+}
+
+function median(arr) {
+  const s = [...arr].sort((a, b) => a - b);
+  const mid = Math.floor(s.length / 2);
+  return s.length % 2 !== 0 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
+}
+function avg(arr) { return arr.reduce((s, v) => s + v, 0) / arr.length; }
+
+// ── Simulator state: { district -> { cost: number } } ──
+const simData = {};
+const MIN_VOTES = 100; // Per BO regulations, minimum votes to be eligible
+
+// Find the minimum votes needed for a project of given cost to win in a year.
+// Uses binary search: insert sim project at candidate vote count, run greedy allocation, check if it won.
+function findMinVotesToWin(yearInfo, simCost) {
+  const projects = yearInfo.projects;
+  if (projects.length === 0) return { minVotes: MIN_VOTES, simList: null };
+  // If cost exceeds budget, impossible
+  if (simCost > yearInfo.budget) return { minVotes: null, simList: null };
+
+  // Binary search between MIN_VOTES and max votes + 1
+  const maxV = Math.max(...projects.map(p => p.votes), 0);
+  let lo = MIN_VOTES - 1, hi = maxV + 1;
+
+  function tryVotes(v) {
+    const all = projects.map(p => ({ ...p, _sim: false }));
+    const simProj = { title: 'Tw\u00f3j projekt', cost: simCost, votes: v, _sim: true, won: false };
+    all.push(simProj);
+    // On equal votes, sim project sorts after real ones (must strictly beat them)
+    all.sort((a, b) => b.votes - a.votes || (a._sim ? 1 : 0) - (b._sim ? 1 : 0) || a.cost - b.cost);
+    let remaining = yearInfo.budget;
+    for (const p of all) {
+      if (p.votes >= MIN_VOTES && p.cost <= remaining) { p._won = true; remaining -= p.cost; }
+      else { p._won = false; }
+    }
+    return { won: simProj._won, list: all };
+  }
+
+  // Check if even max+1 votes wins (should always win unless cost > budget)
+  const best = tryVotes(hi);
+  if (!best.won) return { minVotes: null, simList: null };
+
+  // Check if MIN_VOTES wins
+  const worst = tryVotes(MIN_VOTES);
+  if (worst.won) return { minVotes: MIN_VOTES, simList: worst.list };
+
+  // Binary search for the boundary
+  while (lo < hi - 1) {
+    const mid = Math.floor((lo + hi) / 2);
+    if (tryVotes(mid).won) hi = mid;
+    else lo = mid;
+  }
+  const result = tryVotes(hi);
+  return { minVotes: hi, simList: result.list };
+}
+
+// Simulate a year with sim project at specific vote count (for project list rendering)
+function simulateYear(yearInfo, simVotes, simCost) {
+  const all = yearInfo.projects.map(p => ({ ...p, _sim: false }));
+  const simProj = { title: 'Tw\u00f3j projekt', cost: simCost, votes: simVotes, _sim: true, won: false };
+  all.push(simProj);
+  all.sort((a, b) => b.votes - a.votes || a.cost - b.cost);
+  let remaining = yearInfo.budget;
+  for (const p of all) {
+    if (p.votes >= MIN_VOTES && p.cost <= remaining) { p._won = true; remaining -= p.cost; }
+    else { p._won = false; }
+  }
+  return all;
+}
+
+// ── Render ranking table ──
+let currentRows = [];
+let expanded = new Set();
+let sortKey = 'district';
+let sortDir = 'asc';
+
+function renderTable() {
+  const table = document.getElementById('ranking-table');
+  const tbody = table.querySelector('tbody');
+
+  // Filter
+  const filtered = filterText
+    ? currentRows.filter(r => r.district.toLowerCase().includes(filterText.toLowerCase()))
+    : currentRows;
+
+  // Sort
+  const sorted = [...filtered].sort((a, b) => {
+    let va = a[sortKey], vb = b[sortKey];
+    // nulls last
+    if (va == null && vb == null) return 0;
+    if (va == null) return 1;
+    if (vb == null) return -1;
+    if (typeof va === 'string') { va = va.toLowerCase(); vb = vb.toLowerCase(); }
+    if (va < vb) return sortDir === 'asc' ? -1 : 1;
+    if (va > vb) return sortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  // Update header styles
+  const headers = table.querySelectorAll('th');
+  headers.forEach(h => h.classList.remove('sorted-asc', 'sorted-desc'));
+  table.querySelectorAll(`th[data-key="${sortKey}"]`).forEach(h =>
+    h.classList.add(sortDir === 'asc' ? 'sorted-asc' : 'sorted-desc')
+  );
+
+  const maxWinRate = Math.max(...currentRows.map(r => r.win_rate), 1);
+  const accentColor = currentType === 'bo' ? 'var(--blue)' : 'var(--green)';
+
+  let html = '';
+  for (const r of sorted) {
+    const barW = Math.min(r.win_rate / maxWinRate * 100, 100);
+    const isOpen = expanded.has(r.district);
+    const expandCls = isOpen ? 'open' : '';
+
+    html += `<tr class="district-row" data-district="${r.district}">
+      <td><span class="expand-icon ${expandCls}">\u25B6</span>${r.district}</td>
+      <td class="num">${fmtNum(r.total_votes)}</td>
+      <td class="num">${r.total_won}</td>
+      <td class="num">${r.total_projects}</td>
+      <td class="bar-cell"><div class="bar-bg"><div class="bar-fill" style="width:${barW}%;background:${accentColor};opacity:0.7"></div><span class="bar-label">${fmtPct(r.win_rate)}</span></div></td>
+      <td class="num">${fmt(r.avg_budget)}</td>
+    </tr>`;
+
+    if (isOpen) {
+      html += `<tr class="detail-row"><td colspan="6">${buildDetailPanel(r)}</td></tr>`;
+    }
+  }
+  tbody.innerHTML = html;
+
+  // Click handlers
+  tbody.querySelectorAll('tr.district-row').forEach(tr => {
+    tr.addEventListener('click', () => {
+      const d = tr.dataset.district;
+      if (expanded.has(d)) expanded.delete(d);
+      else expanded.add(d);
+      renderTable();
+    });
+  });
+
+  // Simulator input handlers
+  function handleSimInput(district) {
+    const costEl = tbody.querySelector(`.sim-cost-input[data-district="${district}"]`);
+    if (!costEl) return;
+    const cost = parseFloat(costEl.value) || 0;
+    if (cost > 0) {
+      simData[district] = { cost };
+    } else {
+      delete simData[district];
+    }
+    const active = cost > 0;
+    // Toggle sim-box appearance
+    const simBox = costEl.closest('.sim-box');
+    if (simBox) {
+      simBox.classList.toggle('sim-on', active);
+      // Show/hide reset button
+      let btn = simBox.querySelector('.sim-reset');
+      if (active && !btn) {
+        btn = document.createElement('button');
+        btn.className = 'sim-reset';
+        btn.dataset.district = district;
+        btn.textContent = 'Wy\u0142\u0105cz symulacj\u0119';
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          resetSim(district, simBox);
+        });
+        simBox.querySelector('.sim-inputs').appendChild(btn);
+      } else if (!active && btn) {
+        btn.remove();
+      }
+      // Re-render sim results table
+      const simResults = simBox.querySelector('.sim-results');
+      const row = currentRows.find(r => r.district === district);
+      if (simResults && row) simResults.innerHTML = buildSimResults(row);
+    }
+    // Re-render the projects section
+    const detailTd = costEl.closest('tr.detail-row')?.querySelector('td');
+    const row = currentRows.find(r => r.district === district);
+    if (detailTd && row) {
+      const section = detailTd.querySelector('.projects-section');
+      if (section) section.innerHTML = buildProjectsSection(row);
+    }
+  }
+
+  function resetSim(district, simBox) {
+    delete simData[district];
+    const costEl = simBox.querySelector('.sim-cost-input');
+    if (costEl) costEl.value = '';
+    simBox.classList.remove('sim-on');
+    const btn = simBox.querySelector('.sim-reset');
+    if (btn) btn.remove();
+    // Re-render sim results
+    const simResults = simBox.querySelector('.sim-results');
+    const row = currentRows.find(r => r.district === district);
+    if (simResults && row) simResults.innerHTML = buildSimResults(row);
+    // Re-render projects
+    const detailTd = simBox.closest('tr.detail-row')?.querySelector('td');
+    if (detailTd && row) {
+      const section = detailTd.querySelector('.projects-section');
+      if (section) section.innerHTML = buildProjectsSection(row);
+    }
+  }
+
+  function attachDetailHandlers(container, district) {
+    const costEl = container.querySelector('.sim-cost-input');
+    let debounceTimer = null;
+    const debouncedUpdate = () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => handleSimInput(district), 400);
+    };
+    if (costEl) { costEl.addEventListener('input', debouncedUpdate); costEl.addEventListener('click', e => e.stopPropagation()); }
+    // Reset
+    container.querySelectorAll('.sim-reset').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const simBox = btn.closest('.sim-box');
+        if (simBox) resetSim(district, simBox);
+      });
+    });
+  }
+
+  // Attach handlers to all expanded detail panels
+  tbody.querySelectorAll('tr.detail-row').forEach(tr => {
+    const district = tr.previousElementSibling?.dataset?.district;
+    if (district) {
+      const td = tr.querySelector('td');
+      attachDetailHandlers(td, district);
+    }
+  });
+}
+
+// ── Detail panel for a district ──
+function buildDetailPanel(row) {
+  const yd = row.yearData;
+  let html = '<div class="detail-panel">';
+
+  // Year-by-year summary table
+  html += '<h3>Podsumowanie roczne</h3>';
+  html += `<table class="year-table">
+    <thead><tr>
+      <th>Rok</th>
+      <th class="num">Budzet</th>
+      <th class="num">Wygr./Proj.</th>
+      <th class="num">Win rate</th>
+      <th class="num">Glosy lacznie</th>
+      <th class="num">Wygr. koszt</th>
+      <th class="num">Reszta</th>
+    </tr></thead><tbody>`;
+
+  for (const year of YEARS) {
+    const y = yd[year];
+    if (!y) {
+      html += `<tr><td>${year}</td><td colspan="6" style="color:var(--text-muted)">brak danych</td></tr>`;
+      continue;
+    }
+    const wrClass = y.win_rate >= 45 ? 'easy' : y.win_rate >= 25 ? 'medium' : 'hard';
+    html += `<tr>
+      <td>${year}</td>
+      <td class="num">${fmt(y.budget)}</td>
+      <td class="num">${y.won} / ${y.total}</td>
+      <td class="num ${wrClass}">${fmtPct(y.win_rate)}</td>
+      <td class="num">${fmtNum(y.total_votes)}</td>
+      <td class="num">${fmt(y.won_cost)}</td>
+      <td class="num">${fmt(y.carryover)}</td>
+    </tr>`;
+  }
+  html += '</tbody></table>';
+
+  // Simulator inputs
+  const sim = simData[row.district];
+  const simCost = sim ? sim.cost : '';
+  const simActive = sim && sim.cost > 0;
+
+  html += `<div class="sim-box${simActive ? ' sim-on' : ''}">`;
+  html += `<div class="sim-label">Ile g\u0142os\u00f3w potrzeba do wygranej?</div>`;
+  html += `<div class="sim-inputs">`;
+  html += `<label>Koszt (z\u0142):</label><input type="number" class="sim-cost-input" data-district="${row.district}" value="${simCost}" placeholder="np. 200000" min="0">`;
+  if (simActive) html += `<button class="sim-reset" data-district="${row.district}">Wy\u0142\u0105cz symulacj\u0119</button>`;
+  html += `</div>`;
+  html += `<div class="sim-results">${buildSimResults(row)}</div>`;
+  html += `</div>`;
+
+  // Per-year project lists — always visible
+  html += `<div class="projects-section">${buildProjectsSection(row)}</div>`;
+
+  html += '</div>';
+  return html;
+}
+
+// ── Build sim results table (inside sim box) ──
+function buildSimResults(row) {
+  const sim = simData[row.district];
+  if (!sim || sim.cost <= 0) return '';
+
+  const yd = row.yearData;
+  const results = [];
+  for (const year of YEARS) {
+    const y = yd[year];
+    if (!y || y.projects.length === 0) { results.push({ year, minVotes: null }); continue; }
+    const { minVotes } = findMinVotesToWin(y, sim.cost);
+    results.push({ year, minVotes });
+  }
+
+  // Find min and max among years that have a result
+  const valid = results.filter(r => r.minVotes != null);
+  if (valid.length === 0) return '<div style="color:var(--text-muted);font-size:0.75rem;margin-top:0.5rem;">Koszt przekracza bud\u017cet we wszystkich latach.</div>';
+
+  const minVal = Math.min(...valid.map(r => r.minVotes));
+  const maxVal = Math.max(...valid.map(r => r.minVotes));
+  const showMinMax = valid.length > 1 && minVal !== maxVal;
+
+  let html = `<table class="year-table sim-results-table" style="margin-top:0.5rem;width:auto;max-width:280px;">
+    <thead><tr>
+      <th>Rok</th>
+      <th class="num">Min. g\u0142os\u00f3w</th>
+    </tr></thead><tbody>`;
+
+  for (const r of results) {
+    if (r.minVotes == null) {
+      html += `<tr><td>${r.year}</td><td class="num" style="color:var(--text-muted)">za drogi</td></tr>`;
+    } else {
+      let badge = '';
+      if (showMinMax && r.minVotes === minVal) badge = ' <span class="sim-badge" style="background:var(--green);">MIN</span>';
+      if (showMinMax && r.minVotes === maxVal) badge = ' <span class="sim-badge" style="background:var(--red);">MAX</span>';
+      html += `<tr><td>${r.year}</td><td class="num">${fmtNum(r.minVotes)} g\u0142.${badge}</td></tr>`;
+    }
+  }
+  html += '</tbody></table>';
+  return html;
+}
+
+// ── Build just the projects section (can be re-rendered independently for simulator) ──
+function buildProjectsSection(row) {
+  const yd = row.yearData;
+  const sim = simData[row.district];
+  const simActive = sim && sim.cost > 0;
+
+  let html = '<div class="projects-section-title">Projekty</div>';
+  html += `<div class="all-projects-container${simActive ? ' sim-active' : ''}">`;
+  if (simActive) html += '<div class="sim-active-label">Symulacja</div>';
+  for (const year of YEARS) {
+    const y = yd[year];
+    if (!y || y.projects.length === 0) continue;
+
+    if (simActive) {
+      const { minVotes, simList } = findMinVotesToWin(y, sim.cost);
+
+      if (minVotes == null) {
+        // Cost exceeds budget — show without sim
+        html += `<span class="year-heading">${year} \u2014 ${y.won} wygranych / ${y.total} projekt\u00f3w <span class="sim-result-tag sim-lost">ZA DROGI</span></span>`;
+        html += '<div class="year-projects"><ul class="proj-list">';
+        for (let i = 0; i < y.projects.length; i++) {
+          const p = y.projects[i];
+          const cls = p.won ? 'won' : 'lost';
+          const badge = p.won ? '<span class="won-badge">WYGR.</span>' : '';
+          html += `<li>
+            <span class="proj-rank">${i + 1}.</span>
+            <span class="proj-title ${cls}">${p.title}${badge}</span>
+            <span class="proj-votes">${fmtNum(p.votes)} gl.</span>
+            <span class="proj-cost ${cls}">${fmtFull(p.cost)}</span>
+          </li>`;
+        }
+        html += '</ul></div>';
+      } else {
+        // Re-run sim at the computed minVotes to get the ordered list
+        const list = simulateYear(y, minVotes, sim.cost);
+        html += `<span class="year-heading">${year} \u2014 ${y.won} wygranych / ${y.total} projekt\u00f3w <span class="sim-result-tag sim-won">WYGRYWA (min. ${fmtNum(minVotes)} gl.)</span></span>`;
+        html += '<div class="year-projects"><ul class="proj-list">';
+        for (let i = 0; i < list.length; i++) {
+          const p = list[i];
+          if (p._sim) {
+            const badge = `<span class="sim-badge">TW\u00d3J</span>`;
+            const wonBadge = p._won ? '<span class="won-badge">WYGR.</span>' : '';
+            html += `<li class="sim-project">
+              <span class="proj-rank">${i + 1}.</span>
+              <span class="proj-title sim">${p.title}${badge}${wonBadge}</span>
+              <span class="proj-votes">${fmtNum(p.votes)} gl.</span>
+              <span class="proj-cost won">${fmtFull(p.cost)}</span>
+            </li>`;
+          } else {
+            const cls = p._won ? 'won' : 'lost';
+            const badge = p._won ? '<span class="won-badge">WYGR.</span>' : '';
+            html += `<li>
+              <span class="proj-rank">${i + 1}.</span>
+              <span class="proj-title ${cls}">${p.title}${badge}</span>
+              <span class="proj-votes">${fmtNum(p.votes)} gl.</span>
+              <span class="proj-cost ${cls}">${fmtFull(p.cost)}</span>
+            </li>`;
+          }
+        }
+        html += '</ul></div>';
+      }
+    } else {
+      html += `<span class="year-heading">${year} \u2014 ${y.won} wygranych / ${y.total} projekt\u00f3w</span>`;
+      html += '<div class="year-projects"><ul class="proj-list">';
+      for (let i = 0; i < y.projects.length; i++) {
+        const p = y.projects[i];
+        const cls = p.won ? 'won' : 'lost';
+        const badge = p.won ? '<span class="won-badge">WYGR.</span>' : '';
+        html += `<li>
+          <span class="proj-rank">${i + 1}.</span>
+          <span class="proj-title ${cls}">${p.title}${badge}</span>
+          <span class="proj-votes">${fmtNum(p.votes)} gl.</span>
+          <span class="proj-cost ${cls}">${fmtFull(p.cost)}</span>
+        </li>`;
+      }
+      html += '</ul></div>';
+    }
+  }
+  html += '</div>'; // close all-projects-container
+  return html;
+}
+
+// ── Tab switching ──
+function setupTabs() {
+  const tabs = document.querySelectorAll('.type-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      currentType = tab.dataset.type;
+      tabs.forEach(t => { t.classList.remove('active-bo', 'active-zbo'); });
+      tab.classList.add(currentType === 'bo' ? 'active-bo' : 'active-zbo');
+      expanded.clear();
+      currentRows = computeRanking(currentType);
+      renderTable();
+    });
+  });
+}
+
+// ── Sort headers ──
+function setupSort() {
+  const headers = document.querySelectorAll('#ranking-table th[data-key]');
+  headers.forEach(h => {
+    h.addEventListener('click', () => {
+      const key = h.dataset.key;
+      if (sortKey === key) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+      else { sortKey = key; sortDir = key === 'district' ? 'asc' : 'desc'; }
+      renderTable();
+    });
+  });
+}
+
+// ── Filter ──
+document.getElementById('filter-input').addEventListener('input', (e) => {
+  filterText = e.target.value;
+  renderTable();
+});
+
+// ── Init ──
+async function main() {
+  try {
+    const resp = await fetch('bo-results/bo-results.json');
+    allData = await resp.json();
+  } catch (err) {
+    document.body.innerHTML = '<p style="color:var(--red);padding:2rem;">Blad ladowania danych: ' + err.message + '</p>';
+    return;
+  }
+
+  setupTabs();
+  setupSort();
+  currentRows = computeRanking(currentType);
+  renderTable();
+}
+
+main();
+</script>
+</body>
+</html>

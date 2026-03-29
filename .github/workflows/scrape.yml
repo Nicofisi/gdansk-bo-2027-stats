@@ -50,9 +50,10 @@ jobs:
 
       - name: Prepare site
         run: |
-          mkdir -p _site/data
-          cp index.html _site/
+          mkdir -p _site/data _site/bo-results
+          cp index.html history.html _site/
           cp data/budgets.json data/projects.json data/meta.json _site/data/
+          cp bo-results/bo-results.json _site/bo-results/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

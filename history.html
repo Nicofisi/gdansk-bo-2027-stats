@@ -835,12 +835,14 @@ function buildProjectsSection(row) {
     const y = yd[year];
     if (!y || y.projects.length === 0) continue;
 
+    const carryoverNote = y.carryover > 0 ? `, reszta: ${fmt(y.carryover)}` : '';
+
     if (simActive) {
       const { minVotes, simList } = findMinVotesToWin(y, sim.cost);
 
       if (minVotes == null) {
         // Cost exceeds budget — show without sim
-        html += `<span class="year-heading">${year} \u2014 ${y.won} wygranych / ${y.total} projekt\u00f3w <span class="sim-result-tag sim-lost">ZA DROGI</span></span>`;
+        html += `<span class="year-heading">${year} \u2014 ${y.won} wygranych / ${y.total} projekt\u00f3w${carryoverNote} <span class="sim-result-tag sim-lost">ZA DROGI</span></span>`;
         html += '<div class="year-projects"><ul class="proj-list">';
         for (let i = 0; i < y.projects.length; i++) {
           const p = y.projects[i];
@@ -857,11 +859,18 @@ function buildProjectsSection(row) {
       } else {
         // Re-run sim at the computed minVotes to get the ordered list
         const list = simulateYear(y, minVotes, sim.cost);
-        html += `<span class="year-heading">${year} \u2014 ${y.won} wygranych / ${y.total} projekt\u00f3w <span class="sim-result-tag sim-won">WYGRYWA (min. ${fmtNum(minVotes)} gl.)</span></span>`;
+        // Calculate remaining budget after sim
+        let simRemaining = y.budget;
+        for (const p of list) { if (p._won) simRemaining -= p.cost; }
+        const simCarryNote = simRemaining > 0 ? `, reszta: ${fmt(simRemaining)}` : '';
+
+        html += `<span class="year-heading">${year} \u2014 ${y.won} wygranych / ${y.total} projekt\u00f3w${simCarryNote} <span class="sim-result-tag sim-won">WYGRYWA (min. ${fmtNum(minVotes)} gl.)</span></span>`;
         html += '<div class="year-projects"><ul class="proj-list">';
+        let simSeen = false;
         for (let i = 0; i < list.length; i++) {
           const p = list[i];
           if (p._sim) {
+            simSeen = true;
             const badge = `<span class="sim-badge">TW\u00d3J</span>`;
             const wonBadge = p._won ? '<span class="won-badge">WYGR.</span>' : '';
             html += `<li class="sim-project">
@@ -870,7 +879,8 @@ function buildProjectsSection(row) {
               <span class="proj-votes">${fmtNum(p.votes)} gl.</span>
               <span class="proj-cost won">${fmtFull(p.cost)}</span>
             </li>`;
-          } else {
+          } else if (!simSeen || p._won) {
+            // Show projects above sim, and any that still won after sim
             const cls = p._won ? 'won' : 'lost';
             const badge = p._won ? '<span class="won-badge">WYGR.</span>' : '';
             html += `<li>
@@ -880,11 +890,14 @@ function buildProjectsSection(row) {
               <span class="proj-cost ${cls}">${fmtFull(p.cost)}</span>
             </li>`;
           }
+          // Skip losing projects below sim project
         }
-        html += '</ul></div>';
+        html += '</ul>';
+        if (simRemaining > 0) html += `<div style="font-size:0.72rem;color:var(--text-muted);padding:0.2rem 0 0.3rem;">Pozosta\u0142o w bud\u017cecie: ${fmt(simRemaining)}</div>`;
+        html += '</div>';
       }
     } else {
-      html += `<span class="year-heading">${year} \u2014 ${y.won} wygranych / ${y.total} projekt\u00f3w</span>`;
+      html += `<span class="year-heading">${year} \u2014 ${y.won} wygranych / ${y.total} projekt\u00f3w${carryoverNote}</span>`;
       html += '<div class="year-projects"><ul class="proj-list">';
       for (let i = 0; i < y.projects.length; i++) {
         const p = y.projects[i];
@@ -897,7 +910,9 @@ function buildProjectsSection(row) {
           <span class="proj-cost ${cls}">${fmtFull(p.cost)}</span>
         </li>`;
       }
-      html += '</ul></div>';
+      html += '</ul>';
+      if (y.carryover > 0) html += `<div style="font-size:0.72rem;color:var(--text-muted);padding:0.2rem 0 0.3rem;">Pozosta\u0142o w bud\u017cecie: ${fmt(y.carryover)}</div>`;
+      html += '</div>';
     }
   }
   html += '</div>'; // close all-projects-container

@@ -256,6 +256,28 @@
     margin-left: 0.3rem;
     vertical-align: middle;
   }
+  .knocked-out-badge {
+    display: inline-block;
+    background: #b33;
+    color: #fff;
+    font-size: 0.55rem;
+    padding: 0px 4px;
+    border-radius: 3px;
+    font-weight: 700;
+    margin-left: 0.3rem;
+    vertical-align: middle;
+  }
+  .new-won-badge {
+    display: inline-block;
+    background: #1a7f37;
+    color: #fff;
+    font-size: 0.55rem;
+    padding: 0px 4px;
+    border-radius: 3px;
+    font-weight: 700;
+    margin-left: 0.3rem;
+    vertical-align: middle;
+  }
 
   /* Simulator */
   .sim-box {
@@ -866,11 +888,9 @@ function buildProjectsSection(row) {
 
         html += `<span class="year-heading">${year} \u2014 ${y.won} wygranych / ${y.total} projekt\u00f3w${simCarryNote} <span class="sim-result-tag sim-won">WYGRYWA (min. ${fmtNum(minVotes)} gl.)</span></span>`;
         html += '<div class="year-projects"><ul class="proj-list">';
-        let simSeen = false;
         for (let i = 0; i < list.length; i++) {
           const p = list[i];
           if (p._sim) {
-            simSeen = true;
             const badge = `<span class="sim-badge">TW\u00d3J</span>`;
             const wonBadge = p._won ? '<span class="won-badge">WYGR.</span>' : '';
             html += `<li class="sim-project">
@@ -879,10 +899,18 @@ function buildProjectsSection(row) {
               <span class="proj-votes">${fmtNum(p.votes)} gl.</span>
               <span class="proj-cost won">${fmtFull(p.cost)}</span>
             </li>`;
-          } else if (!simSeen || p._won) {
-            // Show projects above sim, and any that still won after sim
-            const cls = p._won ? 'won' : 'lost';
-            const badge = p._won ? '<span class="won-badge">WYGR.</span>' : '';
+          } else {
+            // Compare original won vs sim _won for status change badges
+            let cls, badge;
+            if (p.won && p._won) {
+              cls = 'won'; badge = '<span class="won-badge">WYGR.</span>';
+            } else if (p.won && !p._won) {
+              cls = 'lost'; badge = '<span class="knocked-out-badge">WYPAD\u0141</span>';
+            } else if (!p.won && p._won) {
+              cls = 'won'; badge = '<span class="new-won-badge">NOWY</span>';
+            } else {
+              cls = 'lost'; badge = '';
+            }
             html += `<li>
               <span class="proj-rank">${i + 1}.</span>
               <span class="proj-title ${cls}">${p.title}${badge}</span>
@@ -890,7 +918,6 @@ function buildProjectsSection(row) {
               <span class="proj-cost ${cls}">${fmtFull(p.cost)}</span>
             </li>`;
           }
-          // Skip losing projects below sim project
         }
         html += '</ul>';
         if (simRemaining > 0) html += `<div style="font-size:0.72rem;color:var(--text-muted);padding:0.2rem 0 0.3rem;">Pozosta\u0142o w bud\u017cecie: ${fmt(simRemaining)}</div>`;

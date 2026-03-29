@@ -267,9 +267,11 @@
     margin-left: 0.3rem;
     vertical-align: middle;
   }
+  .proj-title.knocked-out { color: var(--text-muted); text-decoration: line-through; }
+  .proj-cost.knocked-out { color: var(--text-muted); text-decoration: line-through; }
   .new-won-badge {
     display: inline-block;
-    background: #1a7f37;
+    background: #b8860b;
     color: #fff;
     font-size: 0.55rem;
     padding: 0px 4px;
@@ -575,7 +577,7 @@ function simulateYear(yearInfo, simVotes, simCost) {
   const all = yearInfo.projects.map(p => ({ ...p, _sim: false }));
   const simProj = { title: 'Tw\u00f3j projekt', cost: simCost, votes: simVotes, _sim: true, won: false };
   all.push(simProj);
-  all.sort((a, b) => b.votes - a.votes || a.cost - b.cost);
+  all.sort((a, b) => b.votes - a.votes || (a._sim ? 1 : 0) - (b._sim ? 1 : 0) || a.cost - b.cost);
   let remaining = yearInfo.budget;
   for (const p of all) {
     if (p.votes >= MIN_VOTES && p.cost <= remaining) { p._won = true; remaining -= p.cost; }
@@ -892,7 +894,7 @@ function buildProjectsSection(row) {
           const p = list[i];
           if (p._sim) {
             const badge = `<span class="sim-badge">TW\u00d3J</span>`;
-            const wonBadge = p._won ? '<span class="won-badge">WYGR.</span>' : '';
+            const wonBadge = p._won ? '<span class="new-won-badge">NOWY WYGR.</span>' : '';
             html += `<li class="sim-project">
               <span class="proj-rank">${i + 1}.</span>
               <span class="proj-title sim">${p.title}${badge}${wonBadge}</span>
@@ -905,9 +907,9 @@ function buildProjectsSection(row) {
             if (p.won && p._won) {
               cls = 'won'; badge = '<span class="won-badge">WYGR.</span>';
             } else if (p.won && !p._won) {
-              cls = 'lost'; badge = '<span class="knocked-out-badge">WYPAD\u0141</span>';
+              cls = 'knocked-out'; badge = '<span class="knocked-out-badge">WYPAD\u0141</span>';
             } else if (!p.won && p._won) {
-              cls = 'won'; badge = '<span class="new-won-badge">NOWY</span>';
+              cls = 'won'; badge = '<span class="new-won-badge">NOWY WYGR.</span>';
             } else {
               cls = 'lost'; badge = '';
             }

@@ -281,6 +281,70 @@
     vertical-align: middle;
   }
 
+  /* Global simulator bar */
+  .global-sim-bar {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 0.5rem 0;
+    padding: 0.5rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+  }
+  .global-sim-bar.sim-on {
+    border-color: var(--purple);
+    background: rgba(137,87,229,0.06);
+  }
+  .global-sim-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+  .global-sim-bar.sim-on .global-sim-label {
+    color: var(--purple);
+  }
+  .global-sim-sublabel {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  .global-sim-bar input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 0.3rem 0.6rem;
+    color: var(--text);
+    font-size: 0.8rem;
+    width: 120px;
+    font-variant-numeric: tabular-nums;
+  }
+  .global-sim-bar input:focus { outline: none; border-color: var(--purple); }
+  .global-sim-bar input::placeholder { color: var(--text-muted); }
+  .district-sim-detail {
+    display: block;
+    font-size: 0.65rem;
+    margin-top: 0.15rem;
+    font-weight: 400;
+    line-height: 1.3;
+  }
+  .sim-year-label {
+    color: var(--text-muted);
+    margin-right: 0.15rem;
+  }
+  .sim-year-val {
+    color: var(--purple);
+    font-weight: 700;
+  }
+  .sim-year-na {
+    color: var(--text-muted);
+    opacity: 0.5;
+  }
+  .sim-year-sep {
+    color: var(--border);
+    margin: 0 0.3rem;
+  }
+
   /* Simulator */
   .sim-box {
     margin: 1rem 0 0.5rem;
@@ -409,10 +473,18 @@
 <div class="filter-bar">
   <input type="text" id="filter-input" placeholder="Szukaj dzielnicy...">
 </div>
+
+<div class="global-sim-bar" id="global-sim-bar">
+  <label class="global-sim-label">Symulacja:</label>
+  <label class="global-sim-sublabel">Koszt projektu (zł):</label>
+  <input type="number" id="global-sim-input" placeholder="np. 200000" min="0">
+  <button id="global-sim-reset" class="sim-reset" style="display:none;">Wyłącz</button>
+</div>
+
 <p class="help-text">Kliknij naglowek kolumny zeby posortowac. Kliknij dzielnice zeby rozwinac historie 5 lat.</p>
 
 <table id="ranking-table">
-  <thead><tr>
+  <thead><tr id="table-header">
     <th data-key="district">Dzielnica</th>
     <th data-key="total_votes" class="num">Głosy łącznie</th>
     <th data-key="total_won" class="num">Wygrane</th>
@@ -524,8 +596,8 @@ function median(arr) {
 }
 function avg(arr) { return arr.reduce((s, v) => s + v, 0) / arr.length; }
 
-// ── Simulator state: { district -> { cost: number } } ──
-const simData = {};
+// ── Simulator state: global cost ──
+let globalSimCost = 0;
 const MIN_VOTES = 100; // Per BO regulations, minimum votes to be eligible
 
 // Find the minimum votes needed for a project of given cost to win in a year.
@@ -595,6 +667,47 @@ let sortDir = 'asc';
 function renderTable() {
   const table = document.getElementById('ranking-table');
   const tbody = table.querySelector('tbody');
+  const simActive = globalSimCost > 0;
+  const colCount = simActive ? 7 : 6;
+
+  // Update header: add/remove sim column
+  const headerRow = document.getElementById('table-header');
+  const existingSimTh = headerRow.querySelector('th[data-key="sim_avg"]');
+  if (simActive && !existingSimTh) {
+    const th = document.createElement('th');
+    th.dataset.key = 'sim_avg';
+    th.className = 'num';
+    th.textContent = '\u015ar. min. g\u0142.';
+    th.style.color = 'var(--purple)';
+    headerRow.appendChild(th);
+    th.addEventListener('click', () => {
+      if (sortKey === 'sim_avg') sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+      else { sortKey = 'sim_avg'; sortDir = 'asc'; }
+      renderTable();
+    });
+  } else if (!simActive && existingSimTh) {
+    existingSimTh.remove();
+    if (sortKey === 'sim_avg') { sortKey = 'district'; sortDir = 'asc'; }
+  }
+
+  // Precompute sim results per district
+  if (simActive) {
+    for (const r of currentRows) {
+      const perYear = {};
+      const valid = [];
+      for (const year of YEARS) {
+        const y = r.yearData[year];
+        if (!y || y.projects.length === 0) { perYear[year] = null; continue; }
+        const { minVotes } = findMinVotesToWin(y, globalSimCost);
+        perYear[year] = minVotes; // null if too expensive
+        if (minVotes != null) valid.push(minVotes);
+      }
+      r._simPerYear = perYear;
+      r.sim_avg = valid.length > 0 ? Math.round(valid.reduce((s, v) => s + v, 0) / valid.length) : null;
+    }
+  } else {
+    for (const r of currentRows) { r._simPerYear = null; r.sim_avg = null; }
+  }
 
   // Filter
   const filtered = filterText
@@ -630,17 +743,33 @@ function renderTable() {
     const isOpen = expanded.has(r.district);
     const expandCls = isOpen ? 'open' : '';
 
+    // Per-year sim breakdown under district name
+    let simBreakdown = '';
+    if (simActive && r._simPerYear) {
+      const parts = [];
+      for (const year of YEARS) {
+        const v = r._simPerYear[year];
+        const shortYear = "'" + year.slice(2);
+        if (v == null) parts.push(`<span class="sim-year-label">${shortYear}</span><span class="sim-year-na">\u2014</span>`);
+        else parts.push(`<span class="sim-year-label">${shortYear}</span><span class="sim-year-val">${fmtNum(v)}</span>`);
+      }
+      simBreakdown = `<span class="district-sim-detail">${parts.join('<span class="sim-year-sep">\u00b7</span>')}</span>`;
+    }
+
     html += `<tr class="district-row" data-district="${r.district}">
-      <td><span class="expand-icon ${expandCls}">\u25B6</span>${r.district}</td>
+      <td><span class="expand-icon ${expandCls}">\u25B6</span>${r.district}${simBreakdown}</td>
       <td class="num">${fmtNum(r.total_votes)}</td>
       <td class="num">${r.total_won}</td>
       <td class="num">${r.total_projects}</td>
       <td class="bar-cell"><div class="bar-bg"><div class="bar-fill" style="width:${barW}%;background:${accentColor};opacity:0.7"></div><span class="bar-label">${fmtPct(r.win_rate)}</span></div></td>
-      <td class="num">${fmt(r.avg_budget)}</td>
-    </tr>`;
+      <td class="num">${fmt(r.avg_budget)}</td>`;
+    if (simActive) {
+      html += `<td class="num" style="color:var(--purple);font-weight:600;">${r.sim_avg != null ? fmtNum(r.sim_avg) + ' g\u0142.' : '\u2014'}</td>`;
+    }
+    html += `</tr>`;
 
     if (isOpen) {
-      html += `<tr class="detail-row"><td colspan="6">${buildDetailPanel(r)}</td></tr>`;
+      html += `<tr class="detail-row"><td colspan="${colCount}">${buildDetailPanel(r)}</td></tr>`;
     }
   }
   tbody.innerHTML = html;
@@ -653,96 +782,6 @@ function renderTable() {
       else expanded.add(d);
       renderTable();
     });
-  });
-
-  // Simulator input handlers
-  function handleSimInput(district) {
-    const costEl = tbody.querySelector(`.sim-cost-input[data-district="${district}"]`);
-    if (!costEl) return;
-    const cost = parseFloat(costEl.value) || 0;
-    if (cost > 0) {
-      simData[district] = { cost };
-    } else {
-      delete simData[district];
-    }
-    const active = cost > 0;
-    // Toggle sim-box appearance
-    const simBox = costEl.closest('.sim-box');
-    if (simBox) {
-      simBox.classList.toggle('sim-on', active);
-      // Show/hide reset button
-      let btn = simBox.querySelector('.sim-reset');
-      if (active && !btn) {
-        btn = document.createElement('button');
-        btn.className = 'sim-reset';
-        btn.dataset.district = district;
-        btn.textContent = 'Wy\u0142\u0105cz symulacj\u0119';
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          resetSim(district, simBox);
-        });
-        simBox.querySelector('.sim-inputs').appendChild(btn);
-      } else if (!active && btn) {
-        btn.remove();
-      }
-      // Re-render sim results table
-      const simResults = simBox.querySelector('.sim-results');
-      const row = currentRows.find(r => r.district === district);
-      if (simResults && row) simResults.innerHTML = buildSimResults(row);
-    }
-    // Re-render the projects section
-    const detailTd = costEl.closest('tr.detail-row')?.querySelector('td');
-    const row = currentRows.find(r => r.district === district);
-    if (detailTd && row) {
-      const section = detailTd.querySelector('.projects-section');
-      if (section) section.innerHTML = buildProjectsSection(row);
-    }
-  }
-
-  function resetSim(district, simBox) {
-    delete simData[district];
-    const costEl = simBox.querySelector('.sim-cost-input');
-    if (costEl) costEl.value = '';
-    simBox.classList.remove('sim-on');
-    const btn = simBox.querySelector('.sim-reset');
-    if (btn) btn.remove();
-    // Re-render sim results
-    const simResults = simBox.querySelector('.sim-results');
-    const row = currentRows.find(r => r.district === district);
-    if (simResults && row) simResults.innerHTML = buildSimResults(row);
-    // Re-render projects
-    const detailTd = simBox.closest('tr.detail-row')?.querySelector('td');
-    if (detailTd && row) {
-      const section = detailTd.querySelector('.projects-section');
-      if (section) section.innerHTML = buildProjectsSection(row);
-    }
-  }
-
-  function attachDetailHandlers(container, district) {
-    const costEl = container.querySelector('.sim-cost-input');
-    let debounceTimer = null;
-    const debouncedUpdate = () => {
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => handleSimInput(district), 400);
-    };
-    if (costEl) { costEl.addEventListener('input', debouncedUpdate); costEl.addEventListener('click', e => e.stopPropagation()); }
-    // Reset
-    container.querySelectorAll('.sim-reset').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const simBox = btn.closest('.sim-box');
-        if (simBox) resetSim(district, simBox);
-      });
-    });
-  }
-
-  // Attach handlers to all expanded detail panels
-  tbody.querySelectorAll('tr.detail-row').forEach(tr => {
-    const district = tr.previousElementSibling?.dataset?.district;
-    if (district) {
-      const td = tr.querySelector('td');
-      attachDetailHandlers(td, district);
-    }
   });
 }
 
@@ -783,20 +822,6 @@ function buildDetailPanel(row) {
   }
   html += '</tbody></table>';
 
-  // Simulator inputs
-  const sim = simData[row.district];
-  const simCost = sim ? sim.cost : '';
-  const simActive = sim && sim.cost > 0;
-
-  html += `<div class="sim-box${simActive ? ' sim-on' : ''}">`;
-  html += `<div class="sim-label">Ile g\u0142os\u00f3w potrzeba do wygranej?</div>`;
-  html += `<div class="sim-inputs">`;
-  html += `<label>Koszt (z\u0142):</label><input type="number" class="sim-cost-input" data-district="${row.district}" value="${simCost}" placeholder="np. 200000" min="0">`;
-  if (simActive) html += `<button class="sim-reset" data-district="${row.district}">Wy\u0142\u0105cz symulacj\u0119</button>`;
-  html += `</div>`;
-  html += `<div class="sim-results">${buildSimResults(row)}</div>`;
-  html += `</div>`;
-
   // Per-year project lists — always visible
   html += `<div class="projects-section">${buildProjectsSection(row)}</div>`;
 
@@ -804,29 +829,28 @@ function buildDetailPanel(row) {
   return html;
 }
 
-// ── Build sim results table (inside sim box) ──
+// ── Build sim results table (inside detail panel) ──
 function buildSimResults(row) {
-  const sim = simData[row.district];
-  if (!sim || sim.cost <= 0) return '';
+  if (globalSimCost <= 0) return '';
 
   const yd = row.yearData;
   const results = [];
   for (const year of YEARS) {
     const y = yd[year];
     if (!y || y.projects.length === 0) { results.push({ year, minVotes: null }); continue; }
-    const { minVotes } = findMinVotesToWin(y, sim.cost);
+    const { minVotes } = findMinVotesToWin(y, globalSimCost);
     results.push({ year, minVotes });
   }
 
   // Find min and max among years that have a result
   const valid = results.filter(r => r.minVotes != null);
-  if (valid.length === 0) return '<div style="color:var(--text-muted);font-size:0.75rem;margin-top:0.5rem;">Koszt przekracza bud\u017cet we wszystkich latach.</div>';
+  if (valid.length === 0) return `<div style="color:var(--text-muted);font-size:0.75rem;">Koszt przekracza bud\u017cet we wszystkich latach.</div>`;
 
   const minVal = Math.min(...valid.map(r => r.minVotes));
   const maxVal = Math.max(...valid.map(r => r.minVotes));
   const showMinMax = valid.length > 1 && minVal !== maxVal;
 
-  let html = `<table class="year-table sim-results-table" style="margin-top:0.5rem;width:auto;max-width:280px;">
+  let html = `<table class="year-table sim-results-table" style="margin-top:0.3rem;width:auto;max-width:280px;">
     <thead><tr>
       <th>Rok</th>
       <th class="num">Min. g\u0142os\u00f3w</th>
@@ -849,12 +873,14 @@ function buildSimResults(row) {
 // ── Build just the projects section (can be re-rendered independently for simulator) ──
 function buildProjectsSection(row) {
   const yd = row.yearData;
-  const sim = simData[row.district];
-  const simActive = sim && sim.cost > 0;
+  const simActive = globalSimCost > 0;
 
   let html = '<div class="projects-section-title">Projekty</div>';
   html += `<div class="all-projects-container${simActive ? ' sim-active' : ''}">`;
-  if (simActive) html += '<div class="sim-active-label">Symulacja</div>';
+  if (simActive) {
+    html += `<div class="sim-active-label">Symulacja \u2014 projekt za ${fmt(globalSimCost)}</div>`;
+    html += buildSimResults(row);
+  }
   for (const year of YEARS) {
     const y = yd[year];
     if (!y || y.projects.length === 0) continue;
@@ -862,7 +888,7 @@ function buildProjectsSection(row) {
     const carryoverNote = y.carryover > 0 ? `, reszta: ${fmt(y.carryover)}` : '';
 
     if (simActive) {
-      const { minVotes, simList } = findMinVotesToWin(y, sim.cost);
+      const { minVotes, simList } = findMinVotesToWin(y, globalSimCost);
 
       if (minVotes == null) {
         // Cost exceeds budget — show without sim
@@ -882,7 +908,7 @@ function buildProjectsSection(row) {
         html += '</ul></div>';
       } else {
         // Re-run sim at the computed minVotes to get the ordered list
-        const list = simulateYear(y, minVotes, sim.cost);
+        const list = simulateYear(y, minVotes, globalSimCost);
         // Calculate remaining budget after sim
         let simRemaining = y.budget;
         for (const p of list) { if (p._won) simRemaining -= p.cost; }
@@ -981,6 +1007,33 @@ document.getElementById('filter-input').addEventListener('input', (e) => {
   filterText = e.target.value;
   renderTable();
 });
+
+// ── Global simulator ──
+{
+  const simInput = document.getElementById('global-sim-input');
+  const simBar = document.getElementById('global-sim-bar');
+  const simReset = document.getElementById('global-sim-reset');
+  let debounceTimer = null;
+
+  simInput.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      globalSimCost = parseFloat(simInput.value) || 0;
+      const active = globalSimCost > 0;
+      simBar.classList.toggle('sim-on', active);
+      simReset.style.display = active ? '' : 'none';
+      renderTable();
+    }, 400);
+  });
+
+  simReset.addEventListener('click', () => {
+    globalSimCost = 0;
+    simInput.value = '';
+    simBar.classList.remove('sim-on');
+    simReset.style.display = 'none';
+    renderTable();
+  });
+}
 
 // ── Init ──
 async function main() {

@@ -530,7 +530,10 @@ function computeRanking(type) {
   for (const year of YEARS) {
     const ydata = allData[year];
     if (!ydata) continue;
-    for (const [name, d] of Object.entries(ydata.districts)) {
+    // Combine districts + citywide (as "Ogólnomiejski")
+    const entries = Object.entries(ydata.districts);
+    if (ydata.citywide) entries.push(['Og\u00f3lnomiejski', ydata.citywide]);
+    for (const [name, d] of entries) {
       if (!districts[name]) districts[name] = { name, years: {} };
 
       const projects = d[`projects_${type}`] || [];

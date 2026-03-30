@@ -889,12 +889,7 @@ function runMonteCarlo(costs, budget, simCost, params, nIter) {
 }
 
 function computeMCCurve(costs, budget, params, nIter) {
-  let step;
-  if (budget <= 200000) step = 2000;
-  else if (budget <= 500000) step = 2000;
-  else if (budget <= 1000000) step = 4000;
-  else if (budget <= 3000000) step = 10000;
-  else step = 20000;
+  const step = 2000;
   const points = [];
   for (let cost = step; cost <= budget; cost += step) {
     const winRate = runMonteCarlo(costs, budget, cost, params, nIter);

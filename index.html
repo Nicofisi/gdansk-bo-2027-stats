@@ -942,16 +942,16 @@ self.onmessage = function(e) {
   const d = e.data;
   if (d.type === "bisect") {
     // Lightweight threshold refinement using cached curve bounds
-    const exact = findExactThreshold(d.mcPoints, d.costs, d.budget, d.params, d.nIter || 5000, d.threshold);
+    const exact = findExactThreshold(d.mcPoints, d.costs, d.budget, d.params, d.nIter || 10000, d.threshold);
     self.postMessage({ type: "bisect", district: d.district, budgetType: d.budgetType, threshold: d.threshold, maxCostExact: exact });
     return;
   }
   // Default: full curve + bisect
   const { district, budgetType, costs, budget, params, nIter, threshold } = d;
-  const mcPoints = computeMCCurve(costs, budget, params, nIter || 5000);
+  const mcPoints = computeMCCurve(costs, budget, params, nIter || 10000);
   let maxCostExact = null;
   if (threshold != null && threshold > 0) {
-    maxCostExact = findExactThreshold(mcPoints, costs, budget, params, nIter || 5000, threshold);
+    maxCostExact = findExactThreshold(mcPoints, costs, budget, params, nIter || 10000, threshold);
   }
   self.postMessage({ district, budgetType, mcPoints, maxCostExact, threshold });
 };
@@ -1035,7 +1035,7 @@ function scheduleAllMCWorkers(boR, boType, zboR, zboType) {
         district: r.district, budgetType: boType,
         costs: r.projects.map(p => p.total_cost || 0),
         budget: r.budget,
-        params: MC_PARAMS_BO, nIter: 5000,
+        params: MC_PARAMS_BO, nIter: 10000,
         threshold: mcThreshold,
       });
     }
@@ -1046,7 +1046,7 @@ function scheduleAllMCWorkers(boR, boType, zboR, zboType) {
         district: r.district, budgetType: zboType,
         costs: r.projects.map(p => p.total_cost || 0),
         budget: r.budget,
-        params: MC_PARAMS_ZBO, nIter: 5000,
+        params: MC_PARAMS_ZBO, nIter: 10000,
         threshold: mcThreshold,
       });
     }
@@ -1080,7 +1080,7 @@ function refineBisectAll(threshold) {
         district: r.district, budgetType,
         costs: r.projects.map(p => p.total_cost || 0),
         budget: r.budget,
-        params: paramObj, nIter: 5000,
+        params: paramObj, nIter: 10000,
         threshold,
         mcPoints: cached.mc,
       });
@@ -1294,7 +1294,7 @@ function scheduleMC(row, budgetType) {
     district: row.district, budgetType,
     costs: row.projects.map(p => p.total_cost || 0),
     budget: row.budget,
-    params, nIter: 5000,
+    params, nIter: 10000,
     threshold: mcThreshold,
   };
   // Remove any existing queued job for this district (avoid duplicates)

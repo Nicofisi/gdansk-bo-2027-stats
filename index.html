@@ -151,6 +151,176 @@
     margin-left: 0.5rem;
   }
 
+  /* Recommender toggle */
+  .toggle-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    margin-bottom: 0.6rem;
+    flex-wrap: wrap;
+  }
+  .toggle-bar label {
+    font-size: 0.85rem;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .switch {
+    position: relative;
+    width: 36px;
+    height: 20px;
+    display: inline-block;
+  }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .switch .slider {
+    position: absolute;
+    inset: 0;
+    background: var(--border);
+    border-radius: 20px;
+    transition: 0.2s;
+    cursor: pointer;
+  }
+  .switch .slider::before {
+    content: '';
+    position: absolute;
+    width: 14px; height: 14px;
+    left: 3px; bottom: 3px;
+    background: var(--text);
+    border-radius: 50%;
+    transition: 0.2s;
+  }
+  .switch input:checked + .slider { background: #8957e5; }
+  .switch input:checked + .slider::before { transform: translateX(16px); }
+  .rec-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  .mc-th-input {
+    width: 3.2em;
+    background: var(--bg);
+    border: 1px solid #8957e5;
+    border-radius: 3px;
+    color: var(--text);
+    font-size: 0.7rem;
+    padding: 1px 4px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    margin: 0 2px;
+    -moz-appearance: textfield;
+  }
+  .mc-th-input::-webkit-inner-spin-button,
+  .mc-th-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .mc-th-input:focus { outline: 1px solid #b084f6; border-color: #b084f6; }
+
+  /* Recommender panel inside expanded district */
+  .rec-panel {
+    margin-top: 0.8rem;
+    border: 1px solid #8957e5;
+    border-radius: 6px;
+    padding: 0.8rem 1rem;
+    background: rgba(137,87,229,0.06);
+  }
+  .rec-panel h4 {
+    font-size: 0.8rem;
+    color: #8957e5;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .rec-safe {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+  .rec-safe strong { color: var(--green); }
+  .rec-scenarios {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 0.8rem 0;
+  }
+  .rec-scenarios li {
+    font-size: 0.8rem;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid rgba(48,54,61,0.5);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.4rem;
+  }
+  .rec-scenarios li:last-child { border-bottom: none; }
+  .rec-scenario-label { color: var(--text-muted); }
+  .rec-scenario-value { color: #d2a8ff; font-weight: 600; }
+  .rec-scenario-names { color: var(--text-muted); font-size: 0.75rem; width: 100%; }
+
+  /* MC chart */
+  .rec-chart-wrap {
+    margin-top: 0.8rem;
+    position: relative;
+  }
+  .rec-chart-title {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.3rem;
+  }
+  .rec-chart-canvas {
+    width: 100%;
+    height: 180px;
+    border-radius: 4px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    cursor: crosshair;
+  }
+  .rec-chart-tooltip {
+    position: absolute;
+    pointer-events: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    color: var(--text);
+    white-space: nowrap;
+    z-index: 10;
+    display: none;
+  }
+  .rec-computing {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-style: italic;
+    padding: 1rem 0;
+  }
+
+  /* Recommendation column in table */
+  .rec-col { min-width: 180px; white-space: nowrap; }
+  .rec-cell-safe { color: var(--green); font-weight: 600; font-size: 0.8rem; white-space: nowrap; }
+  .rec-cell-tag {
+    display: inline-block;
+    font-size: 0.6rem;
+    padding: 0px 4px;
+    border-radius: 3px;
+    font-weight: 700;
+    text-transform: uppercase;
+    vertical-align: middle;
+    margin-right: 0.2rem;
+    letter-spacing: 0.02em;
+  }
+  .rec-tag-sure { background: rgba(63,185,80,0.15); color: var(--green); }
+  .rec-tag-cond { background: rgba(210,169,34,0.15); color: var(--yellow); }
+  .rec-cell-hint { color: var(--text-muted); font-size: 0.7rem; display: block; white-space: nowrap; }
+  .rec-cell-cond { color: var(--yellow); font-weight: 600; font-size: 0.8rem; }
+  .rec-cell-free { color: #8957e5; font-weight: 600; }
+  .mc-col { min-width: 140px; white-space: nowrap; }
+  .mc-cell-val { color: #d2a8ff; font-weight: 600; font-size: 0.8rem; }
+  .mc-cell-none { color: var(--text-muted); font-size: 0.75rem; font-style: italic; }
+  .mc-cell-computing { color: var(--text-muted); font-size: 0.7rem; font-style: italic; }
+
   .expand-icon {
     display: inline-block;
     width: 1.2em;
@@ -264,6 +434,22 @@
 
 <div class="summary" id="summary"></div>
 
+<div class="toggle-bar" id="settings-bar" style="display:none;">
+  <label>
+    <span class="switch"><input type="checkbox" id="decimal-toggle"><span class="slider"></span></span>
+    Grosze
+  </label>
+  <span class="rec-hint">Pokaż dokładne kwoty z miejscami po przecinku</span>
+</div>
+
+<div class="toggle-bar" id="rec-toggle-bar" style="display:none;">
+  <label>
+    <span class="switch"><input type="checkbox" id="rec-toggle"><span class="slider"></span></span>
+    Tryb rekomendacji
+  </label>
+  <span class="rec-hint">Analiza optymalnego kosztu projektu z min. 100 głosami (Monte Carlo + scenariusze)</span>
+</div>
+
 <h2><span class="badge-bo">&#9679;</span> Budżet Obywatelski (zwykły)</h2>
 <p style="color:var(--text-muted);font-size:0.8rem;margin-bottom:0.8rem;">Kliknij dzielnicę, żeby rozwinąć listę projektów</p>
 <div class="legend">
@@ -318,15 +504,36 @@
 
 <script>
 const DISTRICT_MAP = {
-  "Orunia Górna-Gdańsk Południe": "Orunia Górna - Gdańsk Południe",
-  "Śródmieście": "Środmieście",
+  "Orunia G\u00f3rna-Gda\u0144sk Po\u0142udnie": "Orunia G\u00f3rna - Gda\u0144sk Po\u0142udnie",
+  "\u015ar\u00f3dmie\u015bcie": "\u015arodmie\u015bcie",
 };
 
 const REFRESH_HOURS = 2;
+const MIN_VOTES = 100;
+
+/* ── Utility ─────────────────────────────────────────── */
+let showDecimals = false;
 
 function norm(d) { return DISTRICT_MAP[d] || d; }
-function fmt(n) { return n.toLocaleString('pl-PL', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' zł'; }
-
+// fmt: default formatting (with decimals toggle)
+function fmt(n) {
+  if (showDecimals) return n.toLocaleString('pl-PL', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '\u00a0z\u0142';
+  return Math.round(n).toLocaleString('pl-PL', {maximumFractionDigits: 0}) + '\u00a0z\u0142';
+}
+// fmtUp: round UP (for competitor project costs — safe overestimate)
+function fmtUp(n) {
+  if (showDecimals) return n.toLocaleString('pl-PL', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '\u00a0z\u0142';
+  return Math.ceil(n).toLocaleString('pl-PL', {maximumFractionDigits: 0}) + '\u00a0z\u0142';
+}
+// fmtDown: round DOWN (for budgets/remaining — safe underestimate)
+function fmtDown(n) {
+  if (showDecimals) return n.toLocaleString('pl-PL', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '\u00a0z\u0142';
+  return Math.floor(n).toLocaleString('pl-PL', {maximumFractionDigits: 0}) + '\u00a0z\u0142';
+}
+function fmtK(n) {
+  if (n >= 1000) return (n / 1000).toLocaleString('pl-PL', {minimumFractionDigits: 0, maximumFractionDigits: 1}) + 'k';
+  return n.toLocaleString('pl-PL', {maximumFractionDigits: 0});
+}
 function pctClass(pct) {
   if (pct < 50) return 'pct-low';
   if (pct < 100) return 'pct-med';
@@ -338,7 +545,7 @@ function timeAgo(date) {
   const now = new Date();
   const diffMs = now - date;
   const mins = Math.floor(diffMs / 60000);
-  if (mins < 1) return 'przed chwilą';
+  if (mins < 1) return 'przed chwil\u0105';
   if (mins < 60) return `${mins} min temu`;
   const hours = Math.floor(mins / 60);
   if (hours < 24) return `${hours} godz. temu`;
@@ -346,26 +553,581 @@ function timeAgo(date) {
   return `${days} dn. temu`;
 }
 
+/* ── Gap Analysis (brute force 2^n) ──────────────────── */
+/*
+  For each subset of projects that could potentially "not pass" (get <100 votes),
+  compute what remains in the budget after the rest pass via greedy worst-case.
+  
+  Worst case ordering for remaining budget: we want to MINIMIZE remaining budget
+  = MAXIMIZE budget consumed. This is the subset-sum / knapsack maximum.
+  
+  With <=20 projects we can brute-force 2^n subsets of the "active" set to find
+  the maximum sum that fits in budget. Then remaining = budget - maxSum.
+  
+  For scenario analysis: we remove 1-3 "interesting" projects and recompute.
+*/
+
+function maxSubsetSum(costs, budget) {
+  // Returns the maximum sum of a subset of costs that fits within budget
+  // Brute force 2^n — safe for n <= 20
+  const n = costs.length;
+  if (n === 0) return 0;
+  if (n > 20) {
+    // Fallback: greedy by cost desc (approximation)
+    const sorted = [...costs].sort((a, b) => b - a);
+    let sum = 0;
+    for (const c of sorted) {
+      if (sum + c <= budget) sum += c;
+    }
+    return sum;
+  }
+  let maxSum = 0;
+  const limit = 1 << n;
+  for (let mask = 0; mask < limit; mask++) {
+    let sum = 0;
+    for (let i = 0; i < n; i++) {
+      if (mask & (1 << i)) {
+        sum += costs[i];
+        if (sum > budget) break; // prune
+      }
+    }
+    if (sum <= budget && sum > maxSum) maxSum = sum;
+  }
+  return maxSum;
+}
+
+function computeGapAnalysis(districtProjects, budget) {
+  const projects = districtProjects.map(p => ({
+    title: p.title || 'Bez tytu\u0142u',
+    cost: p.total_cost || 0,
+    seq: p.seq || 0,
+  })).filter(p => p.cost > 0 && p.cost <= budget);
+
+  const allCosts = projects.map(p => p.cost);
+
+  // Baseline: worst-case remaining (all projects pass, maximize consumption)
+  const baselineConsumed = maxSubsetSum(allCosts, budget);
+  const baselineRemaining = budget - baselineConsumed;
+
+  // Scenarios: remove each project (or pairs of top projects) and recompute
+  const scenarios = [];
+
+  // Single removals
+  for (let i = 0; i < projects.length; i++) {
+    const costsWithout = allCosts.filter((_, j) => j !== i);
+    const consumed = maxSubsetSum(costsWithout, budget);
+    const remaining = budget - consumed;
+    const gain = remaining - baselineRemaining;
+    if (gain > budget * 0.05) { // at least 5% of budget gained
+      scenarios.push({
+        type: 'single',
+        removed: [projects[i]],
+        remaining,
+        gain,
+        safeCost: Math.floor(remaining),
+      });
+    }
+  }
+
+  // Pair removals (only top 5 by cost to limit combinations)
+  const topIdx = projects.map((p, i) => ({ i, cost: p.cost }))
+    .sort((a, b) => b.cost - a.cost)
+    .slice(0, 5)
+    .map(x => x.i);
+
+  for (let a = 0; a < topIdx.length; a++) {
+    for (let b = a + 1; b < topIdx.length; b++) {
+      const ia = topIdx[a], ib = topIdx[b];
+      const costsWithout = allCosts.filter((_, j) => j !== ia && j !== ib);
+      const consumed = maxSubsetSum(costsWithout, budget);
+      const remaining = budget - consumed;
+      const gain = remaining - baselineRemaining;
+      // Only show if significantly better than best single removal
+      const bestSingle = scenarios.filter(s => s.type === 'single').reduce((m, s) => Math.max(m, s.remaining), 0);
+      if (gain > budget * 0.05 && remaining > bestSingle * 1.15) {
+        scenarios.push({
+          type: 'pair',
+          removed: [projects[ia], projects[ib]],
+          remaining,
+          gain,
+          safeCost: Math.floor(remaining),
+        });
+      }
+    }
+  }
+
+  // Triple removals (only top 3)
+  const top3 = topIdx.slice(0, 3);
+  if (top3.length === 3) {
+    const costsWithout = allCosts.filter((_, j) => !top3.includes(j));
+    const consumed = maxSubsetSum(costsWithout, budget);
+    const remaining = budget - consumed;
+    const gain = remaining - baselineRemaining;
+    const bestPair = scenarios.filter(s => s.type === 'pair').reduce((m, s) => Math.max(m, s.remaining), 0);
+    if (gain > budget * 0.05 && remaining > Math.max(bestPair, baselineRemaining) * 1.1) {
+      scenarios.push({
+        type: 'triple',
+        removed: [projects[top3[0]], projects[top3[1]], projects[top3[2]]],
+        remaining,
+        gain,
+        safeCost: Math.floor(remaining),
+      });
+    }
+  }
+
+  // Sort: fewest removals first, then by safeCost desc
+  scenarios.sort((a, b) => a.removed.length - b.removed.length || b.safeCost - a.safeCost);
+
+  return {
+    baselineRemaining: Math.floor(baselineRemaining),
+    scenarios: scenarios.slice(0, 3),
+    projectCount: projects.length,
+  };
+}
+
+/* ── Canvas chart rendering ──────────────────────────── */
+function renderMCChart(canvas, mcPoints, budget) {
+  if (!mcPoints || mcPoints.length === 0) return;
+
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  const W = rect.width;
+  const H = rect.height;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const pad = { top: 20, right: 20, bottom: 35, left: 45 };
+  const cw = W - pad.left - pad.right;
+  const ch = H - pad.top - pad.bottom;
+
+  // Background
+  ctx.fillStyle = '#0d1117';
+  ctx.fillRect(0, 0, W, H);
+
+  // Grid
+  ctx.strokeStyle = '#30363d';
+  ctx.lineWidth = 0.5;
+  for (let y = 0; y <= 100; y += 20) {
+    const py = pad.top + ch - (y / 100) * ch;
+    ctx.beginPath();
+    ctx.moveTo(pad.left, py);
+    ctx.lineTo(pad.left + cw, py);
+    ctx.stroke();
+  }
+
+  // Y axis labels
+  ctx.fillStyle = '#8b949e';
+  ctx.font = '10px -apple-system, sans-serif';
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'middle';
+  for (let y = 0; y <= 100; y += 20) {
+    const py = pad.top + ch - (y / 100) * ch;
+    ctx.fillText(y + '%', pad.left - 5, py);
+  }
+
+  // X axis labels
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  const xSteps = budget <= 200000 ? 5 : budget <= 500000 ? 6 : 8;
+  for (let i = 0; i <= xSteps; i++) {
+    const val = (budget / xSteps) * i;
+    const px = pad.left + (val / budget) * cw;
+    ctx.fillText(fmtK(Math.round(val)), px, pad.top + ch + 5);
+    // Vertical grid
+    ctx.beginPath();
+    ctx.moveTo(px, pad.top);
+    ctx.lineTo(px, pad.top + ch);
+    ctx.stroke();
+  }
+
+  // X axis title
+  ctx.fillStyle = '#8b949e';
+  ctx.font = '9px -apple-system, sans-serif';
+  ctx.fillText('koszt projektu (z\u0142)', pad.left + cw / 2, pad.top + ch + 22);
+
+  // Y axis title
+  ctx.save();
+  ctx.translate(10, pad.top + ch / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('szansa wygranej', 0, 0);
+  ctx.restore();
+
+  // Line chart
+  ctx.strokeStyle = '#8957e5';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  let started = false;
+  for (const pt of mcPoints) {
+    const px = pad.left + (pt.cost / budget) * cw;
+    const py = pad.top + ch - pt.winRate * ch;
+    if (!started) { ctx.moveTo(px, py); started = true; }
+    else ctx.lineTo(px, py);
+  }
+  ctx.stroke();
+
+  // Dots
+  ctx.fillStyle = '#8957e5';
+  for (const pt of mcPoints) {
+    const px = pad.left + (pt.cost / budget) * cw;
+    const py = pad.top + ch - pt.winRate * ch;
+    ctx.beginPath();
+    ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Area fill
+  ctx.globalAlpha = 0.1;
+  ctx.fillStyle = '#8957e5';
+  ctx.beginPath();
+  for (let i = 0; i < mcPoints.length; i++) {
+    const pt = mcPoints[i];
+    const px = pad.left + (pt.cost / budget) * cw;
+    const py = pad.top + ch - pt.winRate * ch;
+    if (i === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+  // Close to bottom
+  const lastPt = mcPoints[mcPoints.length - 1];
+  ctx.lineTo(pad.left + (lastPt.cost / budget) * cw, pad.top + ch);
+  ctx.lineTo(pad.left + (mcPoints[0].cost / budget) * cw, pad.top + ch);
+  ctx.closePath();
+  ctx.fill();
+  ctx.globalAlpha = 1;
+
+  // 50% threshold line
+  const y50 = pad.top + ch - 0.5 * ch;
+  ctx.strokeStyle = '#d29922';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(pad.left, y50);
+  ctx.lineTo(pad.left + cw, y50);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#d29922';
+  ctx.font = '9px -apple-system, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'bottom';
+  ctx.fillText('50%', pad.left + 2, y50 - 2);
+
+  // Find and annotate the "sweet spot" — highest win rate cost
+  const best = mcPoints.reduce((a, b) => a.winRate > b.winRate ? a : b, mcPoints[0]);
+  if (best && best.winRate > 0) {
+    const bx = pad.left + (best.cost / budget) * cw;
+    const by = pad.top + ch - best.winRate * ch;
+    ctx.fillStyle = '#3fb950';
+    ctx.beginPath();
+    ctx.arc(bx, by, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#3fb950';
+    ctx.font = 'bold 9px -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText(`${fmtK(best.cost)} z\u0142 = ${(best.winRate*100).toFixed(0)}%`, bx, by - 6);
+  }
+
+  // Store chart geometry for hover tooltip
+  canvas._mcChart = { pad, cw, ch, budget, mcPoints };
+}
+
+/* ── Monte Carlo parameters (used by worker pool + scheduling) ── */
+const MC_PARAMS_BO  = { baseMu: 6.4, slope: 0.7, sigma: 0.8 };
+const MC_PARAMS_ZBO = { baseMu: 5.8, slope: 0.7, sigma: 0.8 };
+
+/* ── Web Worker pool for Monte Carlo ─────────────────── */
+const mcWorkerBlob = new Blob([`
+"use strict";
+const MIN_VOTES = 100;
+const MC_FAIL_RATE = 0.08;
+
+function randNormal(mu, sigma) {
+  let u, v, s;
+  do {
+    u = Math.random() * 2 - 1;
+    v = Math.random() * 2 - 1;
+    s = u * u + v * v;
+  } while (s >= 1 || s === 0);
+  const m = Math.sqrt(-2 * Math.log(s) / s);
+  return mu + sigma * u * m;
+}
+
+function sampleVotes(costRatio, params) {
+  if (costRatio <= 0) costRatio = 0.01;
+  if (Math.random() < MC_FAIL_RATE) {
+    return Math.floor(Math.random() * MIN_VOTES);
+  }
+  const mu = params.baseMu + params.slope * Math.log(costRatio);
+  const lnV = randNormal(mu, params.sigma);
+  return Math.max(0, Math.round(Math.exp(lnV)));
+}
+
+function runMonteCarlo(costs, budget, simCost, params, nIter) {
+  if (simCost > budget || simCost <= 0) return 0;
+  let wins = 0;
+  for (let i = 0; i < nIter; i++) {
+    const all = [];
+    for (let j = 0; j < costs.length; j++) {
+      const costRatio = costs[j] / budget;
+      const votes = sampleVotes(costRatio, params);
+      all.push({ cost: costs[j], votes, _sim: false });
+    }
+    all.push({ cost: simCost, votes: MIN_VOTES, _sim: true });
+    all.sort((a, b) => b.votes - a.votes || (a._sim ? 1 : 0) - (b._sim ? 1 : 0) || a.cost - b.cost);
+    let rem = budget;
+    let simWon = false;
+    for (const p of all) {
+      if (p.votes >= MIN_VOTES && p.cost <= rem) {
+        rem -= p.cost;
+        if (p._sim) { simWon = true; break; }
+      }
+    }
+    if (simWon) wins++;
+  }
+  return wins / nIter;
+}
+
+function computeMCCurve(costs, budget, params, nIter) {
+  let step;
+  if (budget <= 200000) step = 2000;
+  else if (budget <= 500000) step = 2000;
+  else if (budget <= 1000000) step = 4000;
+  else if (budget <= 3000000) step = 10000;
+  else step = 20000;
+  const points = [];
+  for (let cost = step; cost <= budget; cost += step) {
+    const winRate = runMonteCarlo(costs, budget, cost, params, nIter);
+    points.push({ cost, winRate });
+  }
+  if (budget % step !== 0) {
+    const winRate = runMonteCarlo(costs, budget, budget, params, nIter);
+    points.push({ cost: budget, winRate });
+  }
+  return points;
+}
+
+/* Binary search: find max cost (to 1 zl) where winRate >= threshold.
+   lo/hi are cost bounds where we know winRate crosses the threshold. */
+function bisectThreshold(costs, budget, params, nIter, threshold, lo, hi) {
+  // lo: winRate >= threshold, hi: winRate < threshold (or hi > budget)
+  while (hi - lo > 1) {
+    const mid = Math.floor((lo + hi) / 2);
+    const wr = runMonteCarlo(costs, budget, mid, params, nIter);
+    if (wr >= threshold) lo = mid;
+    else hi = mid;
+  }
+  return lo;
+}
+
+/* Find crossing bounds from coarse MC curve, then bisect */
+function findExactThreshold(mcPoints, costs, budget, params, nIter, threshold) {
+  if (!mcPoints || mcPoints.length === 0) return null;
+  // Find the rightmost point where winRate >= threshold
+  let lastAbove = -1;
+  for (let i = 0; i < mcPoints.length; i++) {
+    if (mcPoints[i].winRate >= threshold) lastAbove = i;
+  }
+  if (lastAbove === -1) return 0; // never reaches threshold
+  // If last point of curve is still above threshold, answer is budget
+  if (lastAbove === mcPoints.length - 1) return mcPoints[lastAbove].cost;
+  // Bisect between lastAbove and the next point
+  const lo = mcPoints[lastAbove].cost;
+  const hi = mcPoints[lastAbove + 1].cost;
+  if (hi - lo <= 1) return lo;
+  return bisectThreshold(costs, budget, params, nIter, threshold, lo, hi);
+}
+
+self.onmessage = function(e) {
+  const d = e.data;
+  if (d.type === "bisect") {
+    // Lightweight threshold refinement using cached curve bounds
+    const exact = findExactThreshold(d.mcPoints, d.costs, d.budget, d.params, d.nIter || 5000, d.threshold);
+    self.postMessage({ type: "bisect", district: d.district, budgetType: d.budgetType, threshold: d.threshold, maxCostExact: exact });
+    return;
+  }
+  // Default: full curve + bisect
+  const { district, budgetType, costs, budget, params, nIter, threshold } = d;
+  const mcPoints = computeMCCurve(costs, budget, params, nIter || 5000);
+  let maxCostExact = null;
+  if (threshold != null && threshold > 0) {
+    maxCostExact = findExactThreshold(mcPoints, costs, budget, params, nIter || 5000, threshold);
+  }
+  self.postMessage({ district, budgetType, mcPoints, maxCostExact, threshold });
+};
+`], { type: 'application/javascript' });
+const mcWorkerURL = URL.createObjectURL(mcWorkerBlob);
+
+const MC_POOL_SIZE = navigator.hardwareConcurrency || 4;
+let mcWorkers = [];
+let mcIdleWorkers = [];
+let mcPendingQueue = [];  // [{district, budgetType, costs, budget, params, nIter}]
+let mcPoolReady = false;
+
+function initMCPool() {
+  if (mcPoolReady) return;
+  for (let i = 0; i < MC_POOL_SIZE; i++) {
+    const w = new Worker(mcWorkerURL);
+    w.onmessage = onWorkerResult;
+    mcWorkers.push(w);
+    mcIdleWorkers.push(w);
+  }
+  mcPoolReady = true;
+}
+
+function onWorkerResult(e) {
+  const d = e.data;
+  const cacheKey = d.district + '|' + d.budgetType;
+  if (!recCache[cacheKey]) recCache[cacheKey] = {};
+
+  if (d.type === 'bisect') {
+    // Lightweight threshold refinement result
+    if (!recCache[cacheKey].exactThresholds) recCache[cacheKey].exactThresholds = {};
+    recCache[cacheKey].exactThresholds[d.threshold] = d.maxCostExact;
+  } else {
+    // Full curve result
+    recCache[cacheKey].mc = d.mcPoints;
+    if (d.maxCostExact != null && d.threshold != null) {
+      if (!recCache[cacheKey].exactThresholds) recCache[cacheKey].exactThresholds = {};
+      recCache[cacheKey].exactThresholds[d.threshold] = d.maxCostExact;
+    }
+  }
+
+  // Return worker to idle pool
+  mcIdleWorkers.push(e.target);
+
+  // Re-render tables to update MC column
+  if (recEnabled && _renderBo && _renderZbo) {
+    _renderBo();
+    _renderZbo();
+  }
+
+  // Dispatch next from queue
+  dispatchNextMC();
+}
+
+function dispatchNextMC() {
+  while (mcIdleWorkers.length > 0 && mcPendingQueue.length > 0) {
+    const job = mcPendingQueue.shift();
+    const ck = job.district + '|' + job.budgetType;
+    // Skip if already cached (curve jobs only; bisect jobs always run)
+    if (!job.type && recCache[ck]?.mc) continue;
+    if (job.type === 'bisect' && recCache[ck]?.exactThresholds?.[job.threshold] != null) continue;
+    const w = mcIdleWorkers.pop();
+    w.postMessage(job);
+  }
+  // Clear bisect pending flag when queue is empty and all workers idle
+  if (mcBisectPending && mcPendingQueue.length === 0 && mcIdleWorkers.length === mcWorkers.length) {
+    mcBisectPending = false;
+    if (recEnabled && _renderBo && _renderZbo) {
+      _renderBo();
+      _renderZbo();
+    }
+  }
+}
+
+function scheduleAllMCWorkers(boR, boType, zboR, zboType) {
+  initMCPool();
+  const queue = [];
+  for (const r of boR) {
+    if (r.count > 0 && !recCache[r.district + '|' + boType]?.mc) {
+      queue.push({
+        district: r.district, budgetType: boType,
+        costs: r.projects.map(p => p.total_cost || 0),
+        budget: r.budget,
+        params: MC_PARAMS_BO, nIter: 5000,
+        threshold: mcThreshold,
+      });
+    }
+  }
+  for (const r of zboR) {
+    if (r.count > 0 && !recCache[r.district + '|' + zboType]?.mc) {
+      queue.push({
+        district: r.district, budgetType: zboType,
+        costs: r.projects.map(p => p.total_cost || 0),
+        budget: r.budget,
+        params: MC_PARAMS_ZBO, nIter: 5000,
+        threshold: mcThreshold,
+      });
+    }
+  }
+  mcPendingQueue = queue;
+  dispatchNextMC();
+}
+
+// Render function references (set after renderTable calls)
+let _renderBo = null;
+let _renderZbo = null;
+
+// Row data references (set after buildRows calls, for bisect dispatch)
+let _boRows = null;
+let _zboRows = null;
+
+/* Dispatch bisect refinement jobs for all districts with cached MC curves
+   but missing exact value for the given threshold */
+function refineBisectAll(threshold) {
+  initMCPool();
+  const jobs = [];
+  function addJobs(rows, budgetType, paramObj) {
+    for (const r of rows) {
+      if (r.count === 0) continue;
+      const ck = r.district + '|' + budgetType;
+      const cached = recCache[ck];
+      if (!cached?.mc) continue; // no coarse curve yet
+      if (cached.exactThresholds?.[threshold] != null) continue; // already have it
+      jobs.push({
+        type: 'bisect',
+        district: r.district, budgetType,
+        costs: r.projects.map(p => p.total_cost || 0),
+        budget: r.budget,
+        params: paramObj, nIter: 5000,
+        threshold,
+        mcPoints: cached.mc,
+      });
+    }
+  }
+  if (_boRows) addJobs(_boRows, 'budget_bo', MC_PARAMS_BO);
+  if (_zboRows) addJobs(_zboRows, 'budget_zbo', MC_PARAMS_ZBO);
+  if (jobs.length > 0) {
+    mcBisectPending = true;
+  }
+  // Prepend to queue for priority
+  mcPendingQueue = jobs.concat(mcPendingQueue);
+  dispatchNextMC();
+}
+
+/* ── Recommender state ───────────────────────────────── */
+let recEnabled = false;
+let mcThreshold = 0.95; // min acceptable win probability
+let mcBisectPending = false; // true while bisect refinements are in flight
+const recCache = {}; // key: "district|budgetType" -> { gap, mc }
+
+/* Find max cost where winRate >= threshold (scanning from high to low) */
+function maxCostAtThreshold(mcPoints, threshold) {
+  if (!mcPoints || mcPoints.length === 0) return null;
+  // MC points are sorted by cost ascending; scan from high cost downward
+  for (let i = mcPoints.length - 1; i >= 0; i--) {
+    if (mcPoints[i].winRate >= threshold) return mcPoints[i].cost;
+  }
+  return 0; // threshold not reachable even at lowest cost
+}
+
+/* ── Refresh info ────────────────────────────────────── */
 function renderRefreshInfo(meta) {
   const el = document.getElementById('refresh-info');
   if (!meta || !meta.last_updated) {
     el.innerHTML = 'Brak informacji o czasie aktualizacji';
     return;
   }
-
   const lastUpdate = new Date(meta.last_updated);
   const now = new Date();
   const diffHours = (now - lastUpdate) / 3600000;
   const intervalH = meta.refresh_interval_hours || REFRESH_HOURS;
-
-  // Next update
   const nextUpdate = new Date(lastUpdate.getTime() + intervalH * 3600000);
   const nextDiffMs = nextUpdate - now;
-
   let dotClass = 'dot-fresh';
   if (diffHours > intervalH * 2) dotClass = 'dot-old';
   else if (diffHours > intervalH) dotClass = 'dot-stale';
-
   let nextText;
   if (nextDiffMs <= 0) {
     nextText = 'w trakcie lub lada moment';
@@ -374,17 +1136,16 @@ function renderRefreshInfo(meta) {
     if (nextMins < 60) nextText = `za ~${nextMins} min`;
     else nextText = `za ~${Math.floor(nextMins / 60)} godz.`;
   }
-
   const opts = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' };
   const formatted = lastUpdate.toLocaleDateString('pl-PL', opts);
-
   el.innerHTML = `
     <span><span class="dot ${dotClass}"></span> Ostatnia aktualizacja: <strong>${formatted}</strong> (${timeAgo(lastUpdate)})</span>
-    <span>Następna: ${nextText}</span>
-    <span>${meta.project_count || '?'} projektów w bazie</span>
+    <span>Nast\u0119pna: ${nextText}</span>
+    <span>${meta.project_count || '?'} projekt\u00f3w w bazie</span>
   `;
 }
 
+/* ── Build rows ──────────────────────────────────────── */
 function buildRows(budgets, projects, budgetKey) {
   const costs = {}, counts = {}, districtProjects = {};
   for (const p of projects) {
@@ -397,7 +1158,6 @@ function buildRows(budgets, projects, budgetKey) {
     if (!districtProjects[d]) districtProjects[d] = [];
     districtProjects[d].push(p);
   }
-
   const rows = [];
   for (const [district, data] of Object.entries(budgets)) {
     const budget = data[budgetKey] || 0;
@@ -412,19 +1172,279 @@ function buildRows(budgets, projects, budgetKey) {
   return rows;
 }
 
-function renderTable(tableId, rows) {
+/* ── Recommender HTML for expanded panel ─────────────── */
+function buildRecPanelHTML(row, budgetType) {
+  const cacheKey = row.district + '|' + budgetType;
+  let gap = recCache[cacheKey]?.gap;
+  if (!gap) {
+    gap = computeGapAnalysis(row.projects, row.budget);
+    if (!recCache[cacheKey]) recCache[cacheKey] = {};
+    recCache[cacheKey].gap = gap;
+  }
+
+  let html = '<div class="rec-panel">';
+  html += '<h4>\u26a1 Rekomendacja kosztowa</h4>';
+
+  if (row.count === 0) {
+    html += `<div class="rec-safe">Brak konkurencji \u2014 z\u0142\u00f3\u017c projekt za <strong>dowoln\u0105 kwot\u0119 do ${fmtDown(row.budget)}</strong> i wygra z min. 100 g\u0142osami.</div>`;
+    html += '</div>';
+    return html;
+  }
+
+  // Safe cost (baseline)
+  if (gap.baselineRemaining > 0) {
+    html += `<div class="rec-safe">Gwarantowany koszt: <strong>\u2264 ${fmtDown(gap.baselineRemaining)}</strong></div>`;
+    html += `<div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.5rem;">Wygra z min. 100 g\u0142osami nawet je\u015bli wszystkie inne projekty te\u017c przejd\u0105 (worst-case).</div>`;
+  } else {
+    const overSub = (row.spent / row.budget).toFixed(1);
+    html += `<div class="rec-safe" style="color:var(--yellow);">Brak gwarantowanego kosztu \u2014 konkurencja ${overSub}x bud\u017cetu. Sprawd\u017a wykres MC poni\u017cej.</div>`;
+  }
+
+  // Scenarios
+  if (gap.scenarios.length > 0) {
+    html += '<div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.5rem;margin-bottom:0.3rem;">Scenariusze warunkowe:</div>';
+    html += '<ul class="rec-scenarios">';
+    for (const s of gap.scenarios) {
+      const names = s.removed.map(p => {
+        const label = p.seq ? `#${p.seq}` : '';
+        const shortTitle = p.title.length > 40 ? p.title.slice(0, 40) + '\u2026' : p.title;
+        return `${label} ${shortTitle} (${fmtUp(p.cost)})`;
+      }).join(' + ');
+      const verb = s.removed.length === 1 ? 'nie przejdzie' : 'nie przejd\u0105';
+      html += `<li>
+        <span class="rec-scenario-label">Je\u015bli ${verb}:</span>
+        <span class="rec-scenario-value">\u2264 ${fmtDown(s.safeCost)}</span>
+        <span class="rec-scenario-names">${names}</span>
+      </li>`;
+    }
+    html += '</ul>';
+  }
+
+  // MC chart placeholder
+  html += '<div class="rec-chart-wrap">';
+  html += '<div class="rec-chart-title">Monte Carlo: szansa wygranej z 100 g\u0142osami vs koszt projektu</div>';
+  html += `<canvas class="rec-chart-canvas" data-district="${row.district}" data-budget-type="${budgetType}"></canvas>`;
+  html += '<div class="rec-chart-tooltip"></div>';
+  html += '<div class="rec-computing" data-mc-status="pending">Obliczanie symulacji Monte Carlo\u2026</div>';
+  html += '</div>';
+
+  html += '</div>';
+  return html;
+}
+
+/* Attach hover tooltip to a rendered MC canvas */
+function attachMCHover(canvas) {
+  if (canvas._mcHover) return; // already attached
+  const tooltip = canvas.parentElement.querySelector('.rec-chart-tooltip');
+  if (!tooltip) return;
+  canvas._mcHover = true;
+  canvas.addEventListener('mousemove', (e) => {
+    const info = canvas._mcChart;
+    if (!info) return;
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    const cx = mx - info.pad.left;
+    const cy = my - info.pad.top;
+    if (cx < 0 || cx > info.cw || cy < 0 || cy > info.ch) {
+      tooltip.style.display = 'none';
+      return;
+    }
+    const costAtMouse = (cx / info.cw) * info.budget;
+    let nearest = info.mcPoints[0], minDist = Infinity;
+    for (const pt of info.mcPoints) {
+      const d = Math.abs(pt.cost - costAtMouse);
+      if (d < minDist) { minDist = d; nearest = pt; }
+    }
+    tooltip.textContent = `${fmt(nearest.cost)} \u2192 ${(nearest.winRate * 100).toFixed(1)}% szans`;
+    const wrap = canvas.parentElement;
+    const wrapRect = wrap.getBoundingClientRect();
+    let tx = e.clientX - wrapRect.left + 12;
+    let ty = e.clientY - wrapRect.top - 10;
+    if (tx + 160 > wrapRect.width) tx = tx - 170;
+    tooltip.style.left = tx + 'px';
+    tooltip.style.top = ty + 'px';
+    tooltip.style.display = 'block';
+  });
+  canvas.addEventListener('mouseleave', () => {
+    tooltip.style.display = 'none';
+  });
+}
+
+/* Schedule MC computation for a visible canvas */
+function scheduleMC(row, budgetType) {
+  const cacheKey = row.district + '|' + budgetType;
+  const canvas = document.querySelector(`canvas[data-district="${CSS.escape(row.district)}"][data-budget-type="${budgetType}"]`);
+
+  // If already computed, just render + attach hover
+  if (recCache[cacheKey]?.mc) {
+    if (canvas) {
+      renderMCChart(canvas, recCache[cacheKey].mc, row.budget);
+      const status = canvas.parentElement.querySelector('[data-mc-status]');
+      if (status) status.style.display = 'none';
+      attachMCHover(canvas);
+    }
+    return;
+  }
+
+  // Priority: push to front of worker queue so expanded district computes first
+  const params = budgetType === 'budget_zbo' ? MC_PARAMS_ZBO : MC_PARAMS_BO;
+  initMCPool();
+  const job = {
+    district: row.district, budgetType,
+    costs: row.projects.map(p => p.total_cost || 0),
+    budget: row.budget,
+    params, nIter: 5000,
+    threshold: mcThreshold,
+  };
+  // Remove any existing queued job for this district (avoid duplicates)
+  mcPendingQueue = mcPendingQueue.filter(j => !(j.district === row.district && j.budgetType === budgetType));
+  // Insert at front for priority
+  mcPendingQueue.unshift(job);
+  dispatchNextMC();
+}
+
+/* Short rec summary for table column */
+function recSummaryHTML(row, budgetType) {
+  if (!recEnabled) return '';
+  if (row.count === 0) {
+    return '<span class="rec-cell-free">CA\u0141Y BUD\u017bET</span>';
+  }
+  const cacheKey = row.district + '|' + budgetType;
+  let gap = recCache[cacheKey]?.gap;
+  if (!gap) {
+    gap = computeGapAnalysis(row.projects, row.budget);
+    if (!recCache[cacheKey]) recCache[cacheKey] = {};
+    recCache[cacheKey].gap = gap;
+  }
+  // Best single-removal scenario (most realistic conditional)
+  const bestSingle = gap.scenarios.find(s => s.removed.length === 1);
+  if (gap.baselineRemaining > 0) {
+    let html = `<span class="rec-cell-safe"><span class="rec-cell-tag rec-tag-sure">pewne</span>\u2264\u00a0${fmtDown(gap.baselineRemaining)}</span>`;
+    if (bestSingle) {
+      html += `<span class="rec-cell-hint"><span class="rec-cell-tag rec-tag-cond">bez 1 konk.</span><span class="rec-cell-cond">\u2264\u00a0${fmtDown(bestSingle.safeCost)}</span></span>`;
+    }
+    return html;
+  }
+  if (bestSingle) {
+    return `<span class="rec-cell-hint"><span class="rec-cell-tag rec-tag-cond">bez 1 konk.</span><span class="rec-cell-cond">\u2264\u00a0${fmtDown(bestSingle.safeCost)}</span></span>`;
+  }
+  // Highly competitive — no guaranteed cost and no useful single-removal scenarios
+  const overSub = row.spent / row.budget;
+  return `<span class="rec-cell-hint" style="color:var(--red);">${overSub.toFixed(1)}x konkur.</span><span class="rec-cell-hint">rozwi\u0144 \u2192 MC</span>`;
+}
+
+/* MC threshold column summary */
+function mcSummaryHTML(row, budgetType) {
+  if (!recEnabled) return '';
+  if (row.count === 0) {
+    return '<span class="mc-cell-val">ca\u0142y bud\u017cet</span>';
+  }
+  const cacheKey = row.district + '|' + budgetType;
+  const cached = recCache[cacheKey];
+  if (!cached?.mc) {
+    return '<span class="mc-cell-computing">obliczanie\u2026</span>';
+  }
+  // Prefer exact binary-searched value for current threshold
+  const exact = cached.exactThresholds?.[mcThreshold];
+  if (exact != null) {
+    if (exact === 0) return `<span class="mc-cell-none">< ${Math.round(mcThreshold*100)}% wsz\u0119dzie</span>`;
+    return `<span class="mc-cell-val">\u2264\u00a0${fmtDown(exact)}</span>`;
+  }
+  // If bisect is pending for this threshold, show placeholder instead of stale coarse value
+  if (mcBisectPending) {
+    return '<span class="mc-cell-computing">obliczanie\u2026</span>';
+  }
+  // Fallback to coarse scan (only used on initial load before first bisect completes)
+  const maxCost = maxCostAtThreshold(cached.mc, mcThreshold);
+  if (maxCost === null) return '<span class="mc-cell-none">brak danych</span>';
+  if (maxCost === 0) return `<span class="mc-cell-none">< ${Math.round(mcThreshold*100)}% wsz\u0119dzie</span>`;
+  return `<span class="mc-cell-val">\u2264\u00a0${fmtDown(maxCost)}</span>`;
+}
+
+/* ── Render table (unified, with recommender support) ── */
+function renderTable(tableId, rows, budgetType) {
   const table = document.getElementById(tableId);
   const tbody = table.querySelector('tbody');
-  const headers = table.querySelectorAll('th');
+  const thead = table.querySelector('thead tr');
   const expanded = new Set();
 
   let sortKey = 'pct', sortDir = 'asc';
+  let recColAdded = false;
+  let mcColAdded = false;
 
-  function projectListHTML(projs, district) {
-    if (projs.length === 0) return '<div class="projects-list" style="color:var(--text-muted);font-style:italic;padding:0.8rem 2rem;">Brak zgłoszonych projektów</div>';
+  function ensureRecColumns() {
+    const countTh = thead.querySelector('th[data-key="count"]');
+    if (recEnabled && !recColAdded) {
+      const th = document.createElement('th');
+      th.dataset.key = 'recSafe';
+      th.className = 'num rec-col';
+      th.textContent = 'Rekomendacja';
+      thead.insertBefore(th, countTh);
+      th.addEventListener('click', () => {
+        if (sortKey === 'recSafe') sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+        else { sortKey = 'recSafe'; sortDir = 'desc'; }
+        render();
+      });
+      recColAdded = true;
+    } else if (!recEnabled && recColAdded) {
+      const th = thead.querySelector('th[data-key="recSafe"]');
+      if (th) th.remove();
+      recColAdded = false;
+      if (sortKey === 'recSafe') { sortKey = 'pct'; sortDir = 'asc'; }
+    }
+    if (recEnabled && !mcColAdded) {
+      const th2 = document.createElement('th');
+      th2.dataset.key = 'mcMax';
+      th2.className = 'num mc-col';
+      th2.innerHTML = `MC \u2265<input type="number" class="mc-th-input" value="${Math.round(mcThreshold*100)}" min="1" max="100" step="1">%`;
+      thead.insertBefore(th2, countTh);
+      const inp = th2.querySelector('.mc-th-input');
+      inp.addEventListener('click', (e) => e.stopPropagation());
+      inp.addEventListener('mousedown', (e) => e.stopPropagation());
+      inp.addEventListener('focus', (e) => e.target.select());
+      let timer = null;
+      inp.addEventListener('input', (e) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          const val = parseInt(e.target.value, 10);
+          if (val >= 1 && val <= 100) {
+            mcThreshold = val / 100;
+            // Sync all other MC header inputs
+            document.querySelectorAll('.mc-th-input').forEach(el => { if (el !== e.target) el.value = val; });
+            render();
+            refineBisectAll(mcThreshold);
+          }
+        }, 300);
+      });
+      th2.addEventListener('click', () => {
+        if (sortKey === 'mcMax') sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+        else { sortKey = 'mcMax'; sortDir = 'desc'; }
+        render();
+      });
+      mcColAdded = true;
+    } else if (recEnabled && mcColAdded) {
+      // Update header input value if threshold changed externally
+      const th2 = thead.querySelector('th[data-key="mcMax"]');
+      if (th2) {
+        const inp = th2.querySelector('.mc-th-input');
+        if (inp && parseInt(inp.value, 10) !== Math.round(mcThreshold * 100)) {
+          inp.value = Math.round(mcThreshold * 100);
+        }
+      }
+    } else if (!recEnabled && mcColAdded) {
+      const th2 = thead.querySelector('th[data-key="mcMax"]');
+      if (th2) th2.remove();
+      mcColAdded = false;
+      if (sortKey === 'mcMax') { sortKey = 'pct'; sortDir = 'asc'; }
+    }
+  }
+
+  function projectListHTML(projs) {
+    if (projs.length === 0) return '<div class="projects-list" style="color:var(--text-muted);font-style:italic;padding:0.8rem 2rem;">Brak zg\u0142oszonych projekt\u00f3w</div>';
     const items = projs.map(p => {
-      const cost = p.total_cost ? fmt(p.total_cost) : '?';
-      const title = p.title || 'Bez tytułu';
+      const cost = p.total_cost ? fmtUp(p.total_cost) : '?';
+      const title = p.title || 'Bez tytu\u0142u';
       const url = p.url || '#';
       const seq = p.seq ? `<span class="proj-seq">#${p.seq}</span>` : '';
       return `<li>${seq}<a href="${url}" target="_blank">${title}</a><span class="proj-cost">${cost}</span></li>`;
@@ -432,16 +1452,45 @@ function renderTable(tableId, rows) {
     return `<div class="projects-list"><ul>${items}</ul></div>`;
   }
 
+  function getRecSafe(r) {
+    if (r.count === 0) return r.budget;
+    const cacheKey = r.district + '|' + budgetType;
+    const gap = recCache[cacheKey]?.gap;
+    return gap ? gap.baselineRemaining : 0;
+  }
+
+  function getMcMax(r) {
+    if (r.count === 0) return r.budget;
+    const cacheKey = r.district + '|' + budgetType;
+    const cached = recCache[cacheKey];
+    if (!cached?.mc) return -1; // not computed yet, sort last
+    const exact = cached.exactThresholds?.[mcThreshold];
+    if (exact != null) return exact;
+    const v = maxCostAtThreshold(cached.mc, mcThreshold);
+    return v === null ? -1 : v;
+  }
+
   function render() {
+    ensureRecColumns();
+    const colCount = recEnabled ? 9 : 7;
+
     const sorted = [...rows].sort((a, b) => {
-      let va = a[sortKey], vb = b[sortKey];
+      let va, vb;
+      if (sortKey === 'recSafe') {
+        va = getRecSafe(a); vb = getRecSafe(b);
+      } else if (sortKey === 'mcMax') {
+        va = getMcMax(a); vb = getMcMax(b);
+      } else {
+        va = a[sortKey]; vb = b[sortKey];
+      }
       if (typeof va === 'string') { va = va.toLowerCase(); vb = vb.toLowerCase(); }
       if (va < vb) return sortDir === 'asc' ? -1 : 1;
       if (va > vb) return sortDir === 'asc' ? 1 : -1;
       return 0;
     });
 
-    headers.forEach(h => h.classList.remove('sorted-asc', 'sorted-desc'));
+    const allHeaders = table.querySelectorAll('th');
+    allHeaders.forEach(h => h.classList.remove('sorted-asc', 'sorted-desc'));
     const activeHeaders = table.querySelectorAll(`th[data-key="${sortKey}"]`);
     activeHeaders.forEach(h => h.classList.add(sortDir === 'asc' ? 'sorted-asc' : 'sorted-desc'));
 
@@ -459,14 +1508,22 @@ function renderTable(tableId, rows) {
         <td><span class="expand-icon ${expandCls}">\u25B6</span>${r.district}${zeroTag}</td>
         <td class="num">${r.pct.toFixed(1)}%</td>
         <td class="bar-cell"><div class="bar-bg"><div class="bar-fill ${pctClass(r.pct)}" style="width:${barWidth}%"></div><span class="bar-label">${r.pct.toFixed(0)}%</span></div></td>
-        <td class="num">${fmt(r.spent)}</td>
-        <td class="num">${fmt(r.budget)}</td>
-        <td class="num" style="color:${r.remaining > 0 ? 'var(--green)' : 'var(--red)'}">${fmt(r.remaining)}</td>
-        <td class="num">${r.count}</td>
-      </tr>`;
+        <td class="num">${fmtUp(r.spent)}</td>
+        <td class="num">${fmtDown(r.budget)}</td>
+        <td class="num" style="color:${r.remaining > 0 ? 'var(--green)' : 'var(--red)'}">${r.remaining >= 0 ? fmtDown(r.remaining) : '-' + fmtUp(Math.abs(r.remaining))}</td>`;
+      if (recEnabled) {
+        html += `<td class="num rec-col">${recSummaryHTML(r, budgetType)}</td>`;
+        html += `<td class="num mc-col">${mcSummaryHTML(r, budgetType)}</td>`;
+      }
+      html += `<td class="num">${r.count}</td>`;
+      html += '</tr>';
 
       if (isOpen) {
-        html += `<tr class="projects-row"><td colspan="7">${projectListHTML(r.projects, r.district)}</td></tr>`;
+        let detailHTML = projectListHTML(r.projects);
+        if (recEnabled) {
+          detailHTML += buildRecPanelHTML(r, budgetType);
+        }
+        html += `<tr class="projects-row"><td colspan="${colCount}">${detailHTML}</td></tr>`;
       }
     }
     tbody.innerHTML = html;
@@ -478,11 +1535,35 @@ function renderTable(tableId, rows) {
         if (expanded.has(d)) expanded.delete(d);
         else expanded.add(d);
         render();
+        // Schedule MC if needed
+        if (recEnabled && expanded.has(d)) {
+          const row = rows.find(r => r.district === d);
+          if (row && row.count > 0) scheduleMC(row, budgetType);
+        }
       });
     });
+
+    // Render cached MC charts
+    if (recEnabled) {
+      for (const d of expanded) {
+        const cacheKey = d + '|' + budgetType;
+        const mc = recCache[cacheKey]?.mc;
+        if (mc) {
+          const canvas = document.querySelector(`canvas[data-district="${CSS.escape(d)}"][data-budget-type="${budgetType}"]`);
+          if (canvas) {
+            renderMCChart(canvas, mc, rows.find(r => r.district === d).budget);
+            const status = canvas.parentElement.querySelector('[data-mc-status]');
+            if (status) status.style.display = 'none';
+            attachMCHover(canvas);
+          }
+        }
+      }
+    }
   }
 
-  headers.forEach(h => {
+  // Header click sorting
+  const staticHeaders = table.querySelectorAll('th');
+  staticHeaders.forEach(h => {
     if (!h.dataset.key) return;
     h.addEventListener('click', () => {
       const key = h.dataset.key;
@@ -493,8 +1574,12 @@ function renderTable(tableId, rows) {
   });
 
   render();
+
+  // Return render function so toggle can re-trigger
+  return render;
 }
 
+/* ── Main ────────────────────────────────────────────── */
 async function main() {
   const [budgets, projects, meta] = await Promise.all([
     fetch('data/budgets.json').then(r => r.json()),
@@ -507,9 +1592,40 @@ async function main() {
   const boRows = buildRows(budgets, projects, 'budget_bo');
   const zboRows = buildRows(budgets, projects, 'budget_zbo');
 
-  renderTable('table-bo', boRows);
-  renderTable('table-zbo', zboRows);
+  // Store row references for bisect dispatch
+  _boRows = boRows;
+  _zboRows = zboRows;
 
+  const renderBo = renderTable('table-bo', boRows, 'budget_bo');
+  const renderZbo = renderTable('table-zbo', zboRows, 'budget_zbo');
+
+  // Wire up render references for worker pool callbacks
+  _renderBo = renderBo;
+  _renderZbo = renderZbo;
+
+  // Show toggle bars once data is loaded
+  document.getElementById('rec-toggle-bar').style.display = 'flex';
+  document.getElementById('settings-bar').style.display = 'flex';
+
+  // Decimal toggle handler
+  document.getElementById('decimal-toggle').addEventListener('change', (e) => {
+    showDecimals = e.target.checked;
+    renderBo();
+    renderZbo();
+    renderLatest();
+    // Re-render summary
+    document.getElementById('summary').innerHTML = buildSummaryHTML(boRows, zboRows, projects);
+  });
+
+  // Recommender toggle handler
+  document.getElementById('rec-toggle').addEventListener('change', (e) => {
+    recEnabled = e.target.checked;
+    renderBo();
+    renderZbo();
+    if (recEnabled) scheduleAllMCWorkers(boRows, 'budget_bo', zboRows, 'budget_zbo');
+  });
+
+  // MC threshold input handler
   // Latest projects section (collapsed by default)
   const latestSorted = [...projects].sort((a, b) => (b.seq || 0) - (a.seq || 0));
   const latestContainer = document.getElementById('latest-projects');
@@ -518,8 +1634,8 @@ async function main() {
 
   function renderLatest() {
     const items = latestSorted.map(p => {
-      const cost = p.total_cost ? fmt(p.total_cost) : '?';
-      const title = p.title || 'Bez tytułu';
+      const cost = p.total_cost ? fmtUp(p.total_cost) : '?';
+      const title = p.title || 'Bez tytu\u0142u';
       const url = p.url || '#';
       const seq = p.seq ? `<span class="proj-seq">#${p.seq}</span>` : '';
       const district = p.district ? `<span class="proj-district">${norm(p.district)}</span>` : '';
@@ -539,29 +1655,31 @@ async function main() {
   renderLatest();
 
   // Summary cards
-  const totalProjects = projects.length;
-  const boUnder100 = boRows.filter(r => r.pct < 100).length;
-  const zboZero = zboRows.filter(r => r.count === 0).length;
-  const zboFreeTotal = zboRows.filter(r => r.count === 0).reduce((s, r) => s + r.budget, 0);
-
-  document.getElementById('summary').innerHTML = `
-    <div class="summary-card">
-      <div class="label">Zgłoszonych projektów</div>
-      <div class="value">${totalProjects}</div>
-    </div>
-    <div class="summary-card">
-      <div class="label">Dzielnice BO &lt;100%</div>
-      <div class="value" style="color:var(--green)">${boUnder100} / ${boRows.length}</div>
-    </div>
-    <div class="summary-card">
-      <div class="label">Dzielnice ZBO bez projektów</div>
-      <div class="value" style="color:var(--green)">${zboZero}</div>
-    </div>
-    <div class="summary-card">
-      <div class="label">Wolny budżet ZBO (0 proj.)</div>
-      <div class="value" style="color:var(--green)">${fmt(zboFreeTotal)}</div>
-    </div>
-  `;
+  function buildSummaryHTML(boR, zboR, projs) {
+    const totalProjects = projs.length;
+    const boUnder100 = boR.filter(r => r.pct < 100).length;
+    const zboZero = zboR.filter(r => r.count === 0).length;
+    const zboFreeTotal = zboR.filter(r => r.count === 0).reduce((s, r) => s + r.budget, 0);
+    return `
+      <div class="summary-card">
+        <div class="label">Zg\u0142oszonych projekt\u00f3w</div>
+        <div class="value">${totalProjects}</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">Dzielnice BO &lt;100%</div>
+        <div class="value" style="color:var(--green)">${boUnder100} / ${boR.length}</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">Dzielnice ZBO bez projekt\u00f3w</div>
+        <div class="value" style="color:var(--green)">${zboZero}</div>
+      </div>
+      <div class="summary-card">
+        <div class="label">Wolny bud\u017cet ZBO (0 proj.)</div>
+        <div class="value" style="color:var(--green)">${fmtDown(zboFreeTotal)}</div>
+      </div>
+    `;
+  }
+  document.getElementById('summary').innerHTML = buildSummaryHTML(boRows, zboRows, projects);
 }
 
 main();

@@ -308,6 +308,35 @@
     font-style: italic;
     padding: 1rem 0;
   }
+  .mc-refine-btns {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.4rem;
+  }
+  .mc-refine-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+  }
+  .mc-refine-sep {
+    width: 1px;
+    height: 1rem;
+    background: var(--border);
+    margin: 0 0.2rem;
+  }
+  .mc-refine-btns button {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.5rem;
+    background: var(--surface);
+    border: 1px solid #8957e5;
+    border-radius: 4px;
+    color: #d2a8ff;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .mc-refine-btns button:hover { background: rgba(137,87,229,0.15); }
+  .mc-refine-btns button:disabled { opacity: 0.5; cursor: default; }
+  .mc-refine-info { font-size: 0.65rem; color: var(--text-muted); font-style: italic; }
 
   /* Recommendation column in table */
   .rec-col { min-width: 180px; white-space: nowrap; }
@@ -977,7 +1006,7 @@ self.onmessage = function(e) {
   if (threshold != null && threshold > 0) {
     maxCostExact = findExactThreshold(mcPoints, costs, budget, params, nIter || 10000, threshold);
   }
-  self.postMessage({ district, budgetType, mcPoints, maxCostExact, threshold, gen });
+  self.postMessage({ district, budgetType, mcPoints, maxCostExact, threshold, gen, _stepDiv: d._stepDiv, _nIter: d._nIter });
 };
 `], { type: 'application/javascript' });
 const mcWorkerURL = URL.createObjectURL(mcWorkerBlob);
@@ -1017,6 +1046,8 @@ function onWorkerResult(e) {
   } else {
     // Full curve result
     recCache[cacheKey].mc = d.mcPoints;
+    if (d._stepDiv) recCache[cacheKey]._stepDiv = d._stepDiv;
+    if (d._nIter)   recCache[cacheKey]._nIter = d._nIter;
     if (d.maxCostExact != null && d.threshold != null) {
       if (!recCache[cacheKey].exactThresholds) recCache[cacheKey].exactThresholds = {};
       recCache[cacheKey].exactThresholds[d.threshold] = d.maxCostExact;
@@ -1255,6 +1286,21 @@ function buildRecPanelHTML(row, budgetType) {
   html += `<canvas class="rec-chart-canvas" data-district="${row.district}" data-budget-type="${budgetType}"></canvas>`;
   html += '<div class="rec-chart-tooltip"></div>';
   html += '<div class="rec-computing" data-mc-status="pending">Obliczanie symulacji Monte Carlo\u2026</div>';
+  const esc = row.district.replace(/'/g, "\\'");
+  const cached = recCache[cacheKey];
+  const curSD = cached?._stepDiv || mcStepDiv;
+  const curNI = cached?._nIter || 10000;
+  html += `<div class="mc-refine-btns">
+    <span class="mc-refine-label">Krok:</span>
+    <button onclick="refineMCSingle('${esc}','${budgetType}',{stepMul:2})">2x</button>
+    <button onclick="refineMCSingle('${esc}','${budgetType}',{stepMul:10})">10x</button>
+    <span class="mc-refine-sep"></span>
+    <span class="mc-refine-label">Iteracje:</span>
+    <button onclick="refineMCSingle('${esc}','${budgetType}',{iterMul:2})">2x</button>
+    <button onclick="refineMCSingle('${esc}','${budgetType}',{iterMul:10})">10x</button>
+    <span class="mc-refine-sep"></span>
+    <span class="mc-refine-info">krok \u00f7${curSD}, ${(curNI/1000).toFixed(0)}k iter</span>
+  </div>`;
   html += '</div>';
 
   html += '</div>';
@@ -1329,6 +1375,50 @@ function scheduleMC(row, budgetType) {
   // Remove any existing queued job for this district (avoid duplicates)
   mcPendingQueue = mcPendingQueue.filter(j => !(j.district === row.district && j.budgetType === budgetType));
   // Insert at front for priority
+  mcPendingQueue.unshift(job);
+  dispatchNextMC();
+}
+
+/* One-off per-district MC refinement from expanded panel buttons.
+   opts: { stepMul: N } or { iterMul: N } — multiplier relative to current. */
+function refineMCSingle(district, budgetType, opts) {
+  const rows = budgetType === 'budget_zbo' ? _zboRows : _boRows;
+  const row = rows && rows.find(r => r.district === district);
+  if (!row || row.count === 0) return;
+  const cacheKey = district + '|' + budgetType;
+
+  // Determine effective stepDiv and nIter
+  const curStepDiv = recCache[cacheKey]?._stepDiv || mcStepDiv;
+  const curNIter   = recCache[cacheKey]?._nIter || 10000;
+  const newStepDiv = opts.stepMul ? curStepDiv * opts.stepMul : curStepDiv;
+  const newNIter   = opts.iterMul ? curNIter * opts.iterMul : curNIter;
+
+  // Flush this district's MC cache
+  if (recCache[cacheKey]) {
+    delete recCache[cacheKey].mc;
+    delete recCache[cacheKey].exactThresholds;
+  }
+
+  // Show computing status
+  const canvas = document.querySelector(`canvas[data-district="${CSS.escape(district)}"][data-budget-type="${budgetType}"]`);
+  if (canvas) {
+    const status = canvas.parentElement.querySelector('[data-mc-status]');
+    if (status) { status.style.display = ''; status.textContent = `Przeliczanie (krok \u00f7${newStepDiv}, ${(newNIter/1000).toFixed(0)}k iteracji)\u2026`; }
+    // Disable buttons
+    canvas.parentElement.querySelectorAll('.mc-refine-btns button').forEach(b => b.disabled = true);
+  }
+
+  const params = budgetType === 'budget_zbo' ? MC_PARAMS_ZBO : MC_PARAMS_BO;
+  initMCPool();
+  const job = {
+    district, budgetType,
+    costs: row.projects.map(p => p.total_cost || 0),
+    budget: row.budget,
+    params, nIter: newNIter,
+    threshold: mcThreshold, stepDiv: newStepDiv, gen: mcGeneration,
+    _stepDiv: newStepDiv, _nIter: newNIter, // echoed back for caching
+  };
+  mcPendingQueue = mcPendingQueue.filter(j => !(j.district === district && j.budgetType === budgetType));
   mcPendingQueue.unshift(job);
   dispatchNextMC();
 }

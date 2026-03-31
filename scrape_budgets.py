@@ -103,7 +103,7 @@ def main():
         html,
     )
     ogolno_zbo_match = re.search(
-        r"projekty og[óo]lnomiejskie Zielonego.*?([\d][\d\s]*[\d][,.][\d]+)\s*(?:&nbsp;)?\s*zł",
+        r"projekty og[óo]lnomiejskie Zielonego.*?([\d][\d\s]*[\d][,.][\d]+)\s*(?:&nbsp;)?\s*(?:<[^>]*>\s*)*zł",
         html, re.DOTALL,
     )
 

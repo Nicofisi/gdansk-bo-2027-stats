@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gdańsk BO 2027 - Tracker projektów</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --red: #f85149;
+    --blue: #58a6ff;
+    --purple: #8957e5;
+    --purple-light: #d2a8ff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    padding: 2rem 1rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 1.6rem; margin-bottom: 0.3rem; }
+  .subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.8rem; }
+  h2 {
+    font-size: 1.15rem;
+    margin: 2rem 0 0.8rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .badge-bo { color: var(--blue); }
+  .badge-zbo { color: var(--green); }
+
+  .refresh-info {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .refresh-info .dot {
+    width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 0.4rem;
+  }
+  .dot-fresh { background: var(--green); }
+  .dot-stale { background: var(--yellow); }
+  .dot-old { background: var(--red); }
+
+  /* Tracked project cards */
+  .tracked-list { margin-bottom: 2rem; }
+
+  .tracked-row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    overflow: hidden;
+  }
+  .tracked-header {
+    display: grid;
+    grid-template-columns: 1.4em 1fr auto;
+    align-items: center;
+    gap: 0 0.6rem;
+    padding: 0.7rem 1rem;
+    cursor: pointer;
+    user-select: none;
+  }
+  .tracked-header:hover { background: rgba(136,198,255,0.06); }
+  .expand-icon {
+    display: inline-block;
+    width: 1.2em;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    transition: transform 0.2s;
+  }
+  .expand-icon.open { transform: rotate(90deg); }
+
+  .tracked-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .tracked-title a { color: var(--blue); text-decoration: none; }
+  .tracked-title a:hover { text-decoration: underline; }
+
+  .tracked-stats {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-shrink: 0;
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .tracked-stat {
+    text-align: right;
+    white-space: nowrap;
+  }
+  .tracked-stat-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+  .tracked-stat-value {
+    font-weight: 600;
+  }
+  .stat-mc { min-width: 5em; }
+
+  .tracked-body {
+    display: none;
+    padding: 0 1rem 1rem 1rem;
+    border-top: 1px solid var(--border);
+  }
+  .tracked-body.open { display: block; }
+
+  /* Info grid in expanded view */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.6rem;
+    margin: 0.8rem 0;
+  }
+  .info-item {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.5rem 0.7rem;
+  }
+  .info-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; }
+  .info-value { font-size: 0.9rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* Competition list */
+  .comp-section { margin-top: 0.8rem; }
+  .comp-section h4 {
+    font-size: 0.8rem;
+    color: var(--purple);
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .comp-list { list-style: none; }
+  .comp-list li {
+    padding: 0.25rem 0;
+    font-size: 0.8rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0 0.6rem;
+    border-bottom: 1px solid rgba(48,54,61,0.5);
+    align-items: baseline;
+  }
+  .comp-list li:last-child { border-bottom: none; }
+  .comp-list a { color: var(--blue); text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .comp-list a:hover { text-decoration: underline; }
+  .comp-cost {
+    color: var(--text-muted);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  /* MC chart */
+  .chart-wrap {
+    margin-top: 0.8rem;
+    position: relative;
+  }
+  .chart-title {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.3rem;
+  }
+  .chart-canvas {
+    width: 100%;
+    height: 200px;
+    border-radius: 4px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    cursor: crosshair;
+  }
+  .chart-tooltip {
+    position: absolute;
+    pointer-events: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    color: var(--text);
+    white-space: nowrap;
+    z-index: 10;
+    display: none;
+  }
+  .chart-computing {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-style: italic;
+    padding: 1rem 0;
+  }
+
+  .type-tag {
+    display: inline-block;
+    font-size: 0.6rem;
+    padding: 0px 4px;
+    border-radius: 3px;
+    font-weight: 700;
+    text-transform: uppercase;
+    vertical-align: middle;
+    margin-right: 0.3rem;
+    letter-spacing: 0.02em;
+  }
+  .type-tag-bo { background: rgba(88,166,255,0.15); color: var(--blue); }
+  .type-tag-zbo { background: rgba(63,185,80,0.15); color: var(--green); }
+  .district-tag {
+    display: inline-block;
+    font-size: 0.6rem;
+    padding: 0px 5px;
+    border-radius: 3px;
+    font-weight: 600;
+    vertical-align: middle;
+    margin-right: 0.3rem;
+    background: rgba(139,148,158,0.15);
+    color: var(--text-muted);
+  }
+
+  /* Toggle bar */
+  .toggle-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .toggle-bar label {
+    font-size: 0.85rem;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .switch {
+    position: relative;
+    width: 36px;
+    height: 20px;
+    display: inline-block;
+  }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .switch .slider {
+    position: absolute;
+    inset: 0;
+    background: var(--border);
+    border-radius: 20px;
+    transition: 0.2s;
+    cursor: pointer;
+  }
+  .switch .slider::before {
+    content: '';
+    position: absolute;
+    width: 14px; height: 14px;
+    left: 3px; bottom: 3px;
+    background: var(--text);
+    border-radius: 50%;
+    transition: 0.2s;
+  }
+  .switch input:checked + .slider { background: #8957e5; }
+  .switch input:checked + .slider::before { transform: translateX(16px); }
+  .toggle-hint { font-size: 0.75rem; color: var(--text-muted); }
+
+  footer {
+    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+  }
+  footer a { color: var(--blue); }
+
+  @media (max-width: 700px) {
+    body { padding: 1rem 0.5rem; }
+    .tracked-header {
+      grid-template-columns: 1.4em 1fr;
+    }
+    .tracked-stats {
+      grid-column: 2;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.3rem;
+    }
+    .info-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1>Tracker projektów</h1>
+<p class="subtitle">Monitorowanie szans wygrania naszych zgłoszonych projektów w BO 2027. <a href="index.html" style="color:var(--blue)">&larr; Dashboard</a></p>
+
+<div class="refresh-info" id="refresh-info">Wczytywanie...</div>
+
+<div class="toggle-bar">
+  <label>
+    <span class="switch"><input type="checkbox" id="decimal-toggle"><span class="slider"></span></span>
+    Grosze
+  </label>
+  <span class="toggle-hint">Pokaż dokładne kwoty z miejscami po przecinku</span>
+</div>
+
+<div id="tracked-container">
+  <p style="color:var(--text-muted);font-size:0.85rem;">Wczytywanie danych...</p>
+</div>
+
+<footer>
+  <a href="index.html">Dashboard BO 2027</a> |
+  <a href="history.html">Wyniki głosowania 2022–2026</a> |
+  Źródło danych: <a href="https://bo.gdansk.pl/lista-zgloszonych-projektow">bo.gdansk.pl</a>
+</footer>
+
+<script>
+/* ── Configuration: tracked projects (matched by title substring) ── */
+const TRACKED_PROJECTS = [
+  // BO (regular)
+  { title: 'Przebudowa schod\u00f3w pomi\u0119dzy ul. Maryli a ul. Szar\u0105', type: 'bo' },
+  { title: 'WRZESZCZ – POLSKA STOLICA DISC GOLFA', type: 'bo' },
+  { title: 'Budowa chodnika wzd\u0142u\u017c ul. Hynka', type: 'bo' },
+  // ZBO (green)
+  { title: 'ZIELONA Strzy\u017ca', type: 'zbo' },
+  { title: 'Drzewa na Suchaninie wolne od jemio\u0142y', type: 'zbo' },
+  { title: 'Zielony zak\u0105tek Zaspy', type: 'zbo' },
+];
+
+const DISTRICT_MAP = {
+  "Orunia G\u00f3rna-Gda\u0144sk Po\u0142udnie": "Orunia G\u00f3rna - Gda\u0144sk Po\u0142udnie",
+  "\u015ar\u00f3dmie\u015bcie": "\u015arodmie\u015bcie",
+};
+
+const MIN_VOTES = 100;
+const MAX_VOTES = 1500;
+const VOTE_STEP = 25;
+
+/* ── Utility ─────────────────────────────────────────── */
+function norm(d) { return DISTRICT_MAP[d] || d; }
+
+let showDecimals = false;
+
+function fmt(n) {
+  if (showDecimals) return n.toLocaleString('pl-PL', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '\u00a0z\u0142';
+  return Math.round(n).toLocaleString('pl-PL', {maximumFractionDigits: 0}) + '\u00a0z\u0142';
+}
+function fmtUp(n) {
+  if (showDecimals) return n.toLocaleString('pl-PL', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '\u00a0z\u0142';
+  return Math.ceil(n).toLocaleString('pl-PL', {maximumFractionDigits: 0}) + '\u00a0z\u0142';
+}
+function fmtDown(n) {
+  if (showDecimals) return n.toLocaleString('pl-PL', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '\u00a0z\u0142';
+  return Math.floor(n).toLocaleString('pl-PL', {maximumFractionDigits: 0}) + '\u00a0z\u0142';
+}
+function fmtK(n) {
+  if (n >= 1000) return (n / 1000).toLocaleString('pl-PL', {minimumFractionDigits: 0, maximumFractionDigits: 1}) + 'k';
+  return n.toLocaleString('pl-PL', {maximumFractionDigits: 0});
+}
+
+function timeAgo(date) {
+  const now = new Date();
+  const mins = Math.floor((now - date) / 60000);
+  if (mins < 1) return 'przed chwil\u0105';
+  if (mins < 60) return `${mins} min temu`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours} godz. temu`;
+  return `${Math.floor(hours / 24)} dn. temu`;
+}
+
+function pctClass(pct) {
+  if (pct < 50) return 'pct-low';
+  if (pct < 100) return 'pct-med';
+  if (pct < 200) return 'pct-high';
+  return 'pct-over';
+}
+
+/* ── Monte Carlo parameters ──────────────────────────── */
+const MC_PARAMS_BO  = { baseMu: 6.4, slope: 0.7, sigma: 0.8 };
+const MC_PARAMS_ZBO = { baseMu: 5.8, slope: 0.7, sigma: 0.8 };
+
+/* ── MC Worker (votes on X axis) ─────────────────────── */
+const mcWorkerBlob = new Blob([`
+"use strict";
+const MC_FAIL_RATE = 0.08;
+
+function randNormal(mu, sigma) {
+  let u, v, s;
+  do {
+    u = Math.random() * 2 - 1;
+    v = Math.random() * 2 - 1;
+    s = u * u + v * v;
+  } while (s >= 1 || s === 0);
+  return mu + sigma * u * Math.sqrt(-2 * Math.log(s) / s);
+}
+
+function sampleVotes(costRatio, params) {
+  if (costRatio <= 0) costRatio = 0.01;
+  if (Math.random() < MC_FAIL_RATE) {
+    return Math.floor(Math.random() * 100);
+  }
+  const mu = params.baseMu + params.slope * Math.log(costRatio);
+  return Math.max(0, Math.round(Math.exp(randNormal(mu, params.sigma))));
+}
+
+/* For tracker: X axis = votes our project gets, Y = win probability.
+   Our project has a fixed cost. We vary how many votes it receives. */
+function runSim(competitorCosts, budget, ourCost, ourVotes, params, nIter) {
+  if (ourCost > budget || ourCost <= 0) return 0;
+  let wins = 0;
+  for (let i = 0; i < nIter; i++) {
+    const all = [];
+    for (let j = 0; j < competitorCosts.length; j++) {
+      const votes = sampleVotes(competitorCosts[j] / budget, params);
+      all.push({ cost: competitorCosts[j], votes, isSim: false });
+    }
+    all.push({ cost: ourCost, votes: ourVotes, isSim: true });
+    // Sort: most votes first. Ties: sim project loses (sorts after).
+    all.sort((a, b) => b.votes - a.votes || (a.isSim ? 1 : 0) - (b.isSim ? 1 : 0) || a.cost - b.cost);
+    let rem = budget;
+    let won = false;
+    for (const p of all) {
+      if (p.votes >= 100 && p.cost <= rem) {
+        rem -= p.cost;
+        if (p.isSim) { won = true; break; }
+      }
+    }
+    if (won) wins++;
+  }
+  return wins / nIter;
+}
+
+self.onmessage = function(e) {
+  const d = e.data;
+  if (d.type === 'quick') {
+    // Single-point: only compute win rate for one vote count
+    const wr = runSim(d.competitorCosts, d.budget, d.ourCost, d.votes, d.params, d.nIter);
+    self.postMessage({ id: d.id, type: 'quick', votes: d.votes, winRate: wr });
+    return;
+  }
+  const { id, competitorCosts, budget, ourCost, params, nIter, minVotes, maxVotes, voteStep } = d;
+  const points = [];
+  for (let v = minVotes; v <= maxVotes; v += voteStep) {
+    const winRate = runSim(competitorCosts, budget, ourCost, v, params, nIter);
+    points.push({ votes: v, winRate });
+  }
+  self.postMessage({ id, type: 'full', points });
+};
+`], { type: 'application/javascript' });
+const mcWorkerURL = URL.createObjectURL(mcWorkerBlob);
+
+const MC_POOL_SIZE = navigator.hardwareConcurrency || 4;
+let mcWorkers = [];
+let mcIdleWorkers = [];
+let mcPendingQueue = [];
+let mcPoolReady = false;
+const mcCache = {}; // id -> { wr100, points }
+
+function initMCPool() {
+  if (mcPoolReady) return;
+  for (let i = 0; i < MC_POOL_SIZE; i++) {
+    const w = new Worker(mcWorkerURL);
+    w.onmessage = onWorkerResult;
+    mcWorkers.push(w);
+    mcIdleWorkers.push(w);
+  }
+  mcPoolReady = true;
+}
+
+function onWorkerResult(e) {
+  const d = e.data;
+  mcIdleWorkers.push(e.target);
+  if (!mcCache[d.id]) mcCache[d.id] = {};
+  if (d.type === 'quick') {
+    mcCache[d.id].wr100 = d.winRate;
+  } else {
+    mcCache[d.id].points = d.points;
+    // Also extract wr100 from full curve if available
+    const pt100 = d.points?.find(p => p.votes === MIN_VOTES);
+    if (pt100) mcCache[d.id].wr100 = pt100.winRate;
+  }
+  renderTracked();
+  dispatchNextMC();
+}
+
+function dispatchNextMC() {
+  while (mcIdleWorkers.length > 0 && mcPendingQueue.length > 0) {
+    const job = mcPendingQueue.shift();
+    // Skip if already have what this job would produce
+    if (job.type === 'quick' && mcCache[job.id]?.wr100 != null) continue;
+    if (job.type !== 'quick' && mcCache[job.id]?.points) continue;
+    const w = mcIdleWorkers.pop();
+    w.postMessage(job);
+  }
+}
+
+function scheduleQuickMC(trackedItem) {
+  const id = trackedItem.id;
+  if (mcCache[id]?.wr100 != null) return;
+  initMCPool();
+  mcPendingQueue.push({
+    id,
+    type: 'quick',
+    competitorCosts: trackedItem.competitors.map(c => c.total_cost || 0),
+    budget: trackedItem.budget,
+    ourCost: trackedItem.project.total_cost || 0,
+    params: trackedItem.type === 'bo' ? MC_PARAMS_BO : MC_PARAMS_ZBO,
+    nIter: 10000,
+    votes: MIN_VOTES,
+  });
+  dispatchNextMC();
+}
+
+function scheduleFullMC(trackedItem) {
+  const id = trackedItem.id;
+  if (mcCache[id]?.points) return;
+  initMCPool();
+  const job = {
+    id,
+    competitorCosts: trackedItem.competitors.map(c => c.total_cost || 0),
+    budget: trackedItem.budget,
+    ourCost: trackedItem.project.total_cost || 0,
+    params: trackedItem.type === 'bo' ? MC_PARAMS_BO : MC_PARAMS_ZBO,
+    nIter: 10000,
+    minVotes: MIN_VOTES,
+    maxVotes: MAX_VOTES,
+    voteStep: VOTE_STEP,
+  };
+  // Priority: push to front
+  mcPendingQueue.unshift(job);
+  dispatchNextMC();
+}
+
+/* ── Chart rendering (votes → win rate) ──────────────── */
+function renderChart(canvas, points) {
+  if (!points || points.length === 0) return;
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  const W = rect.width, H = rect.height;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const pad = { top: 20, right: 20, bottom: 35, left: 45 };
+  const cw = W - pad.left - pad.right;
+  const ch = H - pad.top - pad.bottom;
+
+  const minV = points[0].votes;
+  const maxV = points[points.length - 1].votes;
+  const rangeV = maxV - minV || 1;
+
+  // Background
+  ctx.fillStyle = '#0d1117';
+  ctx.fillRect(0, 0, W, H);
+
+  // Grid
+  ctx.strokeStyle = '#30363d';
+  ctx.lineWidth = 0.5;
+  for (let y = 0; y <= 100; y += 20) {
+    const py = pad.top + ch - (y / 100) * ch;
+    ctx.beginPath();
+    ctx.moveTo(pad.left, py);
+    ctx.lineTo(pad.left + cw, py);
+    ctx.stroke();
+  }
+
+  // Y axis labels
+  ctx.fillStyle = '#8b949e';
+  ctx.font = '10px -apple-system, sans-serif';
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'middle';
+  for (let y = 0; y <= 100; y += 20) {
+    const py = pad.top + ch - (y / 100) * ch;
+    ctx.fillText(y + '%', pad.left - 5, py);
+  }
+
+  // X axis labels (votes)
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  const xStepVotes = rangeV <= 500 ? 100 : rangeV <= 1000 ? 200 : 500;
+  const firstTick = Math.ceil(minV / xStepVotes) * xStepVotes;
+  for (let v = firstTick; v <= maxV; v += xStepVotes) {
+    const px = pad.left + ((v - minV) / rangeV) * cw;
+    ctx.fillText(v.toString(), px, pad.top + ch + 5);
+    ctx.beginPath();
+    ctx.moveTo(px, pad.top);
+    ctx.lineTo(px, pad.top + ch);
+    ctx.stroke();
+  }
+
+  // Axis titles
+  ctx.fillStyle = '#8b949e';
+  ctx.font = '9px -apple-system, sans-serif';
+  ctx.fillText('liczba g\u0142os\u00f3w', pad.left + cw / 2, pad.top + ch + 22);
+  ctx.save();
+  ctx.translate(10, pad.top + ch / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillText('szansa wygranej', 0, 0);
+  ctx.restore();
+
+  // Line
+  ctx.strokeStyle = '#8957e5';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let i = 0; i < points.length; i++) {
+    const pt = points[i];
+    const px = pad.left + ((pt.votes - minV) / rangeV) * cw;
+    const py = pad.top + ch - pt.winRate * ch;
+    if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+  }
+  ctx.stroke();
+
+  // Dots
+  ctx.fillStyle = '#8957e5';
+  for (const pt of points) {
+    const px = pad.left + ((pt.votes - minV) / rangeV) * cw;
+    const py = pad.top + ch - pt.winRate * ch;
+    ctx.beginPath();
+    ctx.arc(px, py, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Area fill
+  ctx.globalAlpha = 0.1;
+  ctx.fillStyle = '#8957e5';
+  ctx.beginPath();
+  for (let i = 0; i < points.length; i++) {
+    const pt = points[i];
+    const px = pad.left + ((pt.votes - minV) / rangeV) * cw;
+    const py = pad.top + ch - pt.winRate * ch;
+    if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+  }
+  ctx.lineTo(pad.left + cw, pad.top + ch);
+  ctx.lineTo(pad.left, pad.top + ch);
+  ctx.closePath();
+  ctx.fill();
+  ctx.globalAlpha = 1;
+
+  // 50% threshold
+  const y50 = pad.top + ch - 0.5 * ch;
+  ctx.strokeStyle = '#d29922';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(pad.left, y50);
+  ctx.lineTo(pad.left + cw, y50);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#d29922';
+  ctx.font = '9px -apple-system, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'bottom';
+  ctx.fillText('50%', pad.left + 2, y50 - 2);
+
+  // 100-vote vertical marker
+  if (MIN_VOTES >= minV && MIN_VOTES <= maxV) {
+    const x100 = pad.left + ((MIN_VOTES - minV) / rangeV) * cw;
+    ctx.strokeStyle = 'rgba(248,81,73,0.5)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(x100, pad.top);
+    ctx.lineTo(x100, pad.top + ch);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(248,81,73,0.7)';
+    ctx.font = '9px -apple-system, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillText('min 100', x100 + 3, pad.top + 2);
+  }
+
+  // Annotate win rate at 100 votes
+  const pt100 = points.find(p => p.votes === 100);
+  if (pt100) {
+    const px = pad.left + ((100 - minV) / rangeV) * cw;
+    const py = pad.top + ch - pt100.winRate * ch;
+    ctx.fillStyle = '#3fb950';
+    ctx.beginPath();
+    ctx.arc(px, py, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = 'bold 9px -apple-system, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText(`100 gl. = ${(pt100.winRate * 100).toFixed(0)}%`, px + 6, py - 2);
+  }
+
+  // Store for hover
+  canvas._chartData = { pad, cw, ch, minV, maxV, rangeV, points };
+}
+
+function attachHover(canvas) {
+  const wrap = canvas.parentElement;
+  let tooltip = wrap.querySelector('.chart-tooltip');
+  if (!tooltip) {
+    tooltip = document.createElement('div');
+    tooltip.className = 'chart-tooltip';
+    wrap.appendChild(tooltip);
+  }
+  canvas.onmousemove = (e) => {
+    const cd = canvas._chartData;
+    if (!cd) return;
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const frac = (mx - cd.pad.left) / cd.cw;
+    if (frac < 0 || frac > 1) { tooltip.style.display = 'none'; return; }
+    const hoverVotes = cd.minV + frac * cd.rangeV;
+    let nearest = cd.points[0], minDist = Infinity;
+    for (const pt of cd.points) {
+      const dist = Math.abs(pt.votes - hoverVotes);
+      if (dist < minDist) { minDist = dist; nearest = pt; }
+    }
+    tooltip.textContent = `${nearest.votes} g\u0142os\u00f3w \u2192 ${(nearest.winRate * 100).toFixed(1)}% szans`;
+    tooltip.style.display = 'block';
+    const tx = mx + 12;
+    const ty = e.clientY - rect.top - 20;
+    tooltip.style.left = tx + 'px';
+    tooltip.style.top = ty + 'px';
+  };
+  canvas.onmouseleave = () => { tooltip.style.display = 'none'; };
+}
+
+/* ── Data & rendering ────────────────────────────────── */
+let trackedItems = []; // enriched tracked project data
+let expandedIds = new Set();
+
+function renderTracked() {
+  const container = document.getElementById('tracked-container');
+  if (trackedItems.length === 0) {
+    container.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;">Brak \u015bledzonych projekt\u00f3w w danych.</p>';
+    return;
+  }
+  // Sort: highest win rate at 100 votes first, tie-break by cost desc
+  const sorted = [...trackedItems].sort((a, b) => {
+    const wrA = mcCache[a.id]?.wr100 ?? -1;
+    const wrB = mcCache[b.id]?.wr100 ?? -1;
+    if (wrB !== wrA) return wrB - wrA;
+    return (b.project.total_cost || 0) - (a.project.total_cost || 0);
+  });
+  let html = '';
+  for (const item of sorted) {
+    const isOpen = expandedIds.has(item.id);
+    const typeTag = item.type === 'bo'
+      ? '<span class="type-tag type-tag-bo">BO</span>'
+      : '<span class="type-tag type-tag-zbo">ZBO</span>';
+    const mc100 = mcCache[item.id]?.wr100; // quick or from full curve
+    const mcText = mc100 != null ? `${(mc100 * 100).toFixed(0)}%` : 'obliczanie\u2026';
+    const mcColor = mc100 != null ? (mc100 >= 0.5 ? 'var(--green)' : mc100 >= 0.2 ? 'var(--yellow)' : 'var(--red)') : 'var(--text-muted)';
+
+    html += `<div class="tracked-row" data-id="${item.id}">`;
+    html += `<div class="tracked-header">`;
+    html += `<span class="expand-icon${isOpen ? ' open' : ''}">\u25B6</span>`;
+    html += `<span class="tracked-title">${typeTag}<span class="district-tag">${item.district}</span><a href="${item.project.url || '#'}" target="_blank">${item.project.title || 'Bez tytu\u0142u'}</a></span>`;
+    html += `<div class="tracked-stats">`;
+    html += `<div class="tracked-stat stat-mc"><div class="tracked-stat-label">MC@100gl.</div><div class="tracked-stat-value" style="color:${mcColor}">${mcText}</div></div>`;
+    html += `<div class="tracked-stat"><div class="tracked-stat-label">Koszt</div><div class="tracked-stat-value">${fmt(item.project.total_cost)}</div></div>`;
+    html += `</div>`;
+    html += `</div>`;
+
+    // Expanded body
+    html += `<div class="tracked-body${isOpen ? ' open' : ''}">`;
+    html += `<div class="info-grid">`;
+    html += `<div class="info-item"><div class="info-label">Koszt projektu</div><div class="info-value">${fmt(item.project.total_cost)}</div></div>`;
+    html += `<div class="info-item"><div class="info-label">Bud\u017cet dzielnicy</div><div class="info-value">${fmtDown(item.budget)}</div></div>`;
+    html += `<div class="info-item"><div class="info-label">Suma wszystkich</div><div class="info-value">${fmtUp(item.totalSpent)}</div></div>`;
+    html += `<div class="info-item"><div class="info-label">Pozosta\u0142o</div><div class="info-value" style="color:${item.remaining >= 0 ? 'var(--green)' : 'var(--red)'}">${fmtDown(item.remaining)}</div></div>`;
+    html += `<div class="info-item"><div class="info-label">Konkurent\u00f3w</div><div class="info-value">${item.competitors.length}</div></div>`;
+    html += `<div class="info-item"><div class="info-label">Dzielnica</div><div class="info-value" style="font-size:0.8rem">${item.district}</div></div>`;
+    html += `</div>`;
+
+    // MC chart
+    html += `<div class="chart-wrap">`;
+    html += `<div class="chart-title">Monte Carlo: szansa wygranej w zale\u017cno\u015bci od liczby g\u0142os\u00f3w (10k iteracji)</div>`;
+    if (mcCache[item.id]?.points) {
+      html += `<canvas class="chart-canvas" data-id="${item.id}"></canvas>`;
+    } else {
+      html += `<div class="chart-computing">Obliczanie Monte Carlo\u2026</div>`;
+    }
+    html += `</div>`;
+
+    // Competition
+    html += `<div class="comp-section">`;
+    html += `<h4>Konkurencja w dzielnicy (${item.competitors.length} projekt\u00f3w)</h4>`;
+    if (item.competitors.length === 0) {
+      html += `<p style="font-size:0.8rem;color:var(--text-muted);">Brak konkurencji \u2014 jedyny projekt w dzielnicy!</p>`;
+    } else {
+      html += `<ul class="comp-list">`;
+      const sorted = [...item.competitors].sort((a, b) => (b.total_cost || 0) - (a.total_cost || 0));
+      for (const c of sorted) {
+        html += `<li><a href="${c.url || '#'}" target="_blank">${c.title || 'Bez tytu\u0142u'}</a><span class="comp-cost">${fmtUp(c.total_cost || 0)}</span></li>`;
+      }
+      html += `</ul>`;
+    }
+    html += `</div>`;
+
+    html += `</div>`; // tracked-body
+    html += `</div>`; // tracked-row
+  }
+  container.innerHTML = html;
+
+  // Wire click handlers
+  container.querySelectorAll('.tracked-header').forEach(hdr => {
+    hdr.addEventListener('click', () => {
+      const id = hdr.parentElement.dataset.id;
+      if (expandedIds.has(id)) expandedIds.delete(id); else expandedIds.add(id);
+      renderTracked();
+      // Schedule full MC curve if opening and not yet computed
+      if (expandedIds.has(id)) {
+        const item = trackedItems.find(t => t.id === id);
+        if (item) scheduleFullMC(item);
+      }
+    });
+  });
+
+  // Render cached charts
+  container.querySelectorAll('canvas.chart-canvas').forEach(canvas => {
+    const id = canvas.dataset.id;
+    if (mcCache[id]) {
+      renderChart(canvas, mcCache[id].points);
+      attachHover(canvas);
+    }
+  });
+}
+
+/* ── Main ────────────────────────────────────────────── */
+async function main() {
+  let projects, budgets, meta;
+  try {
+    const [pRes, bRes, mRes] = await Promise.all([
+      fetch('data/projects.json'),
+      fetch('data/budgets.json'),
+      fetch('data/meta.json'),
+    ]);
+    projects = await pRes.json();
+    budgets = await bRes.json();
+    meta = await mRes.json();
+  } catch (err) {
+    document.getElementById('tracked-container').innerHTML =
+      `<p style="color:var(--red);">B\u0142\u0105d wczytywania danych: ${err.message}</p>`;
+    return;
+  }
+
+  // Refresh info
+  const scraped = new Date(meta.last_updated || meta.scraped_at);
+  const ageH = (new Date() - scraped) / 3600000;
+  const dotClass = ageH < 2 ? 'dot-fresh' : ageH < 6 ? 'dot-stale' : 'dot-old';
+  document.getElementById('refresh-info').innerHTML =
+    `<span><span class="dot ${dotClass}"></span>Dane z ${timeAgo(scraped)}</span>` +
+    `<span>${projects.length} projekt\u00f3w w bazie</span>`;
+
+  // Build tracked items — match by title substring
+  trackedItems = [];
+  for (const tp of TRACKED_PROJECTS) {
+    const needle = tp.title.toLowerCase();
+    const proj = projects.find(p => (p.title || '').toLowerCase().includes(needle));
+    if (!proj) continue;
+
+    const district = norm(proj.district || '');
+    const isGreen = tp.type === 'zbo';
+    const budgetKey = isGreen ? 'budget_zbo' : 'budget_bo';
+    const budgetEntry = budgets[district] || budgets[proj.district] || {};
+    const budget = budgetEntry[budgetKey] || 0;
+
+    // Find competitors: same district, same type, exclude self
+    const competitors = projects.filter(p => {
+      if (p === proj) return false;
+      if (norm(p.district || '') !== district) return false;
+      if (isGreen !== (p.is_green || false)) return false;
+      return true;
+    });
+
+    const allInDistrict = projects.filter(p => {
+      if (norm(p.district || '') !== district) return false;
+      if (isGreen !== (p.is_green || false)) return false;
+      return true;
+    });
+    const totalSpent = allInDistrict.reduce((s, p) => s + (p.total_cost || 0), 0);
+
+    const id = `${tp.type}-${encodeURIComponent(tp.title)}`;
+    trackedItems.push({
+      id,
+      type: tp.type,
+      project: proj,
+      district,
+      budget,
+      competitors,
+      totalSpent,
+      remaining: budget - totalSpent,
+    });
+  }
+
+  renderTracked();
+
+  // Decimal toggle
+  document.getElementById('decimal-toggle').addEventListener('change', (e) => {
+    showDecimals = e.target.checked;
+    renderTracked();
+  });
+
+  // Schedule quick MC (100 votes only) for all — fast, enables sorting
+  initMCPool();
+  for (const item of trackedItems) {
+    scheduleQuickMC(item);
+  }
+}
+
+main();
+</script>
+</body>
+</html>

@@ -2,8 +2,8 @@ name: Scrape & Deploy
 
 on:
   schedule:
-    # Every 5 minutes
-    - cron: '*/5 * * * *'
+    # Every hour at :15
+    - cron: '15 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -51,7 +51,7 @@ jobs:
       - name: Prepare site
         run: |
           mkdir -p _site/data _site/bo-results
-          cp index.html history.html _site/
+          cp index.html history.html tracker.html _site/
           cp data/budgets.json data/projects.json data/meta.json _site/data/
           cp bo-results/bo-results.json _site/bo-results/
 

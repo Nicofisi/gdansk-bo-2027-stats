@@ -220,18 +220,6 @@
     margin: 0;
   }
   .mc-th-input:focus { outline: 1px solid #b084f6; border-color: #b084f6; }
-  #mc-precision {
-    background: var(--bg);
-    border: 1px solid #8957e5;
-    border-radius: 3px;
-    color: var(--text);
-    font-size: 0.8rem;
-    padding: 2px 4px;
-    cursor: pointer;
-    margin-left: 4px;
-  }
-  #mc-precision:focus { outline: 1px solid #b084f6; border-color: #b084f6; }
-  .mc-precision-label { white-space: nowrap; }
 
   /* Recommender panel inside expanded district */
   .rec-panel {
@@ -487,17 +475,6 @@
   <label>
     <span class="switch"><input type="checkbox" id="rec-toggle"><span class="slider"></span></span>
     Tryb rekomendacji
-  </label>
-  <label class="mc-precision-label" title="Mnożnik dokładności kroku Monte Carlo (wyższy = wolniej, dokładniej)">
-    Dokładność MC
-    <select id="mc-precision">
-      <option value="1" selected>1x</option>
-      <option value="2">2x</option>
-      <option value="5">5x</option>
-      <option value="10">10x</option>
-      <option value="50">50x</option>
-      <option value="200">200x</option>
-    </select>
   </label>
   <span class="rec-hint">Analiza optymalnego kosztu projektu z min. 100 głosami (Monte Carlo + scenariusze)</span>
 </div>
@@ -825,7 +802,7 @@ function renderMCChart(canvas, mcPoints, budget) {
     const px = pad.left + (pt.cost / budget) * cw;
     const py = pad.top + ch - pt.winRate * ch;
     ctx.beginPath();
-    ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+    ctx.arc(px, py, 1.5, 0, Math.PI * 2);
     ctx.fill();
   }
 
@@ -1739,23 +1716,6 @@ async function main() {
   // Recommender toggle handler
   document.getElementById('rec-toggle').addEventListener('change', (e) => {
     recEnabled = e.target.checked;
-    renderBo();
-    renderZbo();
-    if (recEnabled) scheduleAllMCWorkers(boRows, 'budget_bo', zboRows, 'budget_zbo');
-  });
-
-  // MC precision multiplier handler
-  document.getElementById('mc-precision').addEventListener('change', (e) => {
-    const newDiv = parseInt(e.target.value) || 1;
-    if (newDiv === mcStepDiv) return;
-    mcStepDiv = newDiv;
-    mcGeneration++;  // discard in-flight results from old precision
-    // Flush MC cache (gap analysis unaffected) and re-queue
-    for (const k of Object.keys(recCache)) {
-      delete recCache[k].mc;
-      delete recCache[k].exactThresholds;
-    }
-    mcPendingQueue = [];
     renderBo();
     renderZbo();
     if (recEnabled) scheduleAllMCWorkers(boRows, 'budget_bo', zboRows, 'budget_zbo');

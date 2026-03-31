@@ -220,6 +220,18 @@
     margin: 0;
   }
   .mc-th-input:focus { outline: 1px solid #b084f6; border-color: #b084f6; }
+  #mc-precision {
+    background: var(--bg);
+    border: 1px solid #8957e5;
+    border-radius: 3px;
+    color: var(--text);
+    font-size: 0.8rem;
+    padding: 2px 4px;
+    cursor: pointer;
+    margin-left: 4px;
+  }
+  #mc-precision:focus { outline: 1px solid #b084f6; border-color: #b084f6; }
+  .mc-precision-label { white-space: nowrap; }
 
   /* Recommender panel inside expanded district */
   .rec-panel {
@@ -446,6 +458,17 @@
   <label>
     <span class="switch"><input type="checkbox" id="rec-toggle"><span class="slider"></span></span>
     Tryb rekomendacji
+  </label>
+  <label class="mc-precision-label" title="Mnożnik dokładności kroku Monte Carlo (wyższy = wolniej, dokładniej)">
+    Dokładność MC
+    <select id="mc-precision">
+      <option value="1" selected>1x</option>
+      <option value="2">2x</option>
+      <option value="5">5x</option>
+      <option value="10">10x</option>
+      <option value="50">50x</option>
+      <option value="200">200x</option>
+    </select>
   </label>
   <span class="rec-hint">Analiza optymalnego kosztu projektu z min. 100 głosami (Monte Carlo + scenariusze)</span>
 </div>
@@ -888,13 +911,14 @@ function runMonteCarlo(costs, budget, simCost, params, nIter) {
   return wins / nIter;
 }
 
-function computeMCCurve(costs, budget, params, nIter) {
+function computeMCCurve(costs, budget, params, nIter, stepDiv) {
   let step;
   if (budget <= 200000) step = 2000;
   else if (budget <= 500000) step = 2000;
   else if (budget <= 1000000) step = 4000;
   else if (budget <= 3000000) step = 10000;
   else step = 20000;
+  if (stepDiv > 1) step = Math.max(1, Math.round(step / stepDiv));
   const points = [];
   for (let cost = step; cost <= budget; cost += step) {
     const winRate = runMonteCarlo(costs, budget, cost, params, nIter);
@@ -943,17 +967,17 @@ self.onmessage = function(e) {
   if (d.type === "bisect") {
     // Lightweight threshold refinement using cached curve bounds
     const exact = findExactThreshold(d.mcPoints, d.costs, d.budget, d.params, d.nIter || 10000, d.threshold);
-    self.postMessage({ type: "bisect", district: d.district, budgetType: d.budgetType, threshold: d.threshold, maxCostExact: exact });
+    self.postMessage({ type: "bisect", district: d.district, budgetType: d.budgetType, threshold: d.threshold, maxCostExact: exact, gen: d.gen });
     return;
   }
   // Default: full curve + bisect
-  const { district, budgetType, costs, budget, params, nIter, threshold } = d;
-  const mcPoints = computeMCCurve(costs, budget, params, nIter || 10000);
+  const { district, budgetType, costs, budget, params, nIter, threshold, stepDiv, gen } = d;
+  const mcPoints = computeMCCurve(costs, budget, params, nIter || 10000, stepDiv || 1);
   let maxCostExact = null;
   if (threshold != null && threshold > 0) {
     maxCostExact = findExactThreshold(mcPoints, costs, budget, params, nIter || 10000, threshold);
   }
-  self.postMessage({ district, budgetType, mcPoints, maxCostExact, threshold });
+  self.postMessage({ district, budgetType, mcPoints, maxCostExact, threshold, gen });
 };
 `], { type: 'application/javascript' });
 const mcWorkerURL = URL.createObjectURL(mcWorkerBlob);
@@ -977,6 +1001,12 @@ function initMCPool() {
 
 function onWorkerResult(e) {
   const d = e.data;
+  // Return worker to idle pool first (always)
+  mcIdleWorkers.push(e.target);
+
+  // Discard stale results from previous precision settings
+  if (d.gen != null && d.gen !== mcGeneration) { dispatchNextMC(); return; }
+
   const cacheKey = d.district + '|' + d.budgetType;
   if (!recCache[cacheKey]) recCache[cacheKey] = {};
 
@@ -992,9 +1022,6 @@ function onWorkerResult(e) {
       recCache[cacheKey].exactThresholds[d.threshold] = d.maxCostExact;
     }
   }
-
-  // Return worker to idle pool
-  mcIdleWorkers.push(e.target);
 
   // Re-render tables to update MC column
   if (recEnabled && _renderBo && _renderZbo) {
@@ -1036,7 +1063,7 @@ function scheduleAllMCWorkers(boR, boType, zboR, zboType) {
         costs: r.projects.map(p => p.total_cost || 0),
         budget: r.budget,
         params: MC_PARAMS_BO, nIter: 10000,
-        threshold: mcThreshold,
+        threshold: mcThreshold, stepDiv: mcStepDiv, gen: mcGeneration,
       });
     }
   }
@@ -1047,7 +1074,7 @@ function scheduleAllMCWorkers(boR, boType, zboR, zboType) {
         costs: r.projects.map(p => p.total_cost || 0),
         budget: r.budget,
         params: MC_PARAMS_ZBO, nIter: 10000,
-        threshold: mcThreshold,
+        threshold: mcThreshold, stepDiv: mcStepDiv, gen: mcGeneration,
       });
     }
   }
@@ -1082,7 +1109,7 @@ function refineBisectAll(threshold) {
         budget: r.budget,
         params: paramObj, nIter: 10000,
         threshold,
-        mcPoints: cached.mc,
+        mcPoints: cached.mc, gen: mcGeneration,
       });
     }
   }
@@ -1099,6 +1126,8 @@ function refineBisectAll(threshold) {
 /* ── Recommender state ───────────────────────────────── */
 let recEnabled = false;
 let mcThreshold = 0.95; // min acceptable win probability
+let mcStepDiv = 1;      // MC step precision multiplier (step = defaultStep / mcStepDiv)
+let mcGeneration = 0;   // bumped on precision change to discard stale in-flight results
 let mcBisectPending = false; // true while bisect refinements are in flight
 const recCache = {}; // key: "district|budgetType" -> { gap, mc }
 
@@ -1295,7 +1324,7 @@ function scheduleMC(row, budgetType) {
     costs: row.projects.map(p => p.total_cost || 0),
     budget: row.budget,
     params, nIter: 10000,
-    threshold: mcThreshold,
+    threshold: mcThreshold, stepDiv: mcStepDiv, gen: mcGeneration,
   };
   // Remove any existing queued job for this district (avoid duplicates)
   mcPendingQueue = mcPendingQueue.filter(j => !(j.district === row.district && j.budgetType === budgetType));
@@ -1620,6 +1649,23 @@ async function main() {
   // Recommender toggle handler
   document.getElementById('rec-toggle').addEventListener('change', (e) => {
     recEnabled = e.target.checked;
+    renderBo();
+    renderZbo();
+    if (recEnabled) scheduleAllMCWorkers(boRows, 'budget_bo', zboRows, 'budget_zbo');
+  });
+
+  // MC precision multiplier handler
+  document.getElementById('mc-precision').addEventListener('change', (e) => {
+    const newDiv = parseInt(e.target.value) || 1;
+    if (newDiv === mcStepDiv) return;
+    mcStepDiv = newDiv;
+    mcGeneration++;  // discard in-flight results from old precision
+    // Flush MC cache (gap analysis unaffected) and re-queue
+    for (const k of Object.keys(recCache)) {
+      delete recCache[k].mc;
+      delete recCache[k].exactThresholds;
+    }
+    mcPendingQueue = [];
     renderBo();
     renderZbo();
     if (recEnabled) scheduleAllMCWorkers(boRows, 'budget_bo', zboRows, 'budget_zbo');

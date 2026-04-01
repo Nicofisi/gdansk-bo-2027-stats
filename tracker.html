@@ -802,8 +802,8 @@ function renderChart(canvas, points, pointsDist) {
     ctx.textAlign = 'left';
     ctx.textBaseline = 'bottom';
     ctx.fillStyle = '#8957e5';
-    const gLabel = `gl. ${(pt100.winRate * 100).toFixed(0)}%`;
-    const dLabel = pt100d ? ` / dz. ${(pt100d.winRate * 100).toFixed(0)}%` : '';
+    const gLabel = `gl. ${Math.floor(pt100.winRate * 100)}%`;
+    const dLabel = pt100d ? ` / dz. ${Math.floor(pt100d.winRate * 100)}%` : '';
     ctx.fillText(gLabel, px + 6, pyG - 2);
     if (pt100d) {
       ctx.fillStyle = '#2dd4bf';
@@ -877,9 +877,9 @@ function renderTracked() {
       : '<span class="type-tag type-tag-zbo">ZBO</span>';
     const mc100 = mcCache[item.id]?.wr100; // quick or from full curve
     const mc100d = mcCache[item.id]?.wr100dist;
-    const mcText = mc100 != null ? `${(mc100 * 100).toFixed(0)}%` : '\u2026';
+    const mcText = mc100 != null ? `${Math.floor(mc100 * 100)}%` : '\u2026';
     const mcColor = mc100 != null ? (mc100 >= 0.5 ? 'var(--green)' : mc100 >= 0.2 ? 'var(--yellow)' : 'var(--red)') : 'var(--text-muted)';
-    const mcTextD = mc100d != null ? `${(mc100d * 100).toFixed(0)}%` : '\u2026';
+    const mcTextD = mc100d != null ? `${Math.floor(mc100d * 100)}%` : '\u2026';
     const mcColorD = mc100d != null ? (mc100d >= 0.5 ? 'var(--green)' : mc100d >= 0.2 ? 'var(--yellow)' : 'var(--red)') : 'var(--text-muted)';
 
     html += `<div class="tracked-row" data-id="${item.id}">`;

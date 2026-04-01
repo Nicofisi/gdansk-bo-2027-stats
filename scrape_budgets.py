@@ -96,9 +96,11 @@ def main():
             "budget_total": round(bo + zbo, 2),
         }
 
-    # Also scrape the ogolnomiejski budgets from the text above the table
+    # Also scrape the ogolnomiejski budgets from the text above the table.
     # The HTML has: <u>6 070 982,40&nbsp;</u><u>zł </u> na projekty ogólnomiejskie
-    ogolno_bo_match = re.search(
+    # NOTE: this amount is the TOTAL for ogólnomiejskie (BO + ZBO combined).
+    # budget_bo = total - zbo (the non-green portion only).
+    ogolno_total_match = re.search(
         r"([\d][\d\s]*[\d][,.][\d]+)\s*(?:&nbsp;)?\s*(?:</u>\s*<u>)?\s*zł\s*(?:</u>)?\s*(?:</strong>)?\s*na projekty og",
         html,
     )
@@ -108,12 +110,14 @@ def main():
     )
 
     ogolno = {}
-    if ogolno_bo_match:
-        ogolno["budget_bo"] = parse_amount(ogolno_bo_match.group(1))
+    ogolno_total = 0
+    if ogolno_total_match:
+        ogolno_total = parse_amount(ogolno_total_match.group(1))
     if ogolno_zbo_match:
         ogolno["budget_zbo"] = parse_amount(ogolno_zbo_match.group(1))
-    if ogolno:
-        ogolno["budget_total"] = round(ogolno.get("budget_bo", 0) + ogolno.get("budget_zbo", 0), 2)
+    if ogolno_total > 0:
+        ogolno["budget_bo"] = round(ogolno_total - ogolno.get("budget_zbo", 0), 2)
+        ogolno["budget_total"] = ogolno_total
     districts["Ogólnomiejski"] = ogolno
 
     out_path = Path(__file__).parent / "data" / "budgets.json"
@@ -124,6 +128,46 @@ def main():
     print(f"Saved {len(districts)} districts to {out_path}")
     for name, b in districts.items():
         print(f"  {name}: BO={b.get('budget_bo',0):,.2f} ZBO={b.get('budget_zbo',0):,.2f}")
+
+    # ── Sanity checks ────────────────────────────────────────────────────
+    # After ANY change to scraping logic, verify these invariants hold.
+    # Reference: https://www.gdansk.pl/budzet-obywatelski/Kwoty-BO-2027-r,a,305711
+    #
+    # 1. For every entry: budget_bo + budget_zbo == budget_total  (to the grosz)
+    # 2. Sum of all DISTRICT budget_bo  == 20_382_038.48  (website table "Suma" col 1)
+    # 3. Sum of all DISTRICT budget_zbo ==  5_206_485.12  (website table "Suma" col 2)
+    # 4. Sum of all DISTRICT budget_total == 25_588_523.60 (website table "Suma" col 3)
+    # 5. Ogólnomiejski budget_total       ==  6_070_982.40 (text above table)
+    # 6. Ogólnomiejski budget_zbo         ==  1_852_368.42 (text: "w tym ZBO")
+    # 7. Ogólnomiejski budget_bo          ==  4_218_613.98 (= total - zbo, NOT 6.07M!)
+    # 8. Grand total (all entries)        == 31_659_506.00 (website headline)
+    #
+    # Common pitfall: the "6 070 982,40 zł na projekty ogólnomiejskie" line is the
+    # COMBINED BO+ZBO total, not the BO-only portion. budget_bo must subtract ZBO.
+    errors = []
+    for name, b in districts.items():
+        calc = round(b.get("budget_bo", 0) + b.get("budget_zbo", 0), 2)
+        if abs(calc - b.get("budget_total", 0)) > 0.02:
+            errors.append(f"{name}: bo+zbo={calc} != total={b.get('budget_total')}")
+    dist_only = {k: v for k, v in districts.items() if k != "Ogólnomiejski"}
+    sbo = round(sum(v["budget_bo"] for v in dist_only.values()), 2)
+    szbo = round(sum(v["budget_zbo"] for v in dist_only.values()), 2)
+    stot = round(sum(v["budget_total"] for v in dist_only.values()), 2)
+    if abs(sbo - 20_382_038.48) > 0.10:
+        errors.append(f"District BO sum {sbo} != 20382038.48")
+    if abs(szbo - 5_206_485.12) > 0.10:
+        errors.append(f"District ZBO sum {szbo} != 5206485.12")
+    if abs(stot - 25_588_523.60) > 0.10:
+        errors.append(f"District total sum {stot} != 25588523.60")
+    grand = round(sum(v["budget_total"] for v in districts.values()), 2)
+    if abs(grand - 31_659_506.00) > 1.00:
+        errors.append(f"Grand total {grand} != 31659506.00")
+    if errors:
+        print("\n  !!! SANITY CHECK FAILURES !!!")
+        for e in errors:
+            print(f"  {e}")
+    else:
+        print("  Sanity checks passed (sums match website).")
 
 
 if __name__ == "__main__":

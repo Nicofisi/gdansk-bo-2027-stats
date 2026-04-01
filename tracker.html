@@ -454,6 +454,48 @@ function getDistrictParams(district, type) {
   return type === 'bo' ? MC_PARAMS_BO : MC_PARAMS_ZBO; // fallback to global
 }
 
+/* ── Guaranteed cost (deterministic) ──────────────────── */
+/* Worst case: all competitors have >100 votes and enter before us.
+   Budget is allocated greedily by votes, skipping projects that don't fit.
+   So the worst case for us is the subset of competitors that maximizes
+   total cost while fitting in budget (subset-sum / knapsack).
+   Our project wins iff ourCost <= budget - maxSubsetCost.
+   DP on integer z\u0142. To be pessimistic (maximize competitor subset):
+   floor competitor costs (cheaper ⇒ more fit) and ceil budget (more room).
+   Budget ~500k z\u0142 = 500k entries → <2MB, runs in ms even for 30+ items. */
+function maxSubsetSum(costs, capacity) {
+  const n = costs.length;
+  if (n === 0) return 0;
+  // Work in integer z\u0142: floor costs (pessimistic — more fit), ceil capacity
+  const cap = Math.ceil(capacity);
+  const intCosts = costs.map(c => Math.floor(c)).filter(c => c > 0);
+  if (intCosts.length === 0) return 0;
+  // DP: dp[j] = 1 if sum j is achievable
+  const dp = new Uint8Array(cap + 1);
+  dp[0] = 1;
+  for (const ci of intCosts) {
+    if (ci > cap) continue;
+    for (let j = cap; j >= ci; j--) {
+      if (dp[j - ci]) dp[j] = 1;
+    }
+  }
+  for (let j = cap; j >= 0; j--) {
+    if (dp[j]) return j;
+  }
+  return 0;
+}
+
+const gMaxCostCache = {}; // id -> number|null
+
+/* Returns the guaranteed cost threshold: max cost our project can have
+   to win with 100% certainty at 100 votes. null if impossible (0 or negative).
+   Floored to whole z\u0142 (DP works in integer z\u0142 so grosze are meaningless). */
+function guaranteedMaxCost(competitorCosts, budget) {
+  const worst = maxSubsetSum(competitorCosts, budget);
+  const threshold = Math.floor(budget - worst);
+  return threshold > 0 ? threshold : null;
+}
+
 /* ── MC Worker (votes on X axis) ─────────────────────── */
 const mcWorkerBlob = new Blob([`
 "use strict";
@@ -902,6 +944,26 @@ function renderTracked() {
     html += `<div class="info-item"><div class="info-label">Pozosta\u0142o</div><div class="info-value" style="color:${item.remaining >= 0 ? 'var(--green)' : 'var(--red)'}">${fmtDown(item.remaining)}</div></div>`;
     html += `<div class="info-item"><div class="info-label">Konkurent\u00f3w</div><div class="info-value">${item.competitors.length}</div></div>`;
     html += `<div class="info-item"><div class="info-label">Dzielnica</div><div class="info-value" style="font-size:0.8rem">${item.district}</div></div>`;
+
+    // Guaranteed cost threshold (deterministic worst-case analysis, cached)
+    if (!(item.id in gMaxCostCache)) {
+      gMaxCostCache[item.id] = guaranteedMaxCost(item.competitors.map(c => c.total_cost || 0), item.budget);
+    }
+    const gMaxCost = gMaxCostCache[item.id];
+    const ourCost = item.project.total_cost || 0;
+    if (gMaxCost != null && ourCost > 0) {
+      if (ourCost <= gMaxCost) {
+        // Already guaranteed — show how much headroom
+        html += `<div class="info-item" style="grid-column:1/-1"><div class="info-label" style="color:var(--green)">Gwarantowana wygrana przy \u2265100 g\u0142osach</div><div class="info-value" style="color:var(--green)">Tak \u2014 maks. koszt gwarantuj\u0105cy 100%: ${fmt(gMaxCost)} (zapas ${fmt(gMaxCost - ourCost)})</div></div>`;
+      } else {
+        const reduction = ourCost - gMaxCost;
+        const reductionPct = (reduction / ourCost * 100).toFixed(1);
+        html += `<div class="info-item" style="grid-column:1/-1"><div class="info-label" style="color:#2dd4bf">Pr\u00f3g gwarantowanej wygranej przy \u2265100 g\u0142osach</div><div class="info-value" style="color:var(--text)">Zmniejsz do <strong>${fmt(gMaxCost)}</strong> (minus ${fmt(reduction)}, czyli \u2212${reductionPct}% aktualnej kwoty)</div></div>`;
+      }
+    } else if (gMaxCost == null) {
+      html += `<div class="info-item" style="grid-column:1/-1"><div class="info-label" style="color:var(--text-muted)">Pr\u00f3g gwarantowanej wygranej</div><div class="info-value" style="color:var(--text-muted)">Brak \u2014 konkurencja mo\u017ce zaj\u0105\u0107 ca\u0142y bud\u017cet</div></div>`;
+    }
+
     html += `</div>`;
 
     // MC chart

@@ -2021,7 +2021,7 @@
         ]
       },
       "Wrzeszcz Górny": {
-        "budget_bo": 5886.0,
+        "budget_bo": 495886.0,
         "budget_zbo": 123355.0,
         "carryover_bo": 5886.0,
         "carryover_zbo": 355.0,
@@ -2030,7 +2030,7 @@
             "title": "WIELKI FINAŁ – Sobótkowa Polana – Leśny plac zabaw, strefa relaksu i tańca na wolnym powietrzu. Miejsce spotkań. Etap III (ostatni)",
             "cost": 490000.0,
             "votes": 1934,
-            "won": false
+            "won": true
           },
           {
             "title": "EkoGraMy – nowa przestrzeń rekreacyjno-ekologiczna dla Górnego Wrzeszcza, jako miejsce do regeneracji sił po pandemii",

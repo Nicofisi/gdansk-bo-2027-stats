@@ -271,11 +271,21 @@ def parse_page_metadata(non_table_text):
             meta["zbo_carryover"] = parse_amount(zbo_carryover_match.group(1) + " zł")
     else:
         # Only BO section on this page
-        if amounts:
-            meta["budget"] = parse_amount(amounts[0].group(1) + " zł")
+        # Find all amounts AND the carryover amount separately.
+        # The budget is the first amount that appears BEFORE any "przechodzi" keyword.
+        # If the only amounts on the page are after "przechodzi", there's no budget
+        # on this page (it's a continuation page).
         carryover_match = re.search(r'przechodzi\s+(\d[\d\s]*\d)\s*zł', text)
         if carryover_match:
             meta["carryover"] = parse_amount(carryover_match.group(1) + " zł")
+
+        if amounts:
+            # Only treat the first amount as budget if it appears before
+            # any "przechodzi" keyword (or if there's no "przechodzi" at all)
+            przechodzi_pos = text.find("przechodzi")
+            first_amount_pos = amounts[0].start()
+            if przechodzi_pos == -1 or first_amount_pos < przechodzi_pos:
+                meta["budget"] = parse_amount(amounts[0].group(1) + " zł")
 
     return meta
 
@@ -512,13 +522,13 @@ def _process_district_page(districts, meta, table_data):
             # (the BO section for this district was on a previous page)
             d["projects_zbo"].extend(table_data[0])
 
-        # BO metadata
-        if meta["budget"] is not None:
+        # BO metadata (don't overwrite existing budget from previous pages)
+        if meta["budget"] is not None and d["budget_bo"] is None:
             d["budget_bo"] = meta["budget"]
         if meta["carryover"] is not None:
             d["carryover_bo"] = meta["carryover"]
         # ZBO metadata
-        if meta["zbo_budget"] is not None:
+        if meta["zbo_budget"] is not None and d["budget_zbo"] is None:
             d["budget_zbo"] = meta["zbo_budget"]
         if meta["zbo_carryover"] is not None:
             d["carryover_zbo"] = meta["zbo_carryover"]
@@ -549,7 +559,7 @@ def _process_district_page(districts, meta, table_data):
         # has_zbo=False -> this is a BO-only page, all tables are BO.
         if len(table_data) >= 1:
             d["projects_bo"].extend(table_data[0])
-        if meta["budget"] is not None:
+        if meta["budget"] is not None and d["budget_bo"] is None:
             d["budget_bo"] = meta["budget"]
         if meta["carryover"] is not None:
             d["carryover_bo"] = meta["carryover"]

@@ -26,7 +26,7 @@ BASE_URL = "https://bo.gdansk.pl"
 # POST data to get all projects on one page
 LIST_POST_DATA = urllib.parse.urlencode({
     "WE[search-panel][active-id]": "1110",
-    "WE[search-panel][1110][per-page]": "500",
+    "WE[search-panel][1110][per-page]": "1000",
     "WE[search-panel][1110][sort-field]": "[950][1401998439][VALUE]",
     "WE[search-panel][1110][sort-order]": "ASC",
     "WE[search-panel][1110][page-current]": "0",

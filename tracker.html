@@ -17,6 +17,7 @@
     --blue: #58a6ff;
     --purple: #8957e5;
     --purple-light: #d2a8ff;
+    --teal: #2dd4bf;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -120,7 +121,7 @@
   .tracked-stat-value {
     font-weight: 600;
   }
-  .stat-mc { min-width: 5em; }
+  .stat-mc { min-width: 4em; }
 
   .tracked-body {
     display: none;
@@ -340,14 +341,16 @@
 <script>
 /* ── Configuration: tracked projects (matched by title substring) ── */
 const TRACKED_PROJECTS = [
-  // BO (regular)
-  { title: 'Przebudowa schod\u00f3w pomi\u0119dzy ul. Maryli a ul. Szar\u0105', type: 'bo' },
+  { title: 'Ogólnomiejska Liga Disc Golfa dla Szkół Ponadpodstawowych', type: 'bo'},
   { title: 'WRZESZCZ – POLSKA STOLICA DISC GOLFA', type: 'bo' },
-  { title: 'Budowa chodnika wzd\u0142u\u017c ul. Hynka', type: 'bo' },
-  // ZBO (green)
-  { title: 'ZIELONA Strzy\u017ca', type: 'zbo' },
-  { title: 'Drzewa na Suchaninie wolne od jemio\u0142y', type: 'zbo' },
-  { title: 'Zielony zak\u0105tek Zaspy', type: 'zbo' },
+  { title: 'Budowa pola do disc golfa w dzielnicy Krakowiec-Górki Zachodnie', type: 'bo' },
+  { title: 'Pole do disc golfa w Brzeźnie - 9 dołków', type: 'bo' },
+  { title: 'Pole do disc golfa na Wyspie Sobieszewskiej', type: 'bo' },
+  { title: 'Pole do disc golfa w Nowym Porcie przy Szańcu Zachodnim', type: 'bo' },
+  { title: 'Rekreacyjne pole do disc golfa w Parku Oruńskim', type: 'bo' },
+  { title: 'Rekreacyjne pole do disc golfa w Parku Ferberów', type: 'bo' },
+  { title: 'Disc Golf w Parku Reagana - nowe drzewa i większy komfort', type: 'zbo' },
+  { title: 'Uporządkowanie zieleni, nowe nasadzenia przy Disc Golfie na Zaspie', type: 'zbo' }
 ];
 
 const DISTRICT_MAP = {
@@ -401,6 +404,55 @@ function pctClass(pct) {
 /* ── Monte Carlo parameters ──────────────────────────── */
 const MC_PARAMS_BO  = { baseMu: 6.4, slope: 0.7, sigma: 0.8 };
 const MC_PARAMS_ZBO = { baseMu: 5.8, slope: 0.7, sigma: 0.8 };
+
+/* Per-district calibrated params (all 5 years 2022-2026, slope=0.7 fixed).
+   Keys use NORMALIZED district names (after DISTRICT_MAP).
+   ZBO entries with n<8 are omitted → fallback to global ZBO params. */
+const DISTRICT_MC_PARAMS = {
+  "Anio\u0142ki":                              { bo: {baseMu:7.205, sigma:0.543}, zbo: null },         // zbo n=5
+  "Br\u0119towo":                              { bo: {baseMu:7.019, sigma:0.548}, zbo: {baseMu:5.788, sigma:0.404} },
+  "Brze\u017ano":                              { bo: {baseMu:7.112, sigma:0.668}, zbo: null },         // zbo n=5
+  "Che\u0142m":                                { bo: {baseMu:8.127, sigma:0.974}, zbo: {baseMu:6.892, sigma:0.735} },
+  "Jasie\u0144":                               { bo: {baseMu:8.047, sigma:0.740}, zbo: {baseMu:6.869, sigma:0.856} },
+  "Kokoszki":                              { bo: {baseMu:7.574, sigma:0.558}, zbo: {baseMu:6.536, sigma:0.557} },
+  "Krakowiec-G\u00f3rki Zachodnie":            { bo: {baseMu:5.508, sigma:0.748}, zbo: null },         // zbo n=5
+  "Letnica":                               { bo: {baseMu:6.863, sigma:0.969}, zbo: null },         // zbo n=7
+  "Matarnia":                              { bo: {baseMu:7.462, sigma:0.690}, zbo: {baseMu:5.888, sigma:0.726} },
+  "M\u0142yniska":                             { bo: {baseMu:6.316, sigma:0.518}, zbo: null },         // zbo n=6
+  "Nowy Port":                             { bo: {baseMu:7.088, sigma:1.103}, zbo: {baseMu:5.094, sigma:0.554} },
+  "Oliwa":                                 { bo: {baseMu:7.525, sigma:0.874}, zbo: {baseMu:6.561, sigma:0.882} },
+  "Olszynka":                              { bo: {baseMu:6.370, sigma:0.799}, zbo: {baseMu:4.744, sigma:0.704} },
+  "Orunia G\u00f3rna - Gda\u0144sk Po\u0142udnie": { bo: {baseMu:8.082, sigma:0.684}, zbo: {baseMu:6.764, sigma:0.864} },
+  "Orunia-\u015aw. Wojciech-Lipce":            { bo: {baseMu:7.152, sigma:0.665}, zbo: {baseMu:6.282, sigma:1.379} },
+  "Osowa":                                 { bo: {baseMu:7.474, sigma:0.620}, zbo: {baseMu:6.018, sigma:1.109} },
+  "Piecki-Migowo":                         { bo: {baseMu:7.853, sigma:1.068}, zbo: {baseMu:7.072, sigma:0.420} },
+  "Przer\u00f3bka":                             { bo: {baseMu:6.325, sigma:0.543}, zbo: null },         // zbo n=6
+  "Przymorze Ma\u0142e":                        { bo: {baseMu:7.261, sigma:0.342}, zbo: {baseMu:6.009, sigma:0.530} },
+  "Przymorze Wielkie":                     { bo: {baseMu:7.455, sigma:0.732}, zbo: {baseMu:6.655, sigma:0.758} },
+  "Rudniki":                               { bo: {baseMu:6.365, sigma:1.115}, zbo: null },         // zbo n=5
+  "Siedlce":                               { bo: {baseMu:7.512, sigma:0.883}, zbo: {baseMu:6.218, sigma:0.680} },
+  "Stogi":                                 { bo: {baseMu:6.758, sigma:0.796}, zbo: {baseMu:5.584, sigma:0.370} },
+  "Strzy\u017ca":                               { bo: {baseMu:6.682, sigma:0.343}, zbo: {baseMu:5.292, sigma:0.386} },
+  "Suchanino":                             { bo: {baseMu:6.998, sigma:0.611}, zbo: {baseMu:6.417, sigma:1.023} },
+  "\u015arodmie\u015bcie":                          { bo: {baseMu:7.395, sigma:0.779}, zbo: {baseMu:6.490, sigma:0.892} },
+  "Uje\u015bcisko-\u0141ostowice":                  { bo: {baseMu:7.971, sigma:0.742}, zbo: {baseMu:7.286, sigma:0.745} },
+  "VII Dw\u00f3r":                              { bo: {baseMu:6.714, sigma:0.823}, zbo: null },         // zbo n=6
+  "Wrzeszcz Dolny":                        { bo: {baseMu:7.645, sigma:0.775}, zbo: {baseMu:6.580, sigma:0.582} },
+  "Wrzeszcz G\u00f3rny":                        { bo: {baseMu:7.444, sigma:0.763}, zbo: {baseMu:6.197, sigma:0.701} },
+  "Wyspa Sobieszewska":                    { bo: {baseMu:6.667, sigma:1.196}, zbo: {baseMu:5.343, sigma:0.743} },
+  "Wzg\u00f3rze Mickiewicza":                   { bo: {baseMu:6.126, sigma:0.836}, zbo: {baseMu:5.058, sigma:0.351} },
+  "Zaspa-M\u0142yniec":                         { bo: {baseMu:7.582, sigma:0.775}, zbo: null },         // zbo n=7
+  "Zaspa-Rozstaje":                        { bo: {baseMu:7.458, sigma:0.800}, zbo: {baseMu:6.330, sigma:0.964} },
+  "\u017babianka-Wejhera-Jelitkowo-Tysi\u0105clecia": { bo: {baseMu:7.209, sigma:0.874}, zbo: {baseMu:6.113, sigma:0.753} },
+};
+
+/* Get district-specific params; falls back to global if not found or null */
+function getDistrictParams(district, type) {
+  const entry = DISTRICT_MC_PARAMS[district];
+  const dp = entry ? entry[type] : null;
+  if (dp) return { baseMu: dp.baseMu, slope: 0.7, sigma: dp.sigma };
+  return type === 'bo' ? MC_PARAMS_BO : MC_PARAMS_ZBO; // fallback to global
+}
 
 /* ── MC Worker (votes on X axis) ─────────────────────── */
 const mcWorkerBlob = new Blob([`
@@ -456,18 +508,24 @@ function runSim(competitorCosts, budget, ourCost, ourVotes, params, nIter) {
 self.onmessage = function(e) {
   const d = e.data;
   if (d.type === 'quick') {
-    // Single-point: only compute win rate for one vote count
     const wr = runSim(d.competitorCosts, d.budget, d.ourCost, d.votes, d.params, d.nIter);
-    self.postMessage({ id: d.id, type: 'quick', votes: d.votes, winRate: wr });
+    const msg = { id: d.id, type: 'quick', votes: d.votes, winRate: wr };
+    if (d.params2) {
+      msg.winRate2 = runSim(d.competitorCosts, d.budget, d.ourCost, d.votes, d.params2, d.nIter);
+    }
+    self.postMessage(msg);
     return;
   }
-  const { id, competitorCosts, budget, ourCost, params, nIter, minVotes, maxVotes, voteStep } = d;
+  const { id, competitorCosts, budget, ourCost, params, params2, nIter, minVotes, maxVotes, voteStep } = d;
   const points = [];
+  const points2 = params2 ? [] : null;
   for (let v = minVotes; v <= maxVotes; v += voteStep) {
-    const winRate = runSim(competitorCosts, budget, ourCost, v, params, nIter);
-    points.push({ votes: v, winRate });
+    points.push({ votes: v, winRate: runSim(competitorCosts, budget, ourCost, v, params, nIter) });
+    if (params2) {
+      points2.push({ votes: v, winRate: runSim(competitorCosts, budget, ourCost, v, params2, nIter) });
+    }
   }
-  self.postMessage({ id, type: 'full', points });
+  self.postMessage({ id, type: 'full', points, points2 });
 };
 `], { type: 'application/javascript' });
 const mcWorkerURL = URL.createObjectURL(mcWorkerBlob);
@@ -477,7 +535,7 @@ let mcWorkers = [];
 let mcIdleWorkers = [];
 let mcPendingQueue = [];
 let mcPoolReady = false;
-const mcCache = {}; // id -> { wr100, points }
+const mcCache = {}; // id -> { wr100, wr100dist, points, pointsDist }
 
 function initMCPool() {
   if (mcPoolReady) return;
@@ -496,11 +554,15 @@ function onWorkerResult(e) {
   if (!mcCache[d.id]) mcCache[d.id] = {};
   if (d.type === 'quick') {
     mcCache[d.id].wr100 = d.winRate;
+    if (d.winRate2 != null) mcCache[d.id].wr100dist = d.winRate2;
   } else {
     mcCache[d.id].points = d.points;
+    if (d.points2) mcCache[d.id].pointsDist = d.points2;
     // Also extract wr100 from full curve if available
     const pt100 = d.points?.find(p => p.votes === MIN_VOTES);
     if (pt100) mcCache[d.id].wr100 = pt100.winRate;
+    const pt100d = d.points2?.find(p => p.votes === MIN_VOTES);
+    if (pt100d) mcCache[d.id].wr100dist = pt100d.winRate;
   }
   renderTracked();
   dispatchNextMC();
@@ -528,6 +590,7 @@ function scheduleQuickMC(trackedItem) {
     budget: trackedItem.budget,
     ourCost: trackedItem.project.total_cost || 0,
     params: trackedItem.type === 'bo' ? MC_PARAMS_BO : MC_PARAMS_ZBO,
+    params2: getDistrictParams(trackedItem.district, trackedItem.type),
     nIter: 10000,
     votes: MIN_VOTES,
   });
@@ -544,6 +607,7 @@ function scheduleFullMC(trackedItem) {
     budget: trackedItem.budget,
     ourCost: trackedItem.project.total_cost || 0,
     params: trackedItem.type === 'bo' ? MC_PARAMS_BO : MC_PARAMS_ZBO,
+    params2: getDistrictParams(trackedItem.district, trackedItem.type),
     nIter: 10000,
     minVotes: MIN_VOTES,
     maxVotes: MAX_VOTES,
@@ -554,8 +618,38 @@ function scheduleFullMC(trackedItem) {
   dispatchNextMC();
 }
 
-/* ── Chart rendering (votes → win rate) ──────────────── */
-function renderChart(canvas, points) {
+/* ── Chart rendering (votes → win rate, dual curve) ──── */
+function drawCurve(ctx, points, pad, cw, ch, minV, rangeV, color) {
+  // Line
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let i = 0; i < points.length; i++) {
+    const pt = points[i];
+    const px = pad.left + ((pt.votes - minV) / rangeV) * cw;
+    const py = pad.top + ch - pt.winRate * ch;
+    if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+  }
+  ctx.stroke();
+
+  // Area fill
+  ctx.globalAlpha = 0.08;
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  for (let i = 0; i < points.length; i++) {
+    const pt = points[i];
+    const px = pad.left + ((pt.votes - minV) / rangeV) * cw;
+    const py = pad.top + ch - pt.winRate * ch;
+    if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+  }
+  ctx.lineTo(pad.left + cw, pad.top + ch);
+  ctx.lineTo(pad.left, pad.top + ch);
+  ctx.closePath();
+  ctx.fill();
+  ctx.globalAlpha = 1;
+}
+
+function renderChart(canvas, points, pointsDist) {
   if (!points || points.length === 0) return;
   const dpr = window.devicePixelRatio || 1;
   const rect = canvas.getBoundingClientRect();
@@ -622,44 +716,6 @@ function renderChart(canvas, points) {
   ctx.fillText('szansa wygranej', 0, 0);
   ctx.restore();
 
-  // Line
-  ctx.strokeStyle = '#8957e5';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  for (let i = 0; i < points.length; i++) {
-    const pt = points[i];
-    const px = pad.left + ((pt.votes - minV) / rangeV) * cw;
-    const py = pad.top + ch - pt.winRate * ch;
-    if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
-  }
-  ctx.stroke();
-
-  // Dots
-  ctx.fillStyle = '#8957e5';
-  for (const pt of points) {
-    const px = pad.left + ((pt.votes - minV) / rangeV) * cw;
-    const py = pad.top + ch - pt.winRate * ch;
-    ctx.beginPath();
-    ctx.arc(px, py, 1.5, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  // Area fill
-  ctx.globalAlpha = 0.1;
-  ctx.fillStyle = '#8957e5';
-  ctx.beginPath();
-  for (let i = 0; i < points.length; i++) {
-    const pt = points[i];
-    const px = pad.left + ((pt.votes - minV) / rangeV) * cw;
-    const py = pad.top + ch - pt.winRate * ch;
-    if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
-  }
-  ctx.lineTo(pad.left + cw, pad.top + ch);
-  ctx.lineTo(pad.left, pad.top + ch);
-  ctx.closePath();
-  ctx.fill();
-  ctx.globalAlpha = 1;
-
   // 50% threshold
   const y50 = pad.top + ch - 0.5 * ch;
   ctx.strokeStyle = '#d29922';
@@ -694,23 +750,70 @@ function renderChart(canvas, points) {
     ctx.fillText('min 100', x100 + 3, pad.top + 2);
   }
 
-  // Annotate win rate at 100 votes
+  // Draw curves: global (purple) then district (teal)
+  drawCurve(ctx, points, pad, cw, ch, minV, rangeV, '#8957e5');
+  if (pointsDist && pointsDist.length > 0) {
+    drawCurve(ctx, pointsDist, pad, cw, ch, minV, rangeV, '#2dd4bf');
+  }
+
+  // Legend (top-right)
+  const legendX = pad.left + cw - 5;
+  let legendY = pad.top + 5;
+  ctx.font = '9px -apple-system, sans-serif';
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'top';
+  // Global
+  ctx.fillStyle = '#8957e5';
+  ctx.fillRect(legendX - 55, legendY, 10, 3);
+  ctx.fillStyle = '#8b949e';
+  ctx.fillText('globalny', legendX, legendY - 2);
+  if (pointsDist && pointsDist.length > 0) {
+    legendY += 13;
+    ctx.fillStyle = '#2dd4bf';
+    ctx.fillRect(legendX - 55, legendY, 10, 3);
+    ctx.fillStyle = '#8b949e';
+    ctx.fillText('dzielnica', legendX, legendY - 2);
+  }
+
+  // Annotate win rate at 100 votes (both curves)
   const pt100 = points.find(p => p.votes === 100);
+  const pt100d = pointsDist?.find(p => p.votes === 100);
   if (pt100) {
     const px = pad.left + ((100 - minV) / rangeV) * cw;
     const py = pad.top + ch - pt100.winRate * ch;
-    ctx.fillStyle = '#3fb950';
+    ctx.fillStyle = '#8957e5';
     ctx.beginPath();
-    ctx.arc(px, py, 4, 0, Math.PI * 2);
+    ctx.arc(px, py, 3.5, 0, Math.PI * 2);
     ctx.fill();
+  }
+  if (pt100d) {
+    const px = pad.left + ((100 - minV) / rangeV) * cw;
+    const py = pad.top + ch - pt100d.winRate * ch;
+    ctx.fillStyle = '#2dd4bf';
+    ctx.beginPath();
+    ctx.arc(px, py, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  // Label: show both values next to the 100-vote line
+  if (pt100) {
+    const px = pad.left + ((100 - minV) / rangeV) * cw;
+    const pyG = pad.top + ch - pt100.winRate * ch;
     ctx.font = 'bold 9px -apple-system, sans-serif';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'bottom';
-    ctx.fillText(`100 gl. = ${(pt100.winRate * 100).toFixed(0)}%`, px + 6, py - 2);
+    ctx.fillStyle = '#8957e5';
+    const gLabel = `gl. ${(pt100.winRate * 100).toFixed(0)}%`;
+    const dLabel = pt100d ? ` / dz. ${(pt100d.winRate * 100).toFixed(0)}%` : '';
+    ctx.fillText(gLabel, px + 6, pyG - 2);
+    if (pt100d) {
+      ctx.fillStyle = '#2dd4bf';
+      const gWidth = ctx.measureText(gLabel).width;
+      ctx.fillText(dLabel, px + 6 + gWidth, pyG - 2);
+    }
   }
 
   // Store for hover
-  canvas._chartData = { pad, cw, ch, minV, maxV, rangeV, points };
+  canvas._chartData = { pad, cw, ch, minV, maxV, rangeV, points, pointsDist };
 }
 
 function attachHover(canvas) {
@@ -734,7 +837,12 @@ function attachHover(canvas) {
       const dist = Math.abs(pt.votes - hoverVotes);
       if (dist < minDist) { minDist = dist; nearest = pt; }
     }
-    tooltip.textContent = `${nearest.votes} g\u0142os\u00f3w \u2192 ${(nearest.winRate * 100).toFixed(1)}% szans`;
+    let text = `${nearest.votes} gl. \u2192 gl. ${(nearest.winRate * 100).toFixed(1)}%`;
+    if (cd.pointsDist) {
+      const nd = cd.pointsDist.find(p => p.votes === nearest.votes);
+      if (nd) text += ` | dz. ${(nd.winRate * 100).toFixed(1)}%`;
+    }
+    tooltip.textContent = text;
     tooltip.style.display = 'block';
     const tx = mx + 12;
     const ty = e.clientY - rect.top - 20;
@@ -754,10 +862,10 @@ function renderTracked() {
     container.innerHTML = '<p style="color:var(--text-muted);font-size:0.85rem;">Brak \u015bledzonych projekt\u00f3w w danych.</p>';
     return;
   }
-  // Sort: highest win rate at 100 votes first, tie-break by cost desc
+  // Sort: highest district win rate at 100 votes first, fallback to global, tie-break by cost desc
   const sorted = [...trackedItems].sort((a, b) => {
-    const wrA = mcCache[a.id]?.wr100 ?? -1;
-    const wrB = mcCache[b.id]?.wr100 ?? -1;
+    const wrA = mcCache[a.id]?.wr100dist ?? mcCache[a.id]?.wr100 ?? -1;
+    const wrB = mcCache[b.id]?.wr100dist ?? mcCache[b.id]?.wr100 ?? -1;
     if (wrB !== wrA) return wrB - wrA;
     return (b.project.total_cost || 0) - (a.project.total_cost || 0);
   });
@@ -768,15 +876,19 @@ function renderTracked() {
       ? '<span class="type-tag type-tag-bo">BO</span>'
       : '<span class="type-tag type-tag-zbo">ZBO</span>';
     const mc100 = mcCache[item.id]?.wr100; // quick or from full curve
-    const mcText = mc100 != null ? `${(mc100 * 100).toFixed(0)}%` : 'obliczanie\u2026';
+    const mc100d = mcCache[item.id]?.wr100dist;
+    const mcText = mc100 != null ? `${(mc100 * 100).toFixed(0)}%` : '\u2026';
     const mcColor = mc100 != null ? (mc100 >= 0.5 ? 'var(--green)' : mc100 >= 0.2 ? 'var(--yellow)' : 'var(--red)') : 'var(--text-muted)';
+    const mcTextD = mc100d != null ? `${(mc100d * 100).toFixed(0)}%` : '\u2026';
+    const mcColorD = mc100d != null ? (mc100d >= 0.5 ? 'var(--green)' : mc100d >= 0.2 ? 'var(--yellow)' : 'var(--red)') : 'var(--text-muted)';
 
     html += `<div class="tracked-row" data-id="${item.id}">`;
     html += `<div class="tracked-header">`;
     html += `<span class="expand-icon${isOpen ? ' open' : ''}">\u25B6</span>`;
     html += `<span class="tracked-title">${typeTag}<span class="district-tag">${item.district}</span><a href="${item.project.url || '#'}" target="_blank">${item.project.title || 'Bez tytu\u0142u'}</a></span>`;
     html += `<div class="tracked-stats">`;
-    html += `<div class="tracked-stat stat-mc"><div class="tracked-stat-label">MC@100gl.</div><div class="tracked-stat-value" style="color:${mcColor}">${mcText}</div></div>`;
+    html += `<div class="tracked-stat stat-mc"><div class="tracked-stat-label" style="color:#8957e5">MC gl.</div><div class="tracked-stat-value" style="color:${mcColor}">${mcText}</div></div>`;
+    html += `<div class="tracked-stat stat-mc"><div class="tracked-stat-label" style="color:#2dd4bf">MC dz.</div><div class="tracked-stat-value" style="color:${mcColorD}">${mcTextD}</div></div>`;
     html += `<div class="tracked-stat"><div class="tracked-stat-label">Koszt</div><div class="tracked-stat-value">${fmt(item.project.total_cost)}</div></div>`;
     html += `</div>`;
     html += `</div>`;
@@ -794,7 +906,7 @@ function renderTracked() {
 
     // MC chart
     html += `<div class="chart-wrap">`;
-    html += `<div class="chart-title">Monte Carlo: szansa wygranej w zale\u017cno\u015bci od liczby g\u0142os\u00f3w (10k iteracji)</div>`;
+    html += `<div class="chart-title">Monte Carlo: szansa wygranej w zale\u017cno\u015bci od liczby g\u0142os\u00f3w (<span style="color:#8957e5">globalny</span> vs <span style="color:#2dd4bf">dzielnica</span>, 10k iteracji)</div>`;
     if (mcCache[item.id]?.points) {
       html += `<canvas class="chart-canvas" data-id="${item.id}"></canvas>`;
     } else {
@@ -840,7 +952,7 @@ function renderTracked() {
   container.querySelectorAll('canvas.chart-canvas').forEach(canvas => {
     const id = canvas.dataset.id;
     if (mcCache[id]) {
-      renderChart(canvas, mcCache[id].points);
+      renderChart(canvas, mcCache[id].points, mcCache[id].pointsDist);
       attachHover(canvas);
     }
   });

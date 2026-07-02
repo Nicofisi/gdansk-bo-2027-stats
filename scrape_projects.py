@@ -284,16 +284,6 @@ def main():
     new_count = 0
     for i, url in enumerate(urls, 1):
         full_url = BASE_URL + url
-        if full_url in existing:
-            cached = existing[full_url]
-            # Re-scrape if merit_assessment field is missing (new field added)
-            if "merit_assessment" not in cached and "error" not in cached:
-                print(f"  [{i}/{len(urls)}] re-scraping (missing assessment): {url[:60]}...")
-            else:
-                projects.append(cached)
-                print(f"  [{i}/{len(urls)}] cached: {cached.get('title', url)[:60]}")
-                continue
-
         print(f"  [{i}/{len(urls)}] scraping: {url[:70]}...")
         try:
             project = scrape_project(url)
@@ -301,7 +291,11 @@ def main():
             new_count += 1
         except Exception as e:
             print(f"    ERROR: {e}")
-            projects.append({"url": full_url, "error": str(e)})
+            # Fall back to cached data if available, so we don't lose the project
+            if full_url in existing:
+                projects.append(existing[full_url])
+            else:
+                projects.append({"url": full_url, "error": str(e)})
 
         # Be polite
         if i < len(urls):

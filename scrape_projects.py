@@ -328,7 +328,7 @@ def main():
             meta = json.load(f)
     meta["last_updated"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
     meta["project_count"] = len(projects)
-    meta["refresh_interval_hours"] = 5 / 60  # every 5 minutes
+    meta["refresh_interval_hours"] = 1  # every hour (cron: '15 * * * *')
     with open(meta_path, "w", encoding="utf-8") as f:
         json.dump(meta, f, ensure_ascii=False, indent=2)
 

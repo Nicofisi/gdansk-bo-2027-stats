@@ -417,6 +417,13 @@
     white-space: nowrap;
     margin-left: 0.5rem;
   }
+  .proj-rejected {
+    opacity: 0.42;
+  }
+  .proj-rejected a {
+    text-decoration: line-through;
+    text-decoration-color: var(--text-muted);
+  }
   .assess-badges {
     grid-column: 3;
     display: inline-flex;
@@ -497,6 +504,14 @@
     Grosze
   </label>
   <span class="rec-hint">Pokaż dokładne kwoty z miejscami po przecinku</span>
+</div>
+
+<div class="toggle-bar" id="verification-toggle-bar" style="display:none;">
+  <label>
+    <span class="switch"><input type="checkbox" id="verification-toggle"><span class="slider"></span></span>
+    Ignoruj weryfikację
+  </label>
+  <span class="rec-hint">Domyślnie: projekty z negatywną oceną formalną lub merytoryczną są wykluczone z wyliczeń</span>
 </div>
 
 <div class="toggle-bar" id="rec-toggle-bar" style="display:none;">
@@ -1097,7 +1112,7 @@ function scheduleAllMCWorkers(boR, boType, zboR, zboType) {
     if (r.count > 0 && !recCache[r.district + '|' + boType]?.mc) {
       queue.push({
         district: r.district, budgetType: boType,
-        costs: r.projects.map(p => p.total_cost || 0),
+        costs: r.activeProjects.map(p => p.total_cost || 0),
         budget: r.budget,
         params: MC_PARAMS_BO, nIter: 10000,
         threshold: mcThreshold, stepDiv: mcStepDiv, gen: mcGeneration,
@@ -1108,7 +1123,7 @@ function scheduleAllMCWorkers(boR, boType, zboR, zboType) {
     if (r.count > 0 && !recCache[r.district + '|' + zboType]?.mc) {
       queue.push({
         district: r.district, budgetType: zboType,
-        costs: r.projects.map(p => p.total_cost || 0),
+        costs: r.activeProjects.map(p => p.total_cost || 0),
         budget: r.budget,
         params: MC_PARAMS_ZBO, nIter: 10000,
         threshold: mcThreshold, stepDiv: mcStepDiv, gen: mcGeneration,
@@ -1142,7 +1157,7 @@ function refineBisectAll(threshold) {
       jobs.push({
         type: 'bisect',
         district: r.district, budgetType,
-        costs: r.projects.map(p => p.total_cost || 0),
+        costs: r.activeProjects.map(p => p.total_cost || 0),
         budget: r.budget,
         params: paramObj, nIter: 10000,
         threshold,
@@ -1162,6 +1177,9 @@ function refineBisectAll(threshold) {
 
 /* ── Recommender state ───────────────────────────────── */
 let recEnabled = false;
+let ignoreVerification = false; // when false, negatively assessed projects excluded from stats
+let _allBudgets = null;         // stored for rebuild when toggles change
+let _allProjects = null;
 let mcThreshold = 0.95; // min acceptable win probability
 let mcStepDiv = 1;      // MC step precision multiplier (step = defaultStep / mcStepDiv)
 let mcGeneration = 0;   // bumped on precision change to discard stale in-flight results
@@ -1212,17 +1230,41 @@ function renderRefreshInfo(meta) {
 }
 
 /* ── Build rows ──────────────────────────────────────── */
+function isRejected(p) {
+  return (p.formal_assessment || '').trim() === 'NEGATYWNA' ||
+         (p.merit_assessment  || '').trim() === 'NEGATYWNA';
+}
+
+function assessBadgesHTML(p) {
+  const f = (p.formal_assessment || '').trim();
+  const m = (p.merit_assessment || '').trim();
+  const parts = [];
+  if (f) {
+    const pos = f === 'POZYTYWNA';
+    parts.push(`<span class="assess-badge ${pos ? 'assess-pos' : 'assess-neg'}" title="Ocena formalna: ${f}">${pos ? 'F+' : 'F\u2212'}</span>`);
+  }
+  if (m) {
+    const pos = m === 'POZYTYWNA';
+    parts.push(`<span class="assess-badge ${pos ? 'assess-pos' : 'assess-neg'}" title="Ocena merytoryczna: ${m}">${pos ? 'M+' : 'M\u2212'}</span>`);
+  }
+  return parts.length ? `<span class="assess-badges">${parts.join('')}</span>` : '<span class="assess-badges"></span>';
+}
+
 function buildRows(budgets, projects, budgetKey) {
-  const costs = {}, counts = {}, districtProjects = {};
+  const costs = {}, counts = {}, districtProjects = {}, districtActiveProjects = {};
   for (const p of projects) {
     const d = norm(p.district || '???');
     const cost = p.total_cost || 0;
     const isGreen = p.is_green || false;
     if ((budgetKey === 'budget_zbo') !== isGreen) continue;
-    costs[d] = (costs[d] || 0) + cost;
-    counts[d] = (counts[d] || 0) + 1;
     if (!districtProjects[d]) districtProjects[d] = [];
     districtProjects[d].push(p);
+    if (ignoreVerification || !isRejected(p)) {
+      costs[d] = (costs[d] || 0) + cost;
+      counts[d] = (counts[d] || 0) + 1;
+      if (!districtActiveProjects[d]) districtActiveProjects[d] = [];
+      districtActiveProjects[d].push(p);
+    }
   }
   const rows = [];
   for (const [district, data] of Object.entries(budgets)) {
@@ -1233,7 +1275,8 @@ function buildRows(budgets, projects, budgetKey) {
     const pct = budget > 0 ? (spent / budget) * 100 : 0;
     const remaining = budget - spent;
     const projs = (districtProjects[district] || []).sort((a, b) => (b.total_cost || 0) - (a.total_cost || 0));
-    rows.push({ district, pct, spent, budget, remaining, count, projects: projs });
+    const activeProjs = (districtActiveProjects[district] || []).sort((a, b) => (b.total_cost || 0) - (a.total_cost || 0));
+    rows.push({ district, pct, spent, budget, remaining, count, projects: projs, activeProjects: activeProjs });
   }
   return rows;
 }
@@ -1243,7 +1286,7 @@ function buildRecPanelHTML(row, budgetType) {
   const cacheKey = row.district + '|' + budgetType;
   let gap = recCache[cacheKey]?.gap;
   if (!gap) {
-    gap = computeGapAnalysis(row.projects, row.budget);
+    gap = computeGapAnalysis(row.activeProjects, row.budget);
     if (!recCache[cacheKey]) recCache[cacheKey] = {};
     recCache[cacheKey].gap = gap;
   }
@@ -1373,7 +1416,7 @@ function scheduleMC(row, budgetType) {
   initMCPool();
   const job = {
     district: row.district, budgetType,
-    costs: row.projects.map(p => p.total_cost || 0),
+    costs: row.activeProjects.map(p => p.total_cost || 0),
     budget: row.budget,
     params, nIter: 10000,
     threshold: mcThreshold, stepDiv: mcStepDiv, gen: mcGeneration,
@@ -1418,7 +1461,7 @@ function refineMCSingle(district, budgetType, opts) {
   initMCPool();
   const job = {
     district, budgetType,
-    costs: row.projects.map(p => p.total_cost || 0),
+    costs: row.activeProjects.map(p => p.total_cost || 0),
     budget: row.budget,
     params, nIter: newNIter,
     threshold: mcThreshold, stepDiv: newStepDiv, gen: mcGeneration,
@@ -1438,7 +1481,7 @@ function recSummaryHTML(row, budgetType) {
   const cacheKey = row.district + '|' + budgetType;
   let gap = recCache[cacheKey]?.gap;
   if (!gap) {
-    gap = computeGapAnalysis(row.projects, row.budget);
+    gap = computeGapAnalysis(row.activeProjects, row.budget);
     if (!recCache[cacheKey]) recCache[cacheKey] = {};
     recCache[cacheKey].gap = gap;
   }
@@ -1565,21 +1608,6 @@ function renderTable(tableId, rows, budgetType) {
     }
   }
 
-  function assessBadgesHTML(p) {
-    const f = (p.formal_assessment || '').trim();
-    const m = (p.merit_assessment || '').trim();
-    const parts = [];
-    if (f) {
-      const pos = f === 'POZYTYWNA';
-      parts.push(`<span class="assess-badge ${pos ? 'assess-pos' : 'assess-neg'}" title="Ocena formalna: ${f}">${pos ? 'F+' : 'F\u2212'}</span>`);
-    }
-    if (m) {
-      const pos = m === 'POZYTYWNA';
-      parts.push(`<span class="assess-badge ${pos ? 'assess-pos' : 'assess-neg'}" title="Ocena merytoryczna: ${m}">${pos ? 'M+' : 'M\u2212'}</span>`);
-    }
-    return parts.length ? `<span class="assess-badges">${parts.join('')}</span>` : '<span class="assess-badges"></span>';
-  }
-
   function projectListHTML(projs) {
     if (projs.length === 0) return '<div class="projects-list" style="color:var(--text-muted);font-style:italic;padding:0.8rem 2rem;">Brak zg\u0142oszonych projekt\u00f3w</div>';
     const items = projs.map(p => {
@@ -1588,7 +1616,8 @@ function renderTable(tableId, rows, budgetType) {
       const url = p.url || '#';
       const seq = p.seq ? `<span class="proj-seq">#${p.seq}</span>` : '';
       const badges = assessBadgesHTML(p);
-      return `<li>${seq}<a href="${url}" target="_blank">${title}</a>${badges}<span class="proj-cost">${cost}</span></li>`;
+      const rejCls = isRejected(p) ? ' proj-rejected' : '';
+      return `<li class="${rejCls}">${seq}<a href="${url}" target="_blank">${title}</a>${badges}<span class="proj-cost">${cost}</span></li>`;
     }).join('');
     return `<div class="projects-list"><ul>${items}</ul></div>`;
   }
@@ -1730,6 +1759,9 @@ async function main() {
 
   renderRefreshInfo(meta);
 
+  _allBudgets = budgets;
+  _allProjects = projects;
+
   const boRows = buildRows(budgets, projects, 'budget_bo');
   const zboRows = buildRows(budgets, projects, 'budget_zbo');
 
@@ -1747,23 +1779,42 @@ async function main() {
   // Show toggle bars once data is loaded
   document.getElementById('rec-toggle-bar').style.display = 'flex';
   document.getElementById('settings-bar').style.display = 'flex';
+  document.getElementById('verification-toggle-bar').style.display = 'flex';
 
   // Decimal toggle handler
   document.getElementById('decimal-toggle').addEventListener('change', (e) => {
     showDecimals = e.target.checked;
-    renderBo();
-    renderZbo();
+    _renderBo();
+    _renderZbo();
     renderLatest();
-    // Re-render summary
-    document.getElementById('summary').innerHTML = buildSummaryHTML(boRows, zboRows, projects);
+    document.getElementById('summary').innerHTML = buildSummaryHTML(_boRows, _zboRows, _allProjects);
   });
 
   // Recommender toggle handler
   document.getElementById('rec-toggle').addEventListener('change', (e) => {
     recEnabled = e.target.checked;
-    renderBo();
-    renderZbo();
-    if (recEnabled) scheduleAllMCWorkers(boRows, 'budget_bo', zboRows, 'budget_zbo');
+    _renderBo();
+    _renderZbo();
+    if (recEnabled) scheduleAllMCWorkers(_boRows, 'budget_bo', _zboRows, 'budget_zbo');
+  });
+
+  // Verification filter toggle — rebuilds rows from scratch
+  function rebuildAndRender() {
+    const newBoRows = buildRows(_allBudgets, _allProjects, 'budget_bo');
+    const newZboRows = buildRows(_allBudgets, _allProjects, 'budget_zbo');
+    _boRows = newBoRows;
+    _zboRows = newZboRows;
+    _renderBo = renderTable('table-bo', newBoRows, 'budget_bo');
+    _renderZbo = renderTable('table-zbo', newZboRows, 'budget_zbo');
+    document.getElementById('summary').innerHTML = buildSummaryHTML(newBoRows, newZboRows, _allProjects);
+    renderLatest();
+    Object.keys(recCache).forEach(k => delete recCache[k]);
+    if (recEnabled) scheduleAllMCWorkers(newBoRows, 'budget_bo', newZboRows, 'budget_zbo');
+  }
+
+  document.getElementById('verification-toggle').addEventListener('change', (e) => {
+    ignoreVerification = e.target.checked;
+    rebuildAndRender();
   });
 
   // MC threshold input handler
@@ -1782,7 +1833,8 @@ async function main() {
       const district = p.district ? `<span class="proj-district">${norm(p.district)}</span>` : '';
       const typeTag = p.is_green ? ' <span class="proj-type" style="color:var(--green)">[ZBO]</span>' : '';
       const badges = assessBadgesHTML(p);
-      return `<li>${seq}<a href="${url}" target="_blank">${title}${typeTag}</a>${badges}${district}<span class="proj-cost">${cost}</span></li>`;
+      const rejCls = isRejected(p) ? ' proj-rejected' : '';
+      return `<li class="${rejCls}">${seq}<a href="${url}" target="_blank">${title}${typeTag}</a>${badges}${district}<span class="proj-cost">${cost}</span></li>`;
     }).join('');
     latestContainer.innerHTML = `<div class="projects-list projects-list--latest"><ul>${items}</ul></div>`;
   }

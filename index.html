@@ -374,8 +374,8 @@
     padding: 0.3rem 0;
     font-size: 0.8rem;
     display: grid;
-    grid-template-columns: auto 1fr auto auto;
-    align-items: baseline;
+    grid-template-columns: auto 1fr auto auto auto;
+    align-items: center;
     gap: 0 0.6rem;
     border-bottom: 1px solid var(--border);
   }
@@ -386,6 +386,7 @@
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .projects-list a:hover { text-decoration: underline; }
   .projects-list .proj-cost {
@@ -394,7 +395,7 @@
     font-variant-numeric: tabular-nums;
     min-width: 10em;
     text-align: right;
-    grid-column: 4;
+    grid-column: 5;
   }
   .projects-list .proj-seq {
     color: var(--text-muted);
@@ -408,13 +409,39 @@
     color: var(--text-muted);
     font-size: 0.7rem;
     white-space: nowrap;
-    margin-left: 0.5rem;
+    grid-column: 4;
   }
   .projects-list .proj-type {
     color: var(--text-muted);
     font-size: 0.7rem;
     white-space: nowrap;
     margin-left: 0.5rem;
+  }
+  .assess-badges {
+    grid-column: 3;
+    display: inline-flex;
+    gap: 0.2rem;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .assess-badge {
+    font-size: 0.58rem;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-weight: 700;
+    white-space: nowrap;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+  }
+  .assess-pos {
+    color: var(--green);
+    border: 1px solid rgba(63, 185, 80, 0.45);
+    background: rgba(63, 185, 80, 0.08);
+  }
+  .assess-neg {
+    color: var(--red);
+    border: 1px solid rgba(248, 81, 73, 0.45);
+    background: rgba(248, 81, 73, 0.08);
   }
 
   footer {
@@ -446,6 +473,7 @@
     .projects-list li {
       grid-template-columns: auto 1fr auto;
     }
+    .projects-list .assess-badges { display: none; }
     .projects-list .proj-cost { grid-column: 3; min-width: auto; }
     .projects-list--latest .proj-seq { grid-column: 1; grid-row: 1; }
     .projects-list--latest a { grid-column: 2 / -1; grid-row: 1; }
@@ -1537,6 +1565,21 @@ function renderTable(tableId, rows, budgetType) {
     }
   }
 
+  function assessBadgesHTML(p) {
+    const f = (p.formal_assessment || '').trim();
+    const m = (p.merit_assessment || '').trim();
+    const parts = [];
+    if (f) {
+      const pos = f === 'POZYTYWNA';
+      parts.push(`<span class="assess-badge ${pos ? 'assess-pos' : 'assess-neg'}" title="Ocena formalna: ${f}">${pos ? 'F+' : 'F\u2212'}</span>`);
+    }
+    if (m) {
+      const pos = m === 'POZYTYWNA';
+      parts.push(`<span class="assess-badge ${pos ? 'assess-pos' : 'assess-neg'}" title="Ocena merytoryczna: ${m}">${pos ? 'M+' : 'M\u2212'}</span>`);
+    }
+    return parts.length ? `<span class="assess-badges">${parts.join('')}</span>` : '<span class="assess-badges"></span>';
+  }
+
   function projectListHTML(projs) {
     if (projs.length === 0) return '<div class="projects-list" style="color:var(--text-muted);font-style:italic;padding:0.8rem 2rem;">Brak zg\u0142oszonych projekt\u00f3w</div>';
     const items = projs.map(p => {
@@ -1544,7 +1587,8 @@ function renderTable(tableId, rows, budgetType) {
       const title = p.title || 'Bez tytu\u0142u';
       const url = p.url || '#';
       const seq = p.seq ? `<span class="proj-seq">#${p.seq}</span>` : '';
-      return `<li>${seq}<a href="${url}" target="_blank">${title}</a><span class="proj-cost">${cost}</span></li>`;
+      const badges = assessBadgesHTML(p);
+      return `<li>${seq}<a href="${url}" target="_blank">${title}</a>${badges}<span class="proj-cost">${cost}</span></li>`;
     }).join('');
     return `<div class="projects-list"><ul>${items}</ul></div>`;
   }
@@ -1737,7 +1781,8 @@ async function main() {
       const seq = p.seq ? `<span class="proj-seq">#${p.seq}</span>` : '';
       const district = p.district ? `<span class="proj-district">${norm(p.district)}</span>` : '';
       const typeTag = p.is_green ? ' <span class="proj-type" style="color:var(--green)">[ZBO]</span>' : '';
-      return `<li>${seq}<a href="${url}" target="_blank">${title}${typeTag}</a>${district}<span class="proj-cost">${cost}</span></li>`;
+      const badges = assessBadgesHTML(p);
+      return `<li>${seq}<a href="${url}" target="_blank">${title}${typeTag}</a>${badges}${district}<span class="proj-cost">${cost}</span></li>`;
     }).join('');
     latestContainer.innerHTML = `<div class="projects-list projects-list--latest"><ul>${items}</ul></div>`;
   }

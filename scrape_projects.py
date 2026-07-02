@@ -70,6 +70,8 @@ class ProjectDetailParser(HTMLParser):
         "OPIS PROJEKTU:": "description",
         "PROJEKTOWANIE UNIWERSALNE:": "universal_design",
         "KOSZT UTRZYMANIA PROJEKTU W KOLEJNYCH LATACH:": "maintenance_cost",
+        "OCENA FORMALNA:": "formal_assessment",
+        "OCENA MERYTORYCZNA:": "merit_assessment",
     }
 
     def __init__(self):
@@ -283,9 +285,14 @@ def main():
     for i, url in enumerate(urls, 1):
         full_url = BASE_URL + url
         if full_url in existing:
-            projects.append(existing[full_url])
-            print(f"  [{i}/{len(urls)}] cached: {existing[full_url].get('title', url)[:60]}")
-            continue
+            cached = existing[full_url]
+            # Re-scrape if merit_assessment field is missing (new field added)
+            if "merit_assessment" not in cached and "error" not in cached:
+                print(f"  [{i}/{len(urls)}] re-scraping (missing assessment): {url[:60]}...")
+            else:
+                projects.append(cached)
+                print(f"  [{i}/{len(urls)}] cached: {cached.get('title', url)[:60]}")
+                continue
 
         print(f"  [{i}/{len(urls)}] scraping: {url[:70]}...")
         try:

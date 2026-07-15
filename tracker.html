@@ -100,6 +100,43 @@
   }
   .tracked-title a { color: var(--blue); text-decoration: none; }
   .tracked-title a:hover { text-decoration: underline; }
+  .tracked-title.proj-rejected { opacity: 0.55; }
+  .tracked-title.proj-rejected a {
+    text-decoration: line-through;
+    text-decoration-color: var(--text-muted);
+  }
+
+  .comp-list li.proj-rejected { opacity: 0.55; }
+  .comp-list li.proj-rejected a {
+    text-decoration: line-through;
+    text-decoration-color: var(--text-muted);
+  }
+
+  .assess-badges {
+    display: inline-flex;
+    gap: 0.2rem;
+    align-items: center;
+    margin-left: 0.4rem;
+  }
+  .assess-badge {
+    font-size: 0.58rem;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-weight: 700;
+    white-space: nowrap;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
+  }
+  .assess-pos {
+    color: var(--green);
+    border: 1px solid rgba(63, 185, 80, 0.45);
+    background: rgba(63, 185, 80, 0.08);
+  }
+  .assess-neg {
+    color: var(--red);
+    border: 1px solid rgba(248, 81, 73, 0.45);
+    background: rgba(248, 81, 73, 0.08);
+  }
 
   .tracked-stats {
     display: flex;
@@ -166,7 +203,8 @@
     align-items: baseline;
   }
   .comp-list li:last-child { border-bottom: none; }
-  .comp-list a { color: var(--blue); text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .comp-title { display: flex; align-items: baseline; gap: 0.3rem; min-width: 0; }
+  .comp-list a { color: var(--blue); text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
   .comp-list a:hover { text-decoration: underline; }
   .comp-cost {
     color: var(--text-muted);
@@ -328,6 +366,14 @@
   <span class="toggle-hint">Pokaż dokładne kwoty z miejscami po przecinku</span>
 </div>
 
+<div class="toggle-bar">
+  <label>
+    <span class="switch"><input type="checkbox" id="verification-toggle"><span class="slider"></span></span>
+    Ignoruj weryfikację
+  </label>
+  <span class="toggle-hint">Domyślnie: projekty z negatywną oceną formalną lub merytoryczną są traktowane jako nieistniejące (konkurencja, MC gl./dz., próg gwarantowany)</span>
+</div>
+
 <div id="tracked-container">
   <p style="color:var(--text-muted);font-size:0.85rem;">Wczytywanie danych...</p>
 </div>
@@ -399,6 +445,28 @@ function pctClass(pct) {
   if (pct < 100) return 'pct-med';
   if (pct < 200) return 'pct-high';
   return 'pct-over';
+}
+
+let ignoreVerification = false; // when false, negatively assessed projects are treated as nonexistent
+
+function isRejected(p) {
+  return (p.formal_assessment || '').trim() === 'NEGATYWNA' ||
+         (p.merit_assessment  || '').trim() === 'NEGATYWNA';
+}
+
+function assessBadgesHTML(p) {
+  const f = (p.formal_assessment || '').trim();
+  const m = (p.merit_assessment || '').trim();
+  const parts = [];
+  if (f) {
+    const pos = f === 'POZYTYWNA';
+    parts.push(`<span class="assess-badge ${pos ? 'assess-pos' : 'assess-neg'}" title="Ocena formalna: ${f}">${pos ? 'F+' : 'F−'}</span>`);
+  }
+  if (m) {
+    const pos = m === 'POZYTYWNA';
+    parts.push(`<span class="assess-badge ${pos ? 'assess-pos' : 'assess-neg'}" title="Ocena merytoryczna: ${m}">${pos ? 'M+' : 'M−'}</span>`);
+  }
+  return parts.length ? `<span class="assess-badges">${parts.join('')}</span>` : '';
 }
 
 /* ── Monte Carlo parameters ──────────────────────────── */
@@ -897,6 +965,48 @@ function attachHover(canvas) {
 /* ── Data & rendering ────────────────────────────────── */
 let trackedItems = []; // enriched tracked project data
 let expandedIds = new Set();
+let _allProjects = null;
+let _allBudgets = null;
+
+/* Build tracked items from raw projects/budgets, respecting ignoreVerification:
+   rejected projects (negative formal/merit assessment) are excluded from
+   competitor lists and district spend unless the toggle is on. */
+function buildTrackedItems(projects, budgets) {
+  const items = [];
+  for (const tp of TRACKED_PROJECTS) {
+    const needle = tp.title.toLowerCase();
+    const proj = projects.find(p => (p.title || '').toLowerCase().includes(needle));
+    if (!proj) continue;
+
+    const district = norm(proj.district || '');
+    const isGreen = tp.type === 'zbo';
+    const budgetKey = isGreen ? 'budget_zbo' : 'budget_bo';
+    const budgetEntry = budgets[district] || budgets[proj.district] || {};
+    const budget = budgetEntry[budgetKey] || 0;
+
+    const activeInDistrict = projects.filter(p => {
+      if (norm(p.district || '') !== district) return false;
+      if (isGreen !== (p.is_green || false)) return false;
+      return ignoreVerification || !isRejected(p);
+    });
+
+    const competitors = activeInDistrict.filter(p => p !== proj);
+    const totalSpent = activeInDistrict.reduce((s, p) => s + (p.total_cost || 0), 0);
+
+    const id = `${tp.type}-${encodeURIComponent(tp.title)}`;
+    items.push({
+      id,
+      type: tp.type,
+      project: proj,
+      district,
+      budget,
+      competitors,
+      totalSpent,
+      remaining: budget - totalSpent,
+    });
+  }
+  return items;
+}
 
 function renderTracked() {
   const container = document.getElementById('tracked-container');
@@ -924,10 +1034,13 @@ function renderTracked() {
     const mcTextD = mc100d != null ? `${Math.floor(mc100d * 100)}%` : '\u2026';
     const mcColorD = mc100d != null ? (mc100d >= 0.5 ? 'var(--green)' : mc100d >= 0.2 ? 'var(--yellow)' : 'var(--red)') : 'var(--text-muted)';
 
+    const rejCls = isRejected(item.project) ? ' proj-rejected' : '';
+    const badges = assessBadgesHTML(item.project);
+
     html += `<div class="tracked-row" data-id="${item.id}">`;
     html += `<div class="tracked-header">`;
     html += `<span class="expand-icon${isOpen ? ' open' : ''}">\u25B6</span>`;
-    html += `<span class="tracked-title">${typeTag}<span class="district-tag">${item.district}</span><a href="${item.project.url || '#'}" target="_blank">${item.project.title || 'Bez tytu\u0142u'}</a></span>`;
+    html += `<span class="tracked-title${rejCls}">${typeTag}<span class="district-tag">${item.district}</span><a href="${item.project.url || '#'}" target="_blank">${item.project.title || 'Bez tytu\u0142u'}</a>${badges}</span>`;
     html += `<div class="tracked-stats">`;
     html += `<div class="tracked-stat stat-mc"><div class="tracked-stat-label" style="color:#8957e5">MC gl.</div><div class="tracked-stat-value" style="color:${mcColor}">${mcText}</div></div>`;
     html += `<div class="tracked-stat stat-mc"><div class="tracked-stat-label" style="color:#2dd4bf">MC dz.</div><div class="tracked-stat-value" style="color:${mcColorD}">${mcTextD}</div></div>`;
@@ -985,7 +1098,9 @@ function renderTracked() {
       html += `<ul class="comp-list">`;
       const sorted = [...item.competitors].sort((a, b) => (b.total_cost || 0) - (a.total_cost || 0));
       for (const c of sorted) {
-        html += `<li><a href="${c.url || '#'}" target="_blank">${c.title || 'Bez tytu\u0142u'}</a><span class="comp-cost">${fmtUp(c.total_cost || 0)}</span></li>`;
+        const cRejCls = isRejected(c) ? ' proj-rejected' : '';
+        const cBadges = assessBadgesHTML(c);
+        html += `<li class="${cRejCls.trim()}"><span class="comp-title"><a href="${c.url || '#'}" target="_blank">${c.title || 'Bez tytu\u0142u'}</a>${cBadges}</span><span class="comp-cost">${fmtUp(c.total_cost || 0)}</span></li>`;
       }
       html += `</ul>`;
     }
@@ -1046,46 +1161,9 @@ async function main() {
     `<span><span class="dot ${dotClass}"></span>Dane z ${timeAgo(scraped)}</span>` +
     `<span>${projects.length} projekt\u00f3w w bazie</span>`;
 
-  // Build tracked items — match by title substring
-  trackedItems = [];
-  for (const tp of TRACKED_PROJECTS) {
-    const needle = tp.title.toLowerCase();
-    const proj = projects.find(p => (p.title || '').toLowerCase().includes(needle));
-    if (!proj) continue;
-
-    const district = norm(proj.district || '');
-    const isGreen = tp.type === 'zbo';
-    const budgetKey = isGreen ? 'budget_zbo' : 'budget_bo';
-    const budgetEntry = budgets[district] || budgets[proj.district] || {};
-    const budget = budgetEntry[budgetKey] || 0;
-
-    // Find competitors: same district, same type, exclude self
-    const competitors = projects.filter(p => {
-      if (p === proj) return false;
-      if (norm(p.district || '') !== district) return false;
-      if (isGreen !== (p.is_green || false)) return false;
-      return true;
-    });
-
-    const allInDistrict = projects.filter(p => {
-      if (norm(p.district || '') !== district) return false;
-      if (isGreen !== (p.is_green || false)) return false;
-      return true;
-    });
-    const totalSpent = allInDistrict.reduce((s, p) => s + (p.total_cost || 0), 0);
-
-    const id = `${tp.type}-${encodeURIComponent(tp.title)}`;
-    trackedItems.push({
-      id,
-      type: tp.type,
-      project: proj,
-      district,
-      budget,
-      competitors,
-      totalSpent,
-      remaining: budget - totalSpent,
-    });
-  }
+  _allProjects = projects;
+  _allBudgets = budgets;
+  trackedItems = buildTrackedItems(projects, budgets);
 
   renderTracked();
 
@@ -1093,6 +1171,21 @@ async function main() {
   document.getElementById('decimal-toggle').addEventListener('change', (e) => {
     showDecimals = e.target.checked;
     renderTracked();
+  });
+
+  // Verification filter toggle — rebuilds items (competitor sets change) and
+  // discards MC/guaranteed-cost caches since underlying costs changed
+  document.getElementById('verification-toggle').addEventListener('change', (e) => {
+    ignoreVerification = e.target.checked;
+    trackedItems = buildTrackedItems(_allProjects, _allBudgets);
+    Object.keys(mcCache).forEach(k => delete mcCache[k]);
+    Object.keys(gMaxCostCache).forEach(k => delete gMaxCostCache[k]);
+    renderTracked();
+    initMCPool();
+    for (const item of trackedItems) {
+      scheduleQuickMC(item);
+      if (expandedIds.has(item.id)) scheduleFullMC(item);
+    }
   });
 
   // Schedule quick MC (100 votes only) for all — fast, enables sorting
